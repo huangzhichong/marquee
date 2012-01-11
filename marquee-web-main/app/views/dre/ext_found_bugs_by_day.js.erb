@@ -1,0 +1,4 @@
+$('#inner-content').fadeOut('slow', function(){
+  $('#inner-content').html('<%= escape_javascript(render("ext_found_bugs_by_day")) %>');
+  $('#inner-content').fadeIn('slow');
+});

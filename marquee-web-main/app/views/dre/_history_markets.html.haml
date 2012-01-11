@@ -1,0 +1,18 @@
+:javascript
+  if  (FusionCharts("endurance_dre_chart")) FusionCharts("endurance_dre_chart").dispose();
+  if  (FusionCharts("camps_dre_chart")) FusionCharts("camps_dre_chart").dispose();
+  if  (FusionCharts("sports_dre_chart")) FusionCharts("sports_dre_chart").dispose();
+  if  (FusionCharts("swimming_dre_chart")) FusionCharts("swimming_dre_chart").dispose();
+
+- max_x_label_count = 6
+- str_xml = render :file => 'fusioncharts/dre', :locals => {:arr_data => @endurance_data, :caption => 'Endurance DRE - Rolling 90 days average', :color => '8DB4E3', :max_x_label_count => max_x_label_count}
+- render_chart('/FusionCharts/MSCombiDY2D.swf', '', str_xml, 'endurance_dre_chart', '100%', '100%', false, true)
+
+- str_xml = render :file => 'fusioncharts/dre', :locals => {:arr_data => @camps_data, :caption => 'Camps DRE - Rolling 90 days average', :color => 'C2D69A', :max_x_label_count => max_x_label_count}
+- render_chart('/FusionCharts/MSCombiDY2D.swf', '', str_xml, 'camps_dre_chart', '100%', '100%', false, true)
+
+- str_xml = render :file => 'fusioncharts/dre', :locals => {:arr_data => @sports_data, :caption => 'Team Sports DRE - Rolling 90 days average', :color => 'FFC090', :max_x_label_count => max_x_label_count}
+- render_chart('/FusionCharts/MSCombiDY2D.swf', '', str_xml, 'sports_dre_chart', '100%', '100%', false, true)
+
+- str_xml = render :file => 'fusioncharts/dre', :locals => {:arr_data => @swimming_data, :caption => 'Swimming DRE - Rolling 90 days average', :color => 'B2A1C7', :max_x_label_count => max_x_label_count}
+- render_chart('/FusionCharts/MSCombiDY2D.swf', '', str_xml, 'swimming_dre_chart', '100%', '100%', false, true)

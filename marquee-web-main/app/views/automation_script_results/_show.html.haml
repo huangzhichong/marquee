@@ -1,0 +1,14 @@
+.row.sub-header
+  .span16.columns
+    %img.big-icon{:src => asset_path("#{@automation_script_result.result}.png")}
+    %h2
+      =link_to "Test Rounds", project_test_rounds_path(@test_round.project), :remote => true
+      = " / "
+      =link_to "#{@test_round.test_type.name}##{@test_round.id}", project_test_round_path(@test_round.project, @test_round), :remote => true
+      =" / "
+      = @automation_script_result.automation_script.name
+
+= render 'brief_info'
+= render :partial => "partial/service_info", :locals => {:asr => @automation_script_result}
+.list-content-box
+  = render :partial => 'automation_case_results/list', :locals => {:automation_case_results => @automation_case_results, :automation_script_result => @automation_script_result, :search => @search}

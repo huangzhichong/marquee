@@ -1,0 +1,44 @@
+= javascript_include_tag "experiment/d3-stack"
+
+.title.row
+  .colorfix.span1
+  %h1.span14 ActiveWorks XXX Daily Effort Tracking Report 2011-01-01
+  .colorfix.span1
+#buttons
+  #group-button.btn Group
+  #stack-button.btn Stack
+#chart
+
+:css
+  .title h1{
+    text-align: center;
+    font-family: "Gill Sans";
+    font-weight: bold;
+    font-size: 38px;
+    color: #404040;
+  }
+  .colorfix{
+    min-height: 10px;
+    background-color: blue;
+  }
+
+:javascript
+  function randomColor(){
+    return "hsl(" + Math.random() * 360 + ", 100%, 50%)";
+  }
+
+  $(document).ready(function(){
+    d3.selectAll('.title .colorfix').style('height', function(){
+      return $('.title h1').height() + "px";
+    }).style('background-color', randomColor());
+
+    createStackChart();
+
+    $('#group-button').click(function(){
+      transitionGroup();
+    });
+
+    $('#stack-button').click(function(){
+      transitionStack();
+    });
+  });

@@ -1,0 +1,21 @@
+= form_for ([:admin, @project, @ci_mapping]) do |f|
+  -if @ci_mapping.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@ci_mapping.errors.count, "error")} prohibited this ci_mapping from being saved:"
+      %ul
+        - @ci_mapping.errors.full_messages.each do |msg|
+          %li= msg
+  %fieldset
+    %legend= title
+    .clearfix
+      = f.label :ci_value
+      .input
+        = f.text_field :ci_value
+    .clearfix
+      = f.label :test_suite
+      .input
+        = f.select :test_suite_id, options_from_collection_for_select(@project.test_suites, :id, :name), {}, {:class => "chzn-select"}
+
+    .actions
+      = f.submit 'Save', :class => 'btn primary'
+      = link_to 'Back', admin_project_ci_mappings_path(@project), :class => 'btn'

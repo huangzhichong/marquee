@@ -1,0 +1,26 @@
+= link_to "<< Team Roster", admin_team_members_path
+
+%h3 Upload Time Card Submission list
+= form_tag(admin_time_cards_upload_time_card_report_path, {:multipart => true}) do
+  = file_field_tag "file"
+  = submit_tag 'Upload', :class => 'btn primary'
+
+%h3 Specify the start date of a month:
+= form_tag '#', :method => 'get', :class => 'filter_form' do
+  = select_date(@start_date, {}, {:class => "chzn-select"})
+  = submit_tag 'Filter', :class => 'btn primary'
+
+= form_tag(admin_time_cards_send_notification_email_path, :remote => true) do
+  .hidden_date
+    = select_date @start_date
+  = submit_tag 'Send Notification Email', :class => 'btn danger', :id => 'send_timecard_email'
+
+= render :partial => "list", :locals => {:title => "Listing Oracle Time Cards for #{@start_date.year} - #{@start_date.month}", :time_cards => @time_cards}
+
+:javascript
+  $(function(){
+    $("#send_timecard_email").click(function(){
+      $(this).addClass("disabled");
+      $.fancybox({ 'href' : "/assets/spinner.gif", 'hideOnOverlayClick' : false, 'hideOnContentClick' : false, 'showCloseButton' : false});
+    });
+  });

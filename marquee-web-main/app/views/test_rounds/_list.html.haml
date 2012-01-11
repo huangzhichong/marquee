@@ -1,0 +1,43 @@
+.page-header
+  %h2
+    Test Rounds
+    %small= "#{@project.test_rounds.count} in total"
+  -if can? :create, TestRound
+    = link_to 'Schedule', new_project_test_round_path(project), :class => 'btn primary'
+  = form_for search, :url => project_test_rounds_path, :remote => true do |f|
+    %span.search
+      = f.text_field :creator_email_or_test_environment_name_or_test_object_or_test_suite_test_type_name_contains, {:id => 'search'}
+      = f.submit '', {:class => 'btn', :id => 'searchsubmit'}
+
+%table.zebra-striped
+  %tr
+    %th=sort_link search, :id, "NO.", {}, {:remote => true}
+    %th=sort_link search, :pass_count, "Pass", {}, {:remote => true}
+    %th=sort_link search, :failed_count, "Failed", {}, {:remote => true}
+    %th=sort_link search, :not_run_count, "Not Run", {}, {:remote => true}
+    %th=sort_link search, :creator_email, "Creator", {}, {:remote => true}
+    %th=sort_link search, :test_object, "Test Description", {}, {:remote => true}
+    %th=sort_link search, :test_environment_name, "Test environment", {}, {:remote => true}
+    %th=sort_link search, :start_time, {}, {:remote => true}
+    %th=sort_link search, :end_time, {}, {:remote => true}
+
+  - if test_rounds.nil? or test_rounds.count == 0
+    %tr
+      %td{:colspan => "6"}
+        %h4 No data
+  - else
+    - test_rounds.each do |tr|
+      %tr
+        %td
+          %img.ui-icon{:src => asset_path("#{tr.result}.png")}
+          = link_to "#{tr.test_suite.test_type.name} ##{tr.id}", project_test_round_path(project, tr), :remote => true
+        %td= tr.pass_count
+        %td= tr.failed_count
+        %td= tr.not_run_count
+        %td= tr.creator.display_name
+        %td= tr.test_object
+        %td= tr.test_environment.name
+        %td= in_time_zone(tr.start_time)
+        %td= in_time_zone(tr.end_time)
+
+= paginate test_rounds

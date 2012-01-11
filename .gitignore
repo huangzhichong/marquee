@@ -1,0 +1,8 @@
+.DS_Store
+.bundle
+marquee-web-main/db/*.sqlite3
+marquee-web-main/log/
+marquee-web-main/tmp/
+marquee-web-main/db/schema.rb
+marquee-web-main/.sass-cache/
+marquee-web-main/farm_reload/server/*.pid

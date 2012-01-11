@@ -1,0 +1,121 @@
+:javascript
+  var config = {
+    title: "ActiveWorks #{@config.jira_project.capitalize} Report",
+    totalEffort: #{@total_effort}, 
+    inReleaseEffort: #{@in_release_effort},
+    outReleaseEffort: #{@out_release_effort},
+    otherProjEffort: #{@other_proj_effort},
+  };
+  var requirementData = #{@requirement_data.to_json};
+  var detailEffortDistributionData = #{@detail_effort_distribution_data.to_json};
+  var detailEffortDistributionLabels = #{@detail_effort_distribution_labels.to_json};
+  var subTitle = 'Based on #{@tracking.pulled_at.to_date} data';
+  var openBugsCountByPriority = #{@open_bugs_count_by_priority.to_json};
+  var openBugsCountByDay= #{@open_bugs_count_by_day.to_json};
+  var openBugsCountByDayLabels= #{@open_bugs_count_by_day_labels.to_json};
+
+= stylesheet_link_tag "kendo/kendo.common.min"
+= stylesheet_link_tag "kendo/kendo.kendo.min"
+= javascript_include_tag "jquery"
+= javascript_include_tag "kendo/kendo.all.min"
+= javascript_include_tag 'experiment/raphael'
+= javascript_include_tag 'experiment/g.raphael'
+= javascript_include_tag 'experiment/g.pie'
+= javascript_include_tag 'experiment/g.bar'
+= javascript_include_tag 'experiment/g.line'
+= javascript_include_tag 'experiment/g.dot'
+= javascript_include_tag "experiment/in_development_effort_tracking"
+
+:css
+  .color{
+    height: 100px
+  }
+  #title-text{
+    height: 100px
+  }
+  .widget{
+    padding: 0;
+    margin: 0;
+  }
+  .sub-title{
+    height: 100px;
+  }
+  #req-duration-desc{
+    height: 60px;
+  }
+  #req-duration-chart{
+    height: 240px;
+  }
+  #activity-stream-title{
+    height: 70px;
+  }
+  #activity-stream{
+    height: 500px;
+  }
+  .sub-title{
+    height: 80px;
+  }
+  #most-buggy, #best-quality{
+    height: 50px;
+  }
+  #req-bug-distribution-chart{
+    min-height: 400px;
+  }
+  .quality-badge{
+    margin-top: 10px;
+    min-height: 130px;
+    max-height: 150px;
+  }
+  #bug-data table{
+    margin-top: 40px;
+  }
+
+#title.row.widget
+  #title-color-label-left.span1.color
+  %h1.span14#title-text
+  #title-color-label-right.span1.color
+  #sub-title.sub-title
+
+.clearfix
+#requirement-widget.widget.row
+  #req-done.span8
+    #effort-distribution-chart-title.sub-title
+    #effort-distribution-chart
+    
+  #req-duration.span8
+    #detail-effort-distribution-chart-title.sub-title
+    #detail-effort-distribution-chart
+
+.clearfix
+
+
+#bug-trend.row
+  #bug-trend-title.sub-title
+  #bug-trend-chart
+
+#quality-widget.widget.row
+  #bug-metrics.span8
+    #bug-metrics-title.sub-title
+    #bug-metrics-chart
+  #bug-data.span8
+    #bug-data-title.sub-title
+    %table.zebra-striped
+      %tbody
+        %tr          
+          %th Priority
+          %th Bug Count
+        %tr
+          %td P0
+          %td= @open_bugs_count_by_priority[0]
+        %tr
+          %td P1
+          %td= @open_bugs_count_by_priority[1]
+        %tr
+          %td P2
+          %td= @open_bugs_count_by_priority[2]
+        %tr
+          %td P3
+          %td= @open_bugs_count_by_priority[3]
+        %tr
+          %td P4
+          %td= @open_bugs_count_by_priority[4]

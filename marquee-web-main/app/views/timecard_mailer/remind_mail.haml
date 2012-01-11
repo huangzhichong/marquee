@@ -1,0 +1,77 @@
+!!!
+%html
+  %head
+    %title Oracle TimeCard Notification
+
+
+%body
+  :css
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, cite, code, del, dfn, em, img, q, s, samp, small, strike, strong, sub, sup, tt, var, dd, dl, dt, li, ol, ul, fieldset, form, label, legend, button, table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 100%;
+    line-height: 1;
+    font-family: inherit;
+    }
+    table {
+    width: 100%;
+    margin-bottom: 18px;
+    padding: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+    }
+    table th, table td {
+    padding: 10px 10px 9px;
+    line-height: 13.5px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #DDD;
+    }
+    .timecard td.number {
+    text-align: center;
+    }
+    table th, table td {
+    padding: 10px 10px 9px;
+    line-height: 13.5px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #DDD;
+    }
+    table th {
+    padding-top: 9px;
+    font-weight: bold;
+    border-bottom-width: 2px;
+    }
+    .week {
+    width: 80px;
+    }
+    .timecard td.number {
+    text-align: center;
+    }
+    .timecard-pink {
+    background-color: pink;
+    color: black;
+    }
+    .timecard-green {
+    background-color: green;
+    color: white;
+    }
+    .timecard-yellow {
+    background-color: yellow;
+    color: black;
+    }
+    .timecard-orange {
+    background-color: orange;
+    color: black;
+    }
+
+
+  %h3 You have timecard not submitted! Please submit it as soon as possible! Your manager will also get a copy of this report.
+  %br
+  = render :partial => "admin/time_cards/list", :locals => {:title => "Summary of your Oracle Time Cards for #{@start_date.year} - #{@start_date.month}", :time_cards => @time_cards}
+      
+  %h4 Brought to you by Marquee

@@ -1,0 +1,9 @@
+= form_tag '/functional/generate_automation_status_report.csv' do
+  %fieldset
+    %legend Automation Status Report
+    .clearfix
+      = label_tag 'Project Name'
+      .input
+        = text_field_tag 'project'
+    .actions
+      = submit_tag 'Generate'

@@ -1,0 +1,98 @@
+#overall-dre-table
+  %table#product-bugs
+    %thead
+      %tr
+        %th{:colspan => 5} Current Customer Impacting Production Bugs
+    %tbody
+      %tr
+        %td
+        %td
+        %td Sev1
+        %td
+        %td Sev2
+      %tr
+        %td.market Endurance
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+      %tr
+        %td.market Camps
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+      %tr
+        %td.market Team Sports
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+      %tr
+        %td.market Swimming
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+      %tr
+        %td.market Membership
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+      %tr
+        %td.market Platform
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+      %tr
+        %td.market Framework
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+        %td= image_tag(asset_path('green-light.png'))
+        %td.count 0
+
+        %table#defect-removal-efficiency
+          %thead
+            %tr
+              %th{:colspan => '4'} Defect Removal Efficiency
+          %tbody
+            %tr.overall-percentage
+              %td{:colspan => '3', :rowspan => "3"}
+                .big-title overall percentage program-wide
+                .dre-big-value= @overall_dre
+              %td.framework
+                .title Framework
+                .dre-value= @framework_dre
+            %tr.market
+              %td.platform.platform-overall-switch{:data => dre_platform_dre_path}
+                .title Platform
+                .dre-value= @platform_dre
+            %tr.market
+              %td.membership
+                .title Membership
+                .dre-value= @membership_dre
+            %tr.market
+              %td.endurance
+                .title Endurance
+                .dre-value= @endurance_dre
+              %td.camps
+                .title Camps
+                .dre-value= @camps_dre
+              %td.sports
+                .title Team Sports
+                .dre-value= @sports_dre
+              %td.swimming
+                .title Swimming
+                .dre-value= @swimming_dre
+          %tfoot
+            %tr
+              %td{:colspan => '4'} Target Rate - 5% or Lower
+
+:javascript
+  $(function(){
+    $('td.platform.platform-overall-switch').click(function(){
+      $.getScript($(this).attr("data"));
+    });
+  });

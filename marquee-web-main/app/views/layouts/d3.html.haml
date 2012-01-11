@@ -1,0 +1,18 @@
+!!!
+%html
+  %head
+    %title Marquee Reload
+    = stylesheet_link_tag "application"
+    = javascript_include_tag "jquery"
+    = javascript_include_tag "d3/d3.min"
+    = javascript_include_tag "d3/d3.layout"
+    = csrf_meta_tags
+  %body
+    #header
+      = render :partial => 'partial/top_nav'
+    .clearfix
+    #content.container
+      = yield
+    .clearfix
+    #footer
+      = render :partial => 'partial/footer' 

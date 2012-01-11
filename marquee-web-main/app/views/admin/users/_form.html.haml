@@ -1,0 +1,163 @@
+
+= form_for([:admin, @user]) do |f|
+  %fieldset
+    %legend= title
+    .clearfix
+      = f.label :email
+      .input
+        = f.text_field :email, :disabled => @user.email.empty? ? false : true, :class => "validate[required,custom[email]]"
+    .clearfix
+      = f.label :display_name
+      .input
+        = f.text_field :display_name
+    - if @user.email.empty?
+      .clearfix
+        = f.label :password
+        .input
+          = f.password_field :password, :class => "validate[required]"
+      .clearfix
+        = f.label :confirm_password
+        .input
+          %input{:id => "confirm_password", :type => "password", :class => "validate[required,equals[user_password]]"}
+    .clearfix
+      = f.label :time_card_project_permissions
+      .input
+        .row
+          .columns.span7
+            %select.as-select#tcpps{:multiple => 'multiple'}
+              - OracleProject.all.reject{|pn| @user.oracle_projects.include?(pn)}.each do |pn|
+                %option{:value => pn.id}= pn.name
+            %a#add-all-button
+              %span.multi-select-item-add.ui-icon
+              Choose All
+          .columns.span1#drag-arrow
+            %a.multi-select-item-add.ui-icon#add-button
+            .clearfix
+            %a.multi-select-item-remove.ui-icon#remove-button
+          .columns.span7
+            %select.as-select#tcpps-selected{:multiple => 'multiple'}
+              - @user.oracle_projects.each do |pn|
+                %option{:value => pn.id}= pn.name
+            %a#clear-all-button
+              %span.multi-select-item-remove.ui-icon
+              Clear All
+            = hidden_field_tag "user[oracle_project_ids][]", ""
+          #tcpp-ids
+    .clearfix
+      - val = ""
+      - if not(@user.user_ability_definitions.nil?) and not(@user.user_ability_definitions.empty?)
+        - @user.user_ability_definitions.each do |uad|
+          - val += "||Can #{uad.ability} #{uad.resource}"
+      = f.text_area :user_ability_definitions, {:value => val}
+    .clearfix
+      %label Select roles
+      .input
+        = select_tag "role_id", options_from_collection_for_select(Role.all, :id, :name, Role.find_by_name("qa").id), :id => "user_role", :class => "roles chzn-select"
+        = link_to 'Add specific abilities (Not required)', '#', :class => 'btn add_specific_abilities', :id => 'add_specific_abilities_btn'
+    .clearfix.user-ability-definitions-box
+      %label User ability definitions
+      .input
+        = select_tag "uad abilities", options_for_select({"Manage" => "manage", "Create" => "create", "Update" => "update"}), :include_blank => true, :id => "uad_ability", :class => "ability chzn-select"
+        = select_tag "uad resources", options_for_select({"TestRound" => "TestRound", "TestPlan" => "TestPlan", "TestSuite" => "TestSuite", "AutomationScript" => "AutomationScript", "AutomationCase" => "AutomationCase", "TestCase" => "TestCase", "AutomationScriptResult" => "AutomationScriptResult", "AutomationCaseResult" => "AutomationCaseResult", "Project" => "Project", "ProjectCategory" => "ProjectCategory"}), :include_blank => true, :id => "uad_resource", :class => "user-ability-definitions chzn-select"
+        = link_to 'Add', '#', :class => 'btn user-ability-definitions', :id => 'add_uad_btn'
+        %table.abilities
+          %tr
+            %th Ability
+            %th
+            %tr#hidden{:colspan => 2}
+              %td
+                To be cloned
+              %td
+                %a{:class => "delete_uad", :href => "#"}
+                  %img{:src => asset_path("cross-hover.png")}
+          - if @user.user_ability_definitions.nil? or @user.user_ability_definitions.empty?
+            %tr.no-tata{:colspan => 2}
+              %td{:colspan => 2}
+                %h4 No data
+          - else
+            - @user.user_ability_definitions.each do |uad|
+              %tr.data-list
+                %td= "Can #{uad.ability} #{uad.resource}"
+                %td
+                  %a{:class => "delete_uad", :href => "#"}
+                    %img{:src => asset_path("cross-hover.png")}
+    .actions
+      = f.submit 'Save', :class => 'btn primary'
+      = link_to 'Cancel', admin_users_path, :class => 'btn'
+
+:javascript
+  $(function(){
+    $("#new_user").validationEngine({promptPosition : "bottomRight", scroll: false});
+    $('.add_specific_abilities').click(function(){
+      $('.user-ability-definitions-box').toggle();
+      if ($(".user-ability-definitions-box").is(":visible")) {
+        $('.add_specific_abilities').addClass("primary").text("Cancel");
+      } else {
+        $('.add_specific_abilities').removeClass("primary").text("Add specific abilities (Not required)");
+      }
+    });
+    $('#add_uad_btn').click(function(){
+      var ability = $('#uad_ability option:selected').text();
+      var resource = $('#uad_resource option:selected').text();
+      var text = "Can "+ability+" "+resource;
+      var uads_current_value = $("#user_user_ability_definitions").val();
+      if ($.trim(ability) == "" || $.trim(resource) == ""){
+        alert("Please select an ability and an object!");
+      }
+      else if (uads_current_value.match(text)!=null) {
+        alert("User ability definitions already exists!");
+      }
+      else {
+        if ($("table.abilities tbody tr.no-tata").length>0) {
+          $("table.abilities tbody tr.no-tata").remove();
+        }
+        var ele = $("#hidden").clone();
+        ele.children("td").first().html(text);
+        ele.appendTo("table.abilities tbody").show("slow");
+        $("#user_user_ability_definitions").val(uads_current_value+"||"+text);
+        ele.children("td").last().children(".delete_uad").bind('click', function(){
+          $(this).parent().parent().fadeOut("slow");
+          var delete_uad = "||"+$(this).parent().prev().text();
+          var new_uads_value = $("#user_user_ability_definitions").val().replace(delete_uad,"");
+          $("#user_user_ability_definitions").val(new_uads_value);
+        });
+      }
+    });
+    $('.delete_uad').click(function(){
+      $(this).parent().parent().fadeOut("slow");
+      var delete_uad = "||"+$(this).parent().prev().text();
+      var new_uads_value = $("#user_user_ability_definitions").val().replace(delete_uad,"");
+      $("#user_user_ability_definitions").val(new_uads_value);
+    });
+    $('#add-button').click(function(){
+      $('#tcpp-ids').empty();
+      $('#tcpps :selected').each(function(idx, elem){
+        $('#tcpps-selected').append($(elem));
+      });
+      $('#tcpps-selected').children().each(function(idx, elem){
+        $('#tcpp-ids').append($('#user_oracle_project_ids_').clone().val($(elem).attr('value')));
+      });
+    });
+    $('#remove-button').click(function(){
+      $('#tcpp-ids').empty();
+      $('#tcpps-selected :selected').each(function(idx, elem){
+        $('#tcpps').append($(elem));
+      });
+      $('#tcpps-selected').children().each(function(idx, elem){
+        $('#tcpp-ids').append($('#user_oracle_project_ids_').clone().val($(elem).attr('value')));
+      });
+    });
+    $('#add-all-button').click(function(){
+      $('#tcpp-ids').empty();
+      $('#tcpps option').each(function(idx, elem){
+        $('#tcpps-selected').append($(elem));
+        $('#tcpp-ids').append($('#user_oracle_project_ids_').clone().val($(elem).attr('value')));
+      });
+    });
+    $('#clear-all-button').click(function(){
+      $('#tcpp-ids').empty();
+      $('#tcpps-selected option').each(function(idx, elem){
+        $('#tcpps').append($(elem));
+      });
+    });
+  })

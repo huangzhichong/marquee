@@ -1,0 +1,17 @@
+development:
+  host: localhost
+  database: marquee_web_main_development
+
+test:
+  host: localhost
+  database: marquee_web_main_test
+
+# set these environment variables on your prod server
+production:
+  host: 10.107.100.114
+  database: marquee_web_main_production
+  # slaves:
+  #   - host: slave1.local
+  #     port: 27018
+  #   - host: slave2.local
+  #     port: 27019

@@ -1,0 +1,27 @@
+.page-header
+  %h2
+    Test Suites
+    %small= "#{@project.test_suites.count} in total"
+  = form_for @search, :url => project_test_suites_path, :remote => true do |f|
+    %span.search
+      = f.text_field :name_or_test_type_name_or_creator_email_contains, {:id => 'search'}
+      = f.submit '', {:class => 'btn', :id => 'searchsubmit'}
+
+%table
+  %tr
+    %th=sort_link search, :name, {}, {:remote => true}
+    %th=sort_link search, :test_type_name, "Test type", {}, {:remote => true}
+    %th=sort_link search, :creator_email, "Creator", {}, {:remote => true}
+
+  - if test_suites.nil? or test_suites.count == 0
+    %tr
+      %td{:colspan => "3"}
+        %h4 No data
+  - else
+    - test_suites.each do |test_suite|
+      %tr
+        %td= link_to test_suite.name, project_test_suite_path(project, test_suite), :remote => true
+        %td= test_suite.test_type.name
+        %td= test_suite.creator.display_name
+
+= paginate test_suites

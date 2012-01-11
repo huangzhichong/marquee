@@ -1,0 +1,16 @@
+:javascript
+  if  (FusionCharts("#{@project_name}_technical_debt")) FusionCharts("#{@project_name}_technical_debt").dispose();
+  if  (FusionCharts("#{@project_name}_bugs_by_who_found_chart")) FusionCharts("#{@project_name}_bugs_by_who_found_chart").dispose();
+  if  (FusionCharts("#{@project_name}_bugs_by_severity_chart")) FusionCharts("#{@project_name}_bugs_by_severity_chart").dispose();
+
+.chart-box
+  - str_xml = render :file => 'fusioncharts/technical_debt', :locals => {:arr_data => @technical_debt, :caption => "Technical Debt for #{@project_name.capitalize} by Priority"}
+  - render_chart('/FusionCharts/MSLine.swf', 'aaaaaaaa', str_xml, "#{@project_name}_technical_debt", "100%", "100%", false, true)
+
+.chart-box.chart-below
+  - str_xml = render :file => 'fusioncharts/bugs_by_who_found', :locals => {:arr_data => @bugs_by_who_found, :caption => "Open #{@project_name.capitalize} Production Bugs and Completed Features"}
+  - render_chart('/FusionCharts/MSLine.swf', '', str_xml, "#{@project_name}_bugs_by_who_found_chart", "100%", "100%", false, true)
+
+.chart-box.chart-below
+  - str_xml = render :file => 'fusioncharts/bugs_by_severity', :locals => {:arr_data => @bugs_by_severity, :caption => "Open #{@project_name.capitalize} Production Bugs by Severity"}
+  - render_chart('/FusionCharts/MSLine.swf', '', str_xml, "#{@project_name}_bugs_by_severity_chart", "100%", "100%", false, true)

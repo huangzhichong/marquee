@@ -1,0 +1,63 @@
+= form_tag admin_dre_slide_show_update_path do
+  %fieldset
+    %legend Adjust DRE Slide Show Sequence
+    .clearfix
+      .input
+        .row
+          .columns.span4
+            %select.as-select.sortable#candidates{:multiple => 'multiple'}
+              - @slide_candidates.each do |candidate|
+                %option{:value => candidate[:title]}= candidate[:title]
+            %a#add-all-button
+              %span.multi-select-item-add.ui-icon
+              Choose All
+          .columns.span1#drag-arrow
+            %a.multi-select-item-add.ui-icon#add-button
+            .clearfix
+            %a.multi-select-item-remove.ui-icon#remove-button
+          .columns.span4
+            %select.as-select.sortable#slides-selected{:multiple => 'multiple'}
+              - @slides.each do |slide|
+                %option{:value => slide[:title]}= slide[:title]
+            %a#clear-all-button
+              %span.multi-select-item-remove.ui-icon
+              Clear All
+    .clearfix
+      .input
+        %h4 Drag&Drop to change the slide show order
+        .row
+          .columns.span4
+            %ul#selected-slides-list
+              - @slides.each do |candidate|
+                %li{:value => candidate[:title]}= candidate[:title]
+
+    = hidden_field_tag "slides[]", ""
+    #slides
+      - @slides.each do |slide|
+        = hidden_field_tag "slides[]", slide[:title]
+  .actions
+    = submit_tag 'Save', :class => 'btn primary'
+
+:css
+  #selected-slides-list{ 
+    width:320px; 
+    font-family:Georgia, Times, serif; 
+    font-size:15px; 
+  }
+  #selected-slides-list li{
+    display:block;
+    text-decoration:none; 
+    color:#000000; 
+    background-color:#FFFFFF; 
+    line-height:30px;
+    list-style-type: none;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #CCCCCC;
+    padding-left: 10px;
+    cursor: pointer;
+  }
+  #selected-slides-list li:hover{
+    color: #FFFFFF;
+    background: #8db4e3;
+  }

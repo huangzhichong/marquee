@@ -1,0 +1,61 @@
+body{
+   margin:0;
+   font-size:12px!important;
+   height: 800px;
+}
+
+#inner-content{
+  height: 100%;
+}
+
+#content_wrapper{
+   height: 90%;
+}
+
+#markets_coverages_chartDiv{
+    height: 100%;
+}
+
+#slide{
+   padding-top: 20px;
+}
+
+#overall_dre_chartDiv{
+   height: 30%;
+   margin-top: 2%;
+   margin-left: 2%;
+   margin-right: 4%;
+}
+
+#endurance_dre_chartDiv,
+#camps_dre_chartDiv,
+#sports_dre_chartDiv,
+#swimming_dre_chartDiv,
+#membership_dre_chartDiv,
+#framework_dre_chartDiv,
+#nonmarket_dre_chartDiv{
+   height: 35%;
+   width: 45%;
+   margin: 2%;
+   display: inline-block;
+}
+
+#platform_dre_chartDiv{
+  height: 27%;
+  margin-top: 2%;
+  margin-left: 2%;
+  margin-right: 4%;
+}
+
+#endurance_sev_bugs_chartDiv,
+#camps_sev_bugs_chartDiv,
+#sports_sev_bugs_chartDiv,
+#swimming_sev_bugs_chartDiv,
+#membership_sev_bugs_chartDiv,
+#framework_sev_bugs_chartDiv,
+#platform_sev_bugs_chartDiv{
+   height: 35%;
+   width: 45%;
+   margin: 2%;
+   display: inline-block;
+}

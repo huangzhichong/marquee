@@ -1,0 +1,42 @@
+.sidebar
+  .project-name
+    %img.project-icon{:src => asset_path('report.png')}
+    %h2 Reports
+    .clear
+  %ul.menu
+    %li.odd= link_to 'Executive Quadrant', dre_overall_path, :remote => true
+    %li= link_to 'DRE History Overall', dre_history_overall_path, :remote => true
+    %li.odd= link_to 'DRE History Markets', dre_history_markets_path, :remote => true
+    %li= link_to 'Customer Impact Markets', dre_customer_impact_markets_path, :remote => true
+    %li.odd= link_to 'Customer Impact Others', dre_customer_impact_other_path, :remote => true
+    %li= link_to 'Ext Prod Bugs by Day', dre_ext_found_bugs_by_day_path, :remote => true
+    %li.odd= link_to 'Endurance Charts', "/dre/project/endurance", :remote => true
+    %li= link_to 'Camps Charts', "/dre/project/camps", :remote => true
+    %li.odd= link_to 'Team Sports Charts', "/dre/project/sports", :remote => true
+    %li= link_to 'Swimming Charts', "/dre/project/swimming", :remote => true
+    %li.odd= link_to 'Membership Charts', "/dre/project/membership", :remote => true
+    %li= link_to 'Platform Charts', "/dre/project/platform", :remote => true
+    %li.odd= link_to 'Framework Charts', "/dre/project/framework", :remote => true
+    %li= link_to 'Play Slide Show', "/dre/slide"
+  %ul.play-menu{:style => "display:none;"}
+    - @play_list.each do |play_item|
+      %li= link_to play_item[:title], play_item[:path]
+:javascript
+  $("body").data("reload","true");
+  var menu = $("a[data-remote]");
+  if ($.address.path()!=location.pathname&&(location.pathname.match("/coverage")!=null||location.pathname.match("/dre/overall")!=null)){
+    $.address.path(location.pathname);
+  }
+  $.address.crawlable(1).init(function(event){
+    menu.address();
+  }).internalChange(function(event){
+    if (event.value!=null) {
+      $.getScript(event.value);
+    }
+  }).externalChange(function(event){
+    if ($("body").data("reload")=="true") {
+      $("body").data("reload","false");
+    }else{
+      $.getScript($.address.value());
+    }
+  }).history(true);

@@ -1,0 +1,76 @@
+.row
+  .span16.columns
+    %img.big-icon{:src => asset_path("#{@automation_case_result.result}.png")}
+    %h2
+      =link_to "Test Rounds", project_test_rounds_path(@automation_script_result.test_round.project), :remote => true
+      = " / "
+      =link_to "#{@automation_script_result.test_round.test_type.name}##{@automation_script_result.test_round.id}", project_test_round_path(@automation_script_result.test_round.project, @automation_script_result.test_round), :remote => true
+      =" / "
+      =link_to @automation_script_result.automation_script.name, test_round_automation_script_result_path(@automation_script_result.test_round, @automation_script_result), :remote => true
+      =" / "
+      = @automation_case_result.name
+=render "brief_info"
+.row.detail
+  .span16.columns
+    %h3 Test Steps and Expected Results
+.row
+  .span16.columns
+    %table.test-steps
+      %tr
+        %th NO.
+        %th Steps
+        %th Expected Result
+      - if @test_case and @test_case.tc_steps and !(@test_case.tc_steps.empty?)
+        - @test_case.tc_steps.each do |ts|
+          %tr
+            %td
+              =ts.step_number
+            %td
+              .step-action
+                =ts.step_action.html_safe
+            %td
+              .expected-result
+                =ts.expected_result.html_safe
+      - else
+        %h6 No steps and expected results
+
+.row.detail
+  .span16.columns
+    %h3 Error Message
+.row.detail
+  .span16.columns
+    .error-message
+      %span
+        - if @automation_case_result.error_message
+          - format_error_message(@automation_case_result.error_message)
+        - else
+          %h6 No Error Messages
+
+#server-log-box
+  #server-log-content
+    - if @automation_case_result.server_log
+      %span= @automation_case_result.server_log
+    - else
+      %span No Data
+.row.detail
+  .span16.columns
+    %h3 Screen Shot
+.row.detail
+  .span16.columns
+    .screen-shot-box
+      - if @automation_case_result.screen_shots && @automation_case_result.screen_shots.count > 0
+        - @automation_case_result.screen_shots.each do |ss|
+          .screen-shot-image
+            = link_to image_tag(ss.screen_shot.url(:thumb)), ss.screen_shot.url, :rel => 'attachments', :class => "screen-shot"
+      - else
+        %h6 No Screen Shots
+
+.row
+  .span16.columns
+    = link_to "Server Log","#server-log-content" ,:class => "btn primary", :id => "server-log"
+
+:javascript
+  $(function(){
+    $("a.screen-shot").fancybox({ 'autoDimensions' : true});
+    $("#server-log").fancybox({'overlayShow': true});
+  });

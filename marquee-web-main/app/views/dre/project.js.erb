@@ -1,0 +1,4 @@
+$('#inner-content').fadeOut('slow', function(){
+  $('#inner-content').html('<%= escape_javascript(render("project")) %>');
+  $('#inner-content').fadeIn('slow');
+});

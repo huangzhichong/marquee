@@ -1,0 +1,22 @@
+%h1 Listing Mail Notify Settings
+
+%table.zebra-striped
+  %tr
+    %th Mail
+    %th Test Type
+    %th
+
+  - if @mail_notify_settings.nil? or @mail_notify_settings.count == 0
+    %tr
+      %td{:colspan => "3"}
+        %h4 No data
+  - else
+    - @mail_notify_settings.each do |mail_notify_setting|
+      %tr
+        %td= mail_notify_setting.mail
+        %td= mail_notify_setting.test_type.name
+        = render :partial => 'partial/table_actions', :locals => {:show_url => project_mail_notify_setting_path(@project, mail_notify_setting), :edit_url => edit_project_mail_notify_setting_path(@project, mail_notify_setting)}
+
+%br
+
+= link_to 'New Mail notify setting', new_project_mail_notify_setting_path

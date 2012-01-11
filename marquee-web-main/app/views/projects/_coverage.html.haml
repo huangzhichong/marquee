@@ -1,0 +1,9 @@
+:javascript
+  if  (FusionCharts("project_coverage")) FusionCharts("project_coverage").dispose();
+
+.project-chart-box
+  - if ["Camps","Endurance","Sports"].include?(@project.name)
+    - str_xml = render :file=>"fusioncharts/project_coverage"
+  - else
+    - str_xml = render :file=>"fusioncharts/project_no_auicui_coverage"
+  - render_chart('/FusionCharts/MSColumn3D.swf', '', str_xml, 'project_coverage', '90%', '100%', false, true)

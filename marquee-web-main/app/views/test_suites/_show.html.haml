@@ -1,0 +1,12 @@
+.row.sub-header
+  .span10.columns
+    %h2
+      =link_to "Test Suites", project_test_suites_path(@project)
+      = " / "
+      = "#{@test_suite.name}##{@test_suite.id}"
+  .span6.columns#right
+    %span.creation-info= "Created by #{@test_suite.creator.display_name}"
+
+= render 'brief_info'
+.list-content-box
+  = render :partial => 'automation_scripts/list', :locals => {:automation_scripts => @automation_scripts, :project => @project, :search => @search}

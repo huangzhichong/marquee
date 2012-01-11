@@ -1,0 +1,36 @@
+= form_for ([:admin, @project]) do |f|
+  -if @project.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@project.errors.count, "error")} prohibited this project from being saved:"
+      %ul
+        - @project.errors.full_messages.each do |msg|
+          %li= msg
+  %fieldset
+    %legend= title
+    .clearfix
+      = f.label :name
+      .input
+        = f.text_field :name
+    .clearfix
+      = f.label :leader
+      .input
+        = f.select :leader_id, options_from_collection_for_select(User.all, :id, :display_name), {}, {:class => "chzn-select"}
+    .clearfix
+      = f.label :project_category
+      .input
+        = f.select :project_category_id, options_from_collection_for_select(ProjectCategory.all, :id, :name), {}, {:class => "chzn-select"}
+    .clearfix
+      = f.label :source_control_path
+      .input
+        = f.text_field :source_control_path
+    .clearfix
+      = f.label :test_link_plan
+      .input
+        = f.text_field :test_link_plan
+    .clearfix
+      = f.label :icon
+      .input
+        = f.file_field :icon_image
+    .actions
+      = f.submit 'Save', :class => 'btn primary'
+      = link_to 'Cancel', admin_projects_path, :class => 'btn'

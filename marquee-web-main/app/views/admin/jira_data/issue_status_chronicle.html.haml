@@ -1,0 +1,3 @@
+%ul
+  - @jira_issue.status_change_chronicle.each do |ci|
+    %li= "#{ci.change_date.to_date} - #{ci.new_string}"

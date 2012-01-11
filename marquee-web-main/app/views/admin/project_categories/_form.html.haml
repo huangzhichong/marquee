@@ -1,0 +1,16 @@
+= form_for ([:admin, @project_category]) do |f|
+  -if @project_category.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@project_category.errors.count, "error")} prohibited this admin_project_category from being saved:"
+      %ul
+        - @project_category.errors.full_messages.each do |msg|
+          %li= msg
+  %fieldset
+    %legend New Project Category
+    .clearfix
+      = f.label :name
+      .input
+        = f.text_field :name
+    .actions
+      = f.submit 'Save', :class => 'btn primary'
+      = link_to 'Back', admin_project_categories_path, :class => 'btn'

@@ -1,0 +1,5 @@
+= render :partial => "list", :locals => {:title => 'Time Cards Need Manager Approve', :time_cards => @manager_not_approve_records}
+
+= render :partial => "list", :locals => {:title => 'Time Cards Missing Hours', :time_cards => @submitted_but_lower_than_limit_records}
+
+= render :partial => 'list', :locals => {:title => 'Time Cards Need to Submit', :time_cards => @not_submitting_records}

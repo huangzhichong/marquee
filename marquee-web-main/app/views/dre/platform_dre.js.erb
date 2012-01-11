@@ -1,0 +1,4 @@
+$('#inner-content').fadeOut('slow', function(){
+  $('#inner-content').html('<%= escape_javascript(render("platform_dre")) %>');
+  $('#inner-content').fadeIn('slow');
+});

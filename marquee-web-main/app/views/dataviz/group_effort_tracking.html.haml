@@ -1,0 +1,11 @@
+%table
+  %tr
+    %th name
+    - @start_date.upto(@end_date-1.days).each do |day|
+      %th= day.to_s
+  - @data.each do |data|
+    %tr
+      %td= data[0]
+      - data[1].each do |d|
+        %td= d
+  

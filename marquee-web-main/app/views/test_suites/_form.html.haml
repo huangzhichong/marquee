@@ -1,0 +1,78 @@
+= form_for [@project, @test_suite] do |f|
+  -if @test_suite.errors.any?
+    #error_explanation
+      - @test_suite.errors.messages.each do |attr, msg|
+        %span.help-inline{:id => "test_suite_#{attr}"}= msg[0]
+
+  %fieldset
+    %legend= title
+    .clearfix
+      = f.label :name
+      .input
+        = f.text_field :name
+    .clearfix
+      = f.label :test_type
+      .input
+        = f.select :test_type_id, options_from_collection_for_select(TestType.all, :id, :name)
+    = f.hidden_field :creator_id, :value => current_user.id
+    .clearfix
+      = f.label :automation_scripts
+      .input
+        %span.search
+          %input{:type => 'text', :class => "multi-select-search"}
+    .clearfix
+      .input
+        .row
+          .columns.span4
+            %select.as-select#automationscripts{:multiple => 'multiple'}
+              - @project.automation_scripts.reject{|as| @test_suite.automation_scripts.include?(as)}.each do |as|
+                %option{:value => as.id}= as.name
+            %a#add-all-button
+              %span.multi-select-item-add.ui-icon
+              Choose All
+          .columns.span1#drag-arrow
+            %a.multi-select-item-add.ui-icon#add-button
+            .clearfix
+            %a.multi-select-item-remove.ui-icon#remove-button
+          .columns.span4
+            %select.as-select#automationscripts-selected{:multiple => 'multiple'}
+              - @test_suite.automation_scripts.each do |as|
+                %option{:value => as.id}= as.name
+            %a#clear-all-button
+              %span.multi-select-item-remove.ui-icon
+              Clear All
+            = hidden_field_tag "test_suite[automation_script_ids][]", "10, 11"
+          #as-ids
+    .actions
+      = f.submit 'Save', :class => 'btn primary'
+      = link_to 'Back', project_test_suites_path, :class => 'btn'
+
+:javascript
+  $(function(){
+    $('#add-button').click(function(){
+      $('#as-ids').empty();
+      $('#automationscripts :selected').each(function(idx, elem){
+        $('#automationscripts-selected').append($(elem));
+        $('#as-ids').append($('#test_suite_automation_script_ids_').clone().val($(elem).attr('value')));
+      });
+    });
+    $('#remove-button').click(function(){
+      $('#as-ids').empty();
+      $('#automationscripts-selected :selected').each(function(idx, elem){
+        $('#automationscripts').append($(elem));
+      });
+    });
+    $('#add-all-button').click(function(){
+      $('#as-ids').empty();
+      $('#automationscripts option').each(function(idx, elem){
+        $('#automationscripts-selected').append($(elem));
+        $('#as-ids').append($('#test_suite_automation_script_ids_').clone().val($(elem).attr('value')));
+      });
+    });
+    $('#clear-all-button').click(function(){
+      $('#as-ids').empty();
+      $('#automationscripts-selected option').each(function(idx, elem){
+        $('#automationscripts').append($(elem));
+      });
+    });
+  });

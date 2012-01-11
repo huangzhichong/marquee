@@ -1,0 +1,5 @@
+:javascript
+  if  (FusionCharts("markets_coverages_chart")) FusionCharts("markets_coverages_chart").dispose();
+
+- str_xml = render :file=>"fusioncharts/markets_coverages"
+- render_chart('/FusionCharts/Column3D.swf', '', str_xml, 'markets_coverages_chart', '100%', '100%', false, true)

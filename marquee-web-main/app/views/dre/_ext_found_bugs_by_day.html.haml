@@ -1,0 +1,9 @@
+:javascript
+  if  (FusionCharts("ext_found_bugs_by_day_chart")) FusionCharts("ext_found_bugs_by_day_chart").dispose();
+
+#ext_found_by_day_chart.ext_found_by_day_chart
+  - str_xml = render :file => 'fusioncharts/ext_found_bugs_by_day', :locals => {:arr_data => @ext_found_bugs}
+  - render_chart('/FusionCharts/MSLine.swf', '', str_xml, 'ext_found_bugs_by_day_chart', "100%", "100%", false, true)
+#ext_found_by_day_all_chart.ext_found_by_day_chart
+  = render 'custom_ext_found_bugs_by_day'
+= render 'ext_found_bugs_check_box'

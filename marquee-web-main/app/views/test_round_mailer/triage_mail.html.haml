@@ -1,0 +1,76 @@
+!!!
+%html
+  %head
+    %meta{:content => 'text/html; charset=UTF-8', :'http-equiv' => 'Content-Type' }
+  %body
+    :css
+      body{
+        font-family: "Lucida Grande", Sans-serif;
+        font-size: 100%;
+        line-height: 1;
+      }
+      table {
+        margin-bottom: 2em!important;
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+      table th {
+        background: none repeat scroll 0 0 #242527;
+        color: #FFFFFF;
+        padding: 6px;
+      }
+      table td {
+        padding: 5px;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 150%;
+      }
+      table tr,th,td {
+        border: 1px solid #666;
+      }
+      li{
+        list-style: none;
+      }
+      span.pass{
+        font-weight: bold;
+        color: green;
+      }
+      span.failed{
+        font-weight: bold;
+        color: red;
+      }
+      span.warning{
+        font-weight: bold;
+        color: orange;
+      }
+
+    %h3= "The Test Round:#{@test_round} has been triaged."
+    %table
+      %tr
+        %th Automation Script Name
+        %th Triaged Result
+        %th Triaged Error Type
+        %th Service Info
+        %th Environment
+
+      - if @test_round.automation_script_results.nil? or @test_round.automation_script_results.empty?
+        %tr
+          %td{:colspan => "4"}
+            %h4 No data
+      - else
+        - @test_round.automation_script_results.each do |asr|
+          %tr
+            %td= asr.name
+            %td
+              %span{:class => "#{asr.result.downcase}"}= asr.result.upcase
+            %td
+              %span= asr.triage_result
+            %td
+              - asr.target_services.each do |ts|
+                %li= ts
+            %td= asr.test_round.test_environment
+    %p
+      = "Click"
+      = link_to("#{@test_round}", "http://marquee.dev.activenetwork.com/projects/#{@test_round.project.id}/test_rounds/#{@test_round.id}")
+      = " for more information."
