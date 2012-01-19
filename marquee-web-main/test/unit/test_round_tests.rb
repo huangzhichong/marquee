@@ -31,7 +31,8 @@ class TestRoundTest < ActiveSupport::TestCase
   test "test round's start time should be the earliest time among all its ASRs' start_time." do
     @tr.init_automation_script_result
     asr = @tr.automation_script_results[0]
-    asr.update_state!('running')
+    asr.update_state!('start')
+    puts asr.inspect
     @tr.update_state!
     assert_equal asr.start_time, @tr.start_time
   end
