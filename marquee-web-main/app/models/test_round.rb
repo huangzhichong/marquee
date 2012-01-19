@@ -33,7 +33,7 @@ class TestRound < ActiveRecord::Base
 
   delegate :automation_case_count, :to => :test_suite, :prefix => false
   delegate :test_type, :to => :test_suite, :prefix => false
-  
+
   acts_as_audited :protect => false, :only => [:create, :destroy]
 
   validates_presence_of :test_object
@@ -54,7 +54,7 @@ class TestRound < ActiveRecord::Base
     self.failed = 0
     self.not_run = 0
   end
-  
+
   def clear
     self.end_time = nil
     self.state = "scheduling"
@@ -101,10 +101,14 @@ class TestRound < ActiveRecord::Base
     automation_script_results.all?{|asr| asr.end?}
   end
 
+  def update_start_time
+    self.start_time = self.automation_script_results.collect{|asr| asr.start_time.nil? ? Time.now : asr.start_time}.min
+  end
+
   def start_running!
     unless running?
       self.state = 'running'
-      self.start_time = Time.now
+      update_start_time
     end
   end
 
@@ -149,7 +153,7 @@ class TestRound < ActiveRecord::Base
   def pass_count
     self.automation_script_results.sum(:pass)
   end
-  
+
   def failed_count
     self.automation_script_results.sum(:failed)
   end
@@ -179,11 +183,11 @@ class TestRound < ActiveRecord::Base
     end
     save
   end
-  
+
   def send_triage_mail?
     self.automation_script_results.any?{|asr| asr.result != 'pass' and asr.triage_result == "N/A"}
   end
-  
+
   def update_result
     if automation_script_results.any?{|asr| asr.triage_result == "Product Error"}
       self.result = 'failed'
@@ -197,5 +201,5 @@ class TestRound < ActiveRecord::Base
     automation_script = self.test_suite.automation_scripts.find_last_by_name(script_name)
     self.automation_script_results.find_last_by_automation_script_id(automation_script.id)
   end
-  
+
 end
