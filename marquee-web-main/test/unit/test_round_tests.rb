@@ -14,6 +14,10 @@ class TestRoundTest < ActiveSupport::TestCase
     @tr.save
   end
 
+  def teardown
+    @tr.delete
+  end
+
   test "reset Test Round start time should initially be nil" do
     assert_nil @tr.start_time, "Initial Test Round's start time should be nil"
     @tr.init_automation_script_result
@@ -44,6 +48,7 @@ class TestRoundTest < ActiveSupport::TestCase
     asr2.update_state!('end')
     @tr.update_state!
 
+    # simulate rerun a automation script. since now asr2's start_time shall be the earlist one, so test round's start_time shall be the same with it
     asr.clear
     asr.update_state!('start')
     @tr.update_state!
