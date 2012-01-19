@@ -32,9 +32,22 @@ class TestRoundTest < ActiveSupport::TestCase
     @tr.init_automation_script_result
     asr = @tr.automation_script_results[0]
     asr.update_state!('start')
-    puts asr.inspect
     @tr.update_state!
     assert_equal asr.start_time, @tr.start_time
+
+    asr2 = @tr.automation_script_results[1]
+    asr2.update_state!('start')
+    @tr.update_state!
+    assert_equal asr.start_time, @tr.start_time
+
+    asr.update_state!('end')
+    asr2.update_state!('end')
+    @tr.update_state!
+
+    asr.clear
+    asr.update_state!('start')
+    @tr.update_state!
+    assert_equal asr2.start_time, @tr.start_time
   end
 
 end
