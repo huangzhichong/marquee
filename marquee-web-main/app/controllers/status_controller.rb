@@ -17,11 +17,14 @@ class StatusController < ApplicationController
     test_round_id = protocol[:round_id]
     test_round = TestRound.find(test_round_id)
 
-    case what
-    when 'Script'
-      update_automation_script(test_round, protocol[:data])
-    when 'Case'
-      update_automation_case(test_round, protocol[:data])
+    automation_script_result = test_round.find_automation_script_result_by_script_name(protocol[:data]['script_name'])
+    if automation_script_result and not automation_script_result.end?
+      case what
+      when 'Script'
+        update_automation_script(test_round, protocol[:data])
+      when 'Case'
+        update_automation_case(test_round, protocol[:data])
+      end
     end
     render :nothing => true
   end
