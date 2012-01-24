@@ -5,9 +5,9 @@ class CreateTcSteps < ActiveRecord::Migration
       t.text :step_action
       t.text :expected_result
       t.references :test_case
-      
+
       t.timestamps
     end
-    add_foreign_key :tc_steps, :test_cases, :dependent => :delete
+    add_foreign_key :tc_steps, :test_cases, :dependent => :delete, :name => "fk_ts_tc"
   end
 end
