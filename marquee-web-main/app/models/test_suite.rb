@@ -20,8 +20,9 @@ class TestSuite < ActiveRecord::Base
   has_many :automation_scripts, :through => :suite_selections
   has_many :test_rounds
   has_many :ci_mappings
-  
-  acts_as_audited :protect => false, :only => [:create, :destroy]
+
+  acts_as_audited :protect => false
+  # acts_as_audited :protect => false, :only => [:create, :destroy]
 
   def automation_case_count
     self.automation_scripts.inject(0){|count,as| count + as.automation_cases.count}
