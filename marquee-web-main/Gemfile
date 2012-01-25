@@ -30,7 +30,7 @@ gem 'delayed_job', :git => "git://github.com/tyraeltong/delayed_job", :branch =>
 gem 'bullet', '2.0.1', :group => "development"
 gem 'therubyracer'
 gem "meta_search", :git => "git://github.com/ernie/meta_search.git"
-gem "acts_as_audited", "2.0.0"
+gem "acts_as_audited", :git => "git://github.com/tyraeltong/acts_as_audited.git"
 
 gem "net-ftp-list"
 
