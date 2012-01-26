@@ -24,6 +24,13 @@ GIT
       warden (~> 1.0.3)
 
 GIT
+  remote: git://github.com/tyraeltong/acts_as_audited.git
+  revision: 401e1f910e34efecb83f3b02e5c07cf5b9805090
+  specs:
+    acts_as_audited (2.0.0)
+      rails (>= 3.0.3)
+
+GIT
   remote: git://github.com/tyraeltong/delayed_job
   revision: b4dec98dbaf085fcf226adb0cff442e4453f9025
   branch: v2.1
@@ -65,8 +72,6 @@ GEM
       activesupport (= 3.1.0)
     activesupport (3.1.0)
       multi_json (~> 1.0)
-    acts_as_audited (2.0.0)
-      rails (>= 3.0.3)
     ansi (1.4.1)
     arel (2.2.1)
     bcrypt-ruby (3.0.1)
@@ -240,7 +245,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  acts_as_audited (= 2.0.0)
+  acts_as_audited!
   annotate!
   bson_ext (~> 1.3)
   bullet (= 2.0.1)

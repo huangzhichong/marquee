@@ -2,20 +2,18 @@ require "test_helper"
 
 class TestRoundTest < ActiveSupport::TestCase
   def setup
-    # should run RAILS_ENV=test rake db:seed before run this test.
-    @ts = TestSuite.new
-    @ts.automation_scripts << AutomationScript.first
-    @ts.automation_scripts << AutomationScript.last
-    @ts.save
+    @ts = Factory(:test_suite)
+    2.times do
+      as = Factory(:automation_script)
+      as.automation_cases << Factory(:automation_case)
+      @ts.automation_scripts << as
+      as.save!
+    end
+    @ts.save!
 
-    @tr = TestRound.new
+    @tr = Factory(:test_round)
     @tr.test_suite = @ts
-    @tr.test_object = 'test'
     @tr.save
-  end
-
-  def teardown
-    @tr.delete
   end
 
   test "reset Test Round start time should initially be nil" do
