@@ -22,7 +22,7 @@ describe TestRound do
     tr.start_time.should be_nil
   end
 
-  context "Test Round's start_time when re-run Automation Script Result " do
+  context "Run a Test Round" do
     before do
       2.times do
         ts.automation_scripts << Factory.create(:automation_script)
@@ -36,47 +36,47 @@ describe TestRound do
       @asr2 = tr.automation_script_results[1]
     end
 
-    it "should not have nil start_time when first Automation Script Result came" do
+    it "should change the start_time to the first result's start_tiem upon receive it" do
       @asr.update_state!("start")
-      tr.update_state!
-      tr.start_time.should_not be_nil
+      expect do
+        tr.update_state!
+      end.to change{tr.start_time}.from(nil).to(@asr.start_time)
     end
 
-    it "should have the start_time set to the first came Automation Script REsult" do
+    it "should always have the start_time set as the earlist start_time amongest all of its recieved results" do
       @asr.update_state!("start")
       tr.update_state!
-      tr.start_time.should eql @asr.start_time
-    end
-
-    it "should have the start_time set to the earliest time of its all Automation Script Results' start_time" do
-
-      @asr.update_state!("start")
       @asr2.update_state!("start")
-      tr.update_state!
-      tr.start_time.should eql @asr.start_time
-      tr.start_time.should_not eql @asr2.start_time
-    end
 
-    it "should have the earlist start time upon rerun test round." do
-      @asr.update_state!("start")
-      @asr2.update_state!("start")
-      tr.update_state!
-      @asr.update_state!("end")
-      @asr2.update_state!("end")
-      tr.update_state!
+      expect do
+        tr.update_state!
+      end.to_not change{tr.start_time}.from(@asr.start_time).to(@asr2.start_time)
 
-      @asr.clear
-      @asr.update_state!("start")
-      tr.update_state!
-      tr.start_time.should eql @asr2.start_time
-
-      @asr.update_state!("end")
-      @asr2.update_state!("end")
+      # simulate re-run scenario
+      # only re-run one of the results
+      tr.automation_script_results.each{|asr| asr.update_state!("end")}
       tr.update_state!
       @asr2.clear
       @asr2.update_state!("start")
+      expect do
+        tr.update_state!
+      end.to_not change{tr.start_time}.from(@asr.start_time).to(@asr2.start_time)
+
+      # simulate re-run all of the results
+      tr.automation_script_results.each{|asr| asr.update_state!("end")}
       tr.update_state!
-      tr.start_time.should eql @asr.start_time
+      @asr2.clear
+      @asr2.update_state!("start")
+      @asr.clear
+      @asr.update_state!("start")
+      expect do
+        tr.update_state!
+      end.to change{tr.start_time}.to(@asr2.start_time)
+
+    end
+
+    it "should have the counters correctly set upon init" do
+
     end
 
   end

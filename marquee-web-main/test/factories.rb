@@ -4,6 +4,21 @@ Factory.define :user do |u|
   u.display_name "Marquee Test"
 end
 
+Factory.define :automation_script_result do |asr|
+  asr.state "scheduling"
+  asr.pass 0
+  asr.warning 0
+  asr.failed 0
+  asr.not_run 0
+  asr.result "pending"
+  asr.triage_result "N/A"
+end
+
+Factory.define :automation_case_result do |acr|
+  acr.result "non-run"
+  acr.association :automation_case
+end
+
 Factory.define :automation_case do |ac|
   ac.name "Automation Case"
   ac.version "1.0"
