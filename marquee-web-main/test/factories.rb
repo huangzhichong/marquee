@@ -15,7 +15,7 @@ Factory.define :automation_script do |as|
   as.name "Automation Script"
   as.status "draft"
   as.version "1.0"
-  as.association :owner, :factory => :user
+  # as.association :owner, :factory => :user
 end
 
 Factory.define :test_suite do |ts|
@@ -25,4 +25,3 @@ end
 Factory.define :test_round do |tr|
   tr.test_object "test object 1.01"
 end
-
