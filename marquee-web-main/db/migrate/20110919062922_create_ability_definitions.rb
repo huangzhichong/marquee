@@ -7,6 +7,6 @@ class CreateAbilityDefinitions < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :ability_definitions, :role_id
+    add_index :ability_definitions, :role_id, :name => "idx_ad_r"
   end
 end

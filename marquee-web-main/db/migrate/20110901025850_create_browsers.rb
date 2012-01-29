@@ -8,7 +8,7 @@ class CreateBrowsers < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :browsers, :machine_id
-    add_foreign_key :browsers, :machines, :dependent => :delete
+    add_index :browsers, :machine_id, :name => "idx_b_m"
+    add_foreign_key :browsers, :machines, :dependent => :delete, :name => "fk_b_m"
   end
 end

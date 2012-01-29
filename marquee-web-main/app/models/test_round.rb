@@ -34,7 +34,8 @@ class TestRound < ActiveRecord::Base
   delegate :automation_case_count, :to => :test_suite, :prefix => false
   delegate :test_type, :to => :test_suite, :prefix => false
 
-  acts_as_audited :protect => false, :only => [:create, :destroy]
+  acts_as_audited :protect => false
+  # acts_as_audited :protect => false, :only => [:create, :destroy]
 
   validates_presence_of :test_object
 

@@ -5,10 +5,10 @@ class CreateRolesUsers < ActiveRecord::Migration
       t.references :user
     end
 
-    add_index :roles_users, :role_id
-    add_index :roles_users, :user_id
+    add_index :roles_users, :role_id, :name => "idx_ru_r"
+    add_index :roles_users, :user_id, :name => "idx_ru_u"
 
-    add_foreign_key :roles_users, :users, :dependent => :delete
-    add_foreign_key :roles_users, :roles, :dependent => :delete
+    add_foreign_key :roles_users, :users, :dependent => :delete, :name => "fk_ru_u"
+    add_foreign_key :roles_users, :roles, :dependent => :delete, :name => "fk_ru_r"
   end
 end
