@@ -1,4 +1,4 @@
-class TestRoundMailer < ActionMailer::Base
+class TestRoundMailer < AsyncMailer
   default :from => "MARQUEE <marquee@active.com>", :content_type => "text/html"
 
   def finish_mail(test_round)

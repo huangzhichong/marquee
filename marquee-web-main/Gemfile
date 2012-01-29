@@ -39,6 +39,7 @@ gem 'chronic_duration'
 gem 'pry', :group => 'development'
 gem 'redis', ">= 2.2.2"
 gem 'resque'
+gem 'resque_mailer'
 
 group :test, :development do
   gem 'test-unit', '2.3.0'
@@ -71,4 +72,5 @@ gem 'jquery-rails'
 group :test do
   # Pretty printed test output
   gem 'turn', "< 0.8.3", :require => false
+  gem 'resque_spec'
 end
