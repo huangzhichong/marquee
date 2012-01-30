@@ -1,9 +1,10 @@
 class TestRoundMailer < AsyncMailer
   default :from => "MARQUEE <marquee@active.com>", :content_type => "text/html"
 
-  def finish_mail(test_round)
+  def finish_mail(test_round_id)
+    @test_round = TestRound.find(test_round_id)
     @project = test_round.project
-    @test_round = test_round
+
     subject = "[#{@project} #{@test_round.test_suite.test_type.name}##{@test_round.id} on #{@test_round.test_environment.name}] #{@test_round.result} : for testing #{@test_round.test_object}"
     mail_notify_group = MailNotifyGroup.where(:name => 'test_round_finish').first
 
@@ -21,9 +22,10 @@ class TestRoundMailer < AsyncMailer
     send_mail(mail_to, subject)
   end
 
-  def triage_mail(test_round)
+  def triage_mail(test_round_id)
+    @test_round = TestRound.find(test_round_id)
     @project = test_round.project
-    @test_round = test_round
+
     @test_services = @test_round.automation_script_results.collect{|asr| asr.target_services}.flatten.join(', ')
     subject = "[Triaged #{@project} #{@test_round.test_suite.test_type.name}##{@test_round.id} on #{@test_round.test_environment.name} ] #{@test_round.result} : for testing #{@test_round.test_object}"
     mail_notify_group = MailNotifyGroup.where(:name => 'test_round_triaged').first

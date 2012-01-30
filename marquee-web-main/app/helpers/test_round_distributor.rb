@@ -1,7 +1,8 @@
 class TestRoundDistributor
   @queue = :marquee_farm
 
-  def self.perform(test_round)
+  def self.perform(test_round_id)
+    test_round = TestRound.find(test_round_id)
     test_round.automation_script_results.each do |asr|
       driver = asr.automation_script.automation_driver.nil? ? 'qtp' : asr.automation_script.automation_driver.to_s
 
@@ -17,8 +18,8 @@ class TestRoundDistributor
     end
   end
 
-  def self.distribute(test_round)
-    Resque.enqueue(TestRoundDistributor, test_round)
+  def self.distribute(test_round_id)
+    Resque.enqueue(TestRoundDistributor, test_round_id)
   end
 
 end
