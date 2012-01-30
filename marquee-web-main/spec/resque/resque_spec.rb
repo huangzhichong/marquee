@@ -25,13 +25,22 @@ describe Resque do
     TestTask.should have_queued("id", :calculate)
   end
 
-  it "Should enqueue mailer actions" do
+  it "should enqueue test round distribute task" do
     tr = TestRound.new
     ts = TestSuite.new
     ts.test_type = TestType.new
     tr.test_suite = ts
 
+    TestRoundDistributor.distribute(tr)
+    TestRoundDistributor.should have_queued(tr)
+
 #     TestRoundMailer.finish_mail(tr).deliver
 #     TestRoundMailer.should have_queued(TestRoundMailer, :finish_mail, tr)
+  end
+
+  it "should enqueue automation script result rerun task" do
+    asr = AutomationScriptResult.create!
+    AutomationScriptResultRunner.rerun(asr.id)
+    AutomationScriptResultRunner.should have_queued(asr.id)
   end
 end
