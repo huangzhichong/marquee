@@ -14,11 +14,10 @@
       %th Test Environment
       %th Test Suite
       %th Test Object
-      %th 
 
     - if test_rounds.nil? or test_rounds.count == 0
       %tr
-        %td{:colspan => "3"}
+        %td{:colspan => "5"}
           %h4 No data
     - else
       - test_rounds.each do |test_round|
