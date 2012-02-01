@@ -3,8 +3,7 @@
     %img.big-icon{:src => asset_path("#{@test_round.result}.png")}
     %h2
       =link_to "Test Rounds", project_test_rounds_path(@project), :remote => true
-      = " / "
-      = "#{@test_round.test_type.name}##{@test_round.id}"
+      %span= " / #{@test_round.test_type.name}##{@test_round.id}"
   .span6.columns#right
     %span.creation-info= "Created by #{@test_round.creator.display_name}"
 
