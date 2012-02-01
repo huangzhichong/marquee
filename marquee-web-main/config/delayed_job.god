@@ -2,10 +2,10 @@
 # 
 # This is the actual config file used to keep marquee server running.
 
-DELAYED_JOB_ROOT = "~/marquee_reload/marquee-web-main"
+DELAYED_JOB_ROOT = "/home/activeworks/marquee_reload/marquee-web-main"
 
 God.watch do |w|
-  w.name = "server"
+  w.name = "delayed-job-watcher"
   w.interval = 30.seconds # default
   w.start = "cd #{DELAYED_JOB_ROOT}/script; ruby delayed_job start"
   w.stop = "cd #{DELAYED_JOB_ROOT}/script; ruby delayed_job stop"

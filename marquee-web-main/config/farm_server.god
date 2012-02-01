@@ -2,10 +2,10 @@
 # 
 # This is the actual config file used to keep marquee server running.
 
-FARM_SERVER_ROOT = "~/marquee_reload/marquee-web-main/farm_reload/server"
+FARM_SERVER_ROOT = "/home/activeworks/marquee_reload/marquee-web-main/farm_reload/server"
 
 God.watch do |w|
-  w.name = "server"
+  w.name = "farm-server-watcher"
   w.interval = 30.seconds # default
   w.start = "cd #{FARM_SERVER_ROOT}; ruby server_control.rb start"
   w.stop = "cd #{FARM_SERVER_ROOT}; ruby server_control.rb stop"
