@@ -25,15 +25,15 @@ NGINX_ROOT = "/opt/nginx"
       end
     end
     
-    w.restart_if do |restart|
-      restart.condition(:http_response_code) do |c|
-       c.host = 'localhost'
-       c.port = 3000
-       c.path = '/'
-       c.timeout = 30.seconds
-       c.times = [4, 5]
-       c.code_is_not = 200
-     end
+    #w.restart_if do |restart|
+    #  restart.condition(:http_response_code) do |c|
+    #   c.host = 'localhost'
+    #   c.port = 3000
+    #   c.path = '/'
+    #   c.timeout = 30.seconds
+    #   c.times = [4, 5]
+    #   c.code_is_not = [200, 304]
+    # end
 
      # restart.condition(:memory_usage) do |c|
      #   c.above = 150.megabytes
@@ -44,7 +44,7 @@ NGINX_ROOT = "/opt/nginx"
      #   c.above = 50.percent
      #   c.times = 5
      # end
-    end
+    #end
     
     # lifecycle
     w.lifecycle do |on|
