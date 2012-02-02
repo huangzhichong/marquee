@@ -1,0 +1,5 @@
+#!/bin/bash
+# This a shell script. Run it directly.
+
+QUEUE=marquee_farm rake environment resque:work &
+QUEUE=test_resque rake environment resque:work &

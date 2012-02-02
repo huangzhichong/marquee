@@ -7,7 +7,7 @@ class TestRoundsController < InheritedResources::Base
     create! do
       @test_round.set_default_value
       @test_round.save
-      @test_round.init_automation_script_result
+      AutomationScriptResultsInitializer.createAutomationScriptResults(@test_round.id)
       TestRoundDistributor.distribute(@test_round.id)
       project_test_rounds_path(@project)
     end
