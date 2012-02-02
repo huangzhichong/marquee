@@ -6,6 +6,7 @@ DELAYED_JOB_ROOT = "/home/activeworks/marquee_reload/marquee-web-main"
 
 God.watch do |w|
   w.name = "delayed-job-watcher"
+  w.log = "#{DELAYED_JOB_ROOT}/log/delayed-job-watcher.log"
   w.interval = 30.seconds # default
   w.start = "cd #{DELAYED_JOB_ROOT}/script; ruby delayed_job start"
   w.stop = "cd #{DELAYED_JOB_ROOT}/script; ruby delayed_job stop"
@@ -16,10 +17,25 @@ God.watch do |w|
   
   w.behavior(:clean_pid_file)
 
+  God::Contacts::Email.defaults do |d|
+    d.from_email = 'marquee@active.com'
+    d.from_name = 'Marquee delayed job monitoring'
+    d.delivery_method = :smtp
+    d.server_host = 'mx1.dev.activenetwork.com'
+    d.server_port = 25
+  end
+
+  God.contact(:email) do |c|
+    c.name = 'Marquee Team'
+    c.group = '.FND.CN.Team Marquee'
+    c.to_email = 'Team_FND_Marquee@activenetwork.com'
+  end
+
   w.start_if do |start|
     start.condition(:process_running) do |c|
       c.interval = 30.seconds
       c.running = false
+      c.notify = {:contacts => ['Marquee Team'], :priority => 'Urgent', :category => 'production'}
     end
   end
   

@@ -8,6 +8,7 @@ NGINX_ROOT = "/opt/nginx"
 %w{3000}.each do |port|
   God.watch do |w|
     w.name = "nginx-watcher"
+    w.log = "#{RAILS_ROOT}/log/nginx-watcher.log"
     w.interval = 30.seconds # default
     w.start = "#{NGINX_ROOT}/sbin/nginx"
     w.stop = "#{NGINX_ROOT}/sbin/nginx -s stop"
@@ -18,10 +19,35 @@ NGINX_ROOT = "/opt/nginx"
     
     w.behavior(:clean_pid_file)
 
+    God::Contacts::Email.defaults do |d|
+      d.from_email = 'marquee@active.com'
+      d.from_name = 'Marquee nginx monitoring'
+      d.delivery_method = :smtp
+      d.server_host = 'mx1.dev.activenetwork.com'
+      d.server_port = 25
+    # d.server_auth = true
+    # d.server_domain = 'example.com'
+    # d.server_user = 'system@example.com'
+    # d.server_password = 'myPassword'
+    end
+
+    God.contact(:email) do |c|
+      c.name = 'Marquee Team'
+      c.group = '.FND.CN.Team Marquee'
+      c.to_email = 'Team_FND_Marquee@activenetwork.com'
+    end
+
     w.start_if do |start|
       start.condition(:process_running) do |c|
         c.interval = 30.seconds
         c.running = false
+        c.notify = {:contacts => ['Marquee Team'], :priority => 'Urgent', :category => 'production'}
+      end
+    end
+
+    w.transition(:up, :start) do |on|
+      on.condition(:process_exits) do |c|
+        c.notify = 'me'
       end
     end
     

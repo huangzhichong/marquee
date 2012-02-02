@@ -6,6 +6,7 @@ FARM_SERVER_ROOT = "/home/activeworks/marquee_reload/marquee-web-main/farm_reloa
 
 God.watch do |w|
   w.name = "farm-server-watcher"
+  w.log = "#{FARM_SERVER_ROOT}/../../log/farm-server-watcher.log"
   w.interval = 30.seconds # default
   w.start = "cd #{FARM_SERVER_ROOT}; ruby server_control.rb start"
   w.stop = "cd #{FARM_SERVER_ROOT}; ruby server_control.rb stop"
@@ -16,10 +17,25 @@ God.watch do |w|
   
   w.behavior(:clean_pid_file)
 
+  God::Contacts::Email.defaults do |d|
+    d.from_email = 'marquee@active.com'
+    d.from_name = 'Marquee farm server monitoring'
+    d.delivery_method = :smtp
+    d.server_host = 'mx1.dev.activenetwork.com'
+    d.server_port = 25
+  end
+
+  God.contact(:email) do |c|
+    c.name = 'Marquee Team'
+    c.group = '.FND.CN.Team Marquee'
+    c.to_email = 'Team_FND_Marquee@activenetwork.com'
+  end
+
   w.start_if do |start|
     start.condition(:process_running) do |c|
       c.interval = 30.seconds
       c.running = false
+      c.notify = {:contacts => ['Marquee Team'], :priority => 'Urgent', :category => 'production'}
     end
   end
   
