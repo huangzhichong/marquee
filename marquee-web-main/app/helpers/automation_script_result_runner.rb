@@ -6,6 +6,10 @@ class AutomationScriptResultRunner
     if sa
       sa.status = "pending"
       sa.save
+
+      # besides saving it to db, we need to save sa to redis, too.
+      # farm server will query redis instead of db to get the latest sa status
+      SlaveAssignmentsHelper.send_slave_assignment_to_list sa, :pending
     end
   end
 
