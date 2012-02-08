@@ -6,8 +6,8 @@ class StatusController < ApplicationController
     test_environment = TestEnvironment.find_by_value(env)
     test_object = "#{ci_value} #{params[:version]}"
     CiMapping.find_all_by_ci_value(ci_value).each do |ci_mapping|
-    test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object)
-    LongTasks.new.delay.distribute_test_round_task(test_round)
+      test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object)
+      TestRoundDistributor.distribute(test_round)
     end
   end
 
@@ -47,7 +47,7 @@ class StatusController < ApplicationController
         end
       end
       if test_round.end?
-        LongTasks.new.delay.send_finish_mail(test_round)
+        TestRoundMailer.finish_mail(test_round.id).deliver
       end
     end
   end
