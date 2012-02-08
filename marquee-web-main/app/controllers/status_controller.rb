@@ -43,6 +43,7 @@ class StatusController < ApplicationController
       if automation_script_result.end?
         automation_script_result.slave_assignments.each do |sa|
           sa.end!
+          SlaveAssignmentsHelper.send_slave_assignment_to_list sa, "complete"
           sa.slave.free! unless sa.slave.nil?
         end
       end
