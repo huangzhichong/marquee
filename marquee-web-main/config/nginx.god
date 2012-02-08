@@ -32,9 +32,57 @@ NGINX_ROOT = "/opt/nginx"
     end
 
     God.contact(:email) do |c|
-      c.name = 'Marquee Team'
-      c.group = '.FND.CN.Team Marquee'
-      c.to_email = 'Team_FND_Marquee@activenetwork.com'
+      c.name = 'Eric Yang'
+      c.group = 'Marquee Team'
+      c.to_email = 'eric.yang@activenetwork.com'
+    end
+
+    God.contact(:email) do |c|
+      c.name = 'Tyrael Tong'
+      c.group = 'Marquee Team'
+      c.to_email = 'tyrael.tong@activenetwork.com'
+    end
+
+    God.contact(:email) do |c|
+      c.name = 'Smart Huang'
+      c.group = 'Marquee Team'
+      c.to_email = 'smart.huang@activenetwork.com'
+    end
+
+    God.contact(:email) do |c|
+      c.name = 'Leo Yin'
+      c.group = 'Marquee Team'
+      c.to_email = 'Leo.Yin@activenetwork.com'
+    end
+
+    God.contact(:email) do |c|
+      c.name = 'Shawn Xu'
+      c.group = 'Marquee Team'
+      c.to_email = 'Shawn.Xu@activenetwork.com'
+    end
+
+    God.contact(:email) do |c|
+      c.name = 'Brent Huang'
+      c.group = 'Marquee Team'
+      c.to_email = 'Brent.Huang@activenetwork.com'
+    end
+
+    God.contact(:email) do |c|
+      c.name = 'Lynn Wang'
+      c.group = 'Marquee Team'
+      c.to_email = 'Lynnw.Wang@activenetwork.com'
+    end
+
+    God.contact(:email) do |c|
+      c.name = 'Emma Wang'
+      c.group = 'Marquee Team'
+      c.to_email = 'Emma.Wang@activenetwork.com'
+    end
+
+    God.contact(:email) do |c|
+      c.name = 'Sydney Zhang'
+      c.group = 'Marquee Team'
+      c.to_email = 'Sydney.Zhang@activenetwork.com'
     end
 
     w.start_if do |start|
