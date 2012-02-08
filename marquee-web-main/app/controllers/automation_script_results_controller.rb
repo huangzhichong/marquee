@@ -23,6 +23,13 @@ class AutomationScriptResultsController < InheritedResources::Base
     automation_script_result_id = params[:id]
     automation_script_result = AutomationScriptResult.find(automation_script_result_id)
     automation_script_result.clear
+
+    non_rerunned_asr = automation_script_result.test_round.automation_script_results.select {|asr| asr.state != "scheduling"}
+    if non_rerunned_asr.nil? || non_rerunned_asr.empty?
+      automation_script_result.test_round.start_time = nil
+      automation_script_result.test_round.save
+    end
+
     AutomationScriptResultRunner.rerun(automation_script_result_id)
     render :nothing => true
   end

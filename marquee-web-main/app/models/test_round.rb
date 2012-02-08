@@ -109,7 +109,7 @@ class TestRound < ActiveRecord::Base
   def start_running!
     unless running?
       self.state = 'running'
-      update_start_time
+      # update_start_time
     end
   end
 
