@@ -4,7 +4,8 @@ class AutomationScriptResultRunner
   def self.perform(automation_script_result_id)
     sa = SlaveAssignment.find_by_automation_script_result_id(automation_script_result_id)
     if sa
-      sa.status = "pending"
+      # sa.status = "pending"
+      sa.reset!
       sa.save
 
       # besides saving it to db, we need to save sa to redis, too.

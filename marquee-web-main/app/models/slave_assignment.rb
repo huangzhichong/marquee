@@ -29,4 +29,12 @@ class SlaveAssignment < ActiveRecord::Base
     self.status = "complete"
     save
   end
+
+  def reset!
+    self.status = "pending"
+    self.slave_id = nil
+    self.created_at = Time.now
+    self.updated_at = Time.now
+  end
+
 end
