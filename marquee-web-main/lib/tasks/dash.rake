@@ -113,6 +113,13 @@ namespace :dash do
 
     ability_definition = AbilityDefinition.new do |ad|
       ad.role = qa_developer_role
+      ad.ability = :create
+      ad.resource = 'TestRound'
+    end 
+    ability_definition.save    
+
+    ability_definition = AbilityDefinition.new do |ad|
+      ad.role = qa_developer_role
       ad.ability = :update
       ad.resource = 'TestSuite'
     end
