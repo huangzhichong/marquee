@@ -1,6 +1,6 @@
 .page-header
   %h2 Listing Test Rounds
-  -if can? :create, TestRound
+  -if can? :create, TestRound and (@current_user.role?(:admin) or @current_user.role?(:qa_manager))
     = link_to 'Schedule', new_admin_project_test_round_path(project), :class => 'btn primary'
   = form_for search, :url => admin_project_test_rounds_path, :remote => true do |f|
     %span.search
