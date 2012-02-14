@@ -52,7 +52,7 @@
     .clearfix
       %label Select roles
       .input
-        = select_tag "role_id", options_from_collection_for_select(Role.all, :id, :name, RolesUsers.find_by_user_id(@user.id).role_id), :id => "user_role", :class => "roles chzn-select"
+        = select_tag "role_id", options_from_collection_for_select(Role.all, :id, :name, (user_role = RolesUsers.find_by_user_id(@user.id)) ? user_role.role_id : Role.find_by_name("qa").id), :id => "user_role", :class => "roles chzn-select"
         = link_to 'Add specific abilities (Not required)', '#', :class => 'btn add_specific_abilities', :id => 'add_specific_abilities_btn'
     .clearfix.user-ability-definitions-box
       %label User ability definitions
