@@ -154,6 +154,7 @@ class ImportDataController < ApplicationController
             mtp.status = "completed"
             mtp.version = tp[3]
             mtp.plan_type = tp[5]
+            mtp.test_steps.delete_all
             mtp.save
             get_tc_query = "select * from old_test_cases where test_plan_id = '#{tp[0]}' limit 9999999"
             local_test_cases = LocalTestlink.connection.execute(get_tc_query)
@@ -172,7 +173,6 @@ class ImportDataController < ApplicationController
         end
       end
     end
-    TcStep.delete_all
     get_test_steps = ("
     select ts.step_number as step_number,
     ts.action as step_action,
