@@ -31,6 +31,8 @@ MarqueeWebMain::Application.routes.draw do
   post 'import_data/import_script_without_test_plan'
   post 'import_data/import_test_plan_from_xml'
   get 'import_data/refresh_testlink_data'
+  post 'import_data/import_as_and_tc_status'
+  get 'import_data/refresh_testlink_data'  
 
   devise_for :users, :controllers => { :passwords => "passwords" }
   resources :passwords
