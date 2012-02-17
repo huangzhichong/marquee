@@ -1,0 +1,16 @@
+= form_for ([:admin, @role]) do |f|
+  -if @role.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@role.errors.count, "error")} prohibited this admin_role from being saved:"
+      %ul
+        - @role.errors.full_messages.each do |msg|
+          %li= msg
+  %fieldset
+    %legend New Role
+    .clearfix
+      = f.label :name
+      .input
+        = f.text_field :name
+    .actions
+      = f.submit 'Save', :class => 'btn primary'
+      = link_to 'Back', admin_roles_path, :class => 'btn'

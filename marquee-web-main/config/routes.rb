@@ -5,7 +5,7 @@ MarqueeWebMain::Application.routes.draw do
       mount Resque::Server.new, :at => "/resque"
     end
 
-    resources :project_categories, :users
+    resources :project_categories, :users, :roles
     resources :team_members
     resources :projects do
       resources :test_suites, :ci_mappings, :mail_notify_settings, :test_rounds
