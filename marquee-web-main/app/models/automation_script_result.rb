@@ -89,7 +89,7 @@ class AutomationScriptResult < ActiveRecord::Base
   def update_state!(state)
     self.state = state
     if state == "start"
-      self.start_time = Time.now
+      # self.start_time = Time.now
     elsif state == "end"
       self.end_time = Time.now
       self.not_run_cases.each do |automation_case_result|

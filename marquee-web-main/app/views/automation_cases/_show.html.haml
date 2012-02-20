@@ -2,7 +2,6 @@
   .span16.columns
     %h2
       =link_to @automation_script.name, project_automation_script_path(@project, @automation_script), :remote => true
-      =" / "
-      = @automation_case.name
+      %span=" / #{@automation_case.name}"
 
 = render 'brief_info'

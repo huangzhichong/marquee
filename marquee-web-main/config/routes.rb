@@ -1,6 +1,10 @@
 MarqueeWebMain::Application.routes.draw do
 
   namespace :admin do
+    constraints CanAccessResque do
+      mount Resque::Server.new, :at => "/resque"
+    end
+
     resources :project_categories, :users
     resources :team_members
     resources :projects do
@@ -26,13 +30,14 @@ MarqueeWebMain::Application.routes.draw do
   post 'import_data/import_automation_script'
   post 'import_data/import_script_without_test_plan'
   post 'import_data/import_test_plan_from_xml'
+  get 'import_data/refresh_testlink_data'
   post 'import_data/import_as_and_tc_status'
   get 'import_data/refresh_testlink_data'  
 
   devise_for :users, :controllers => { :passwords => "passwords" }
   resources :passwords
   # get "users/:id/password/edit", :controller => "passwords", :action => "edit"
-  
+
   resources :slaves do
     resources :slave_assignments
   end
@@ -86,7 +91,7 @@ MarqueeWebMain::Application.routes.draw do
 
   get "update_automation_script_result_triagge_result", :controller => 'automation_script_results', :action => 'update_triage_result'
   get "automation_script_results/:id/rerun", :controller => 'automation_script_results', :action => 'rerun'
-  
+
   get "dre/slide"
   get "dre/overall_slide"
   get "dre/history_slide"
@@ -105,7 +110,7 @@ MarqueeWebMain::Application.routes.draw do
   get "functional/update_needed_script_report"
   post "functional/generate_automation_status_report"
   post "functional/generate_rejected_bug_report"
-  post "functional/rmf_original_estimate_query" 
+  post "functional/rmf_original_estimate_query"
   post "functional/generate_update_needed_script_report"
   post "functional/generate_bug_report"
   get "functional/endurance_qa_effort_report"
@@ -115,7 +120,7 @@ MarqueeWebMain::Application.routes.draw do
   get "experiment/ear"
   get "experiment/effort_tracking"
   post "experiment/effort_tracking_report"
-  
+
   get "dataviz/test001"
   get "dataviz/index"
   get "dataviz/new_in_development_tracking_config"
@@ -124,7 +129,7 @@ MarqueeWebMain::Application.routes.draw do
   get "dataviz/in_development_tracking_report/:config_id", :controller => 'dataviz', :action => 'in_development_tracking_report'
   get "dataviz/pull_data_for_report/:config_id", :controller => 'dataviz', :action => 'pull_data_for_report'
   get "dataviz/group_effort_tracking"
-  
+
   root :to => 'home#index'
 
 end

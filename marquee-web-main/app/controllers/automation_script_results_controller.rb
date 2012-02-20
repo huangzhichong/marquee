@@ -1,7 +1,7 @@
 class AutomationScriptResultsController < InheritedResources::Base
   respond_to :js
   belongs_to :test_round
-  
+
   def update_triage_result
     automation_script_result = AutomationScriptResult.find(params[:id])
     triage_result = params[:triage_result]
@@ -10,7 +10,7 @@ class AutomationScriptResultsController < InheritedResources::Base
         result = automation_script_result.test_round.send_triage_mail?
         if not result
           automation_script_result.test_round.update_result
-          LongTasks.new.delay.send_triage_mail(automation_script_result.test_round) 
+          TestRoundMailer.triage_mail(automation_script_result.test_round.id).deliver
         end
         format.js { render :json => {:result => "success", :tr_result => automation_script_result.test_round.result, :asr_result => automation_script_result.result}}
       else
@@ -18,15 +18,22 @@ class AutomationScriptResultsController < InheritedResources::Base
       end
     end
   end
-  
+
   def rerun
     automation_script_result_id = params[:id]
     automation_script_result = AutomationScriptResult.find(automation_script_result_id)
     automation_script_result.clear
-    LongTasks.new.delay.rerun_automation_script_result_task(automation_script_result_id)
+
+    non_rerunned_asr = automation_script_result.test_round.automation_script_results.select {|asr| asr.state != "scheduling"}
+    if non_rerunned_asr.nil? || non_rerunned_asr.empty?
+      automation_script_result.test_round.start_time = nil
+      automation_script_result.test_round.save
+    end
+
+    AutomationScriptResultRunner.rerun(automation_script_result_id)
     render :nothing => true
   end
-  
+
   protected
   def resource
     @test_round ||= TestRound.find(params[:test_round_id])
@@ -35,7 +42,7 @@ class AutomationScriptResultsController < InheritedResources::Base
     @search = @automation_script_result.automation_case_results.search(params[:search])
     @automation_case_results = @search.page(params[:page]).per(15)
   end
-  
+
   def collection
     @test_round ||= TestRound.find(params[:test_round_id])
     @search = @test_round.automation_script_results.order('id desc').search(params[:search])

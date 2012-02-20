@@ -14,10 +14,10 @@ class CreateAutomationScriptResults < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :automation_script_results, :test_round_id
-    add_index :automation_script_results, :automation_script_id
+    add_index :automation_script_results, :test_round_id, :name => "idx_asr_tr"
+    add_index :automation_script_results, :automation_script_id, :name => "idx_asr_as"
 
-    add_foreign_key :automation_script_results, :test_rounds, :dependent => :delete
-    add_foreign_key :automation_script_results, :automation_scripts, :dependent => :delete
+    add_foreign_key :automation_script_results, :test_rounds, :dependent => :delete, :name => "fk_asr_tr"
+    add_foreign_key :automation_script_results, :automation_scripts, :dependent => :delete, :name => "fk_asr_as"
   end
 end

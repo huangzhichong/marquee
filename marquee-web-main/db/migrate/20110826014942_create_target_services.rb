@@ -7,7 +7,7 @@ class CreateTargetServices < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :target_services, :automation_script_result_id
-    add_foreign_key :target_services, :automation_script_results, :dependent => :delete
+    add_index :target_services, :automation_script_result_id, :name => "idx_ts_asr"
+    add_foreign_key :target_services, :automation_script_results, :dependent => :delete, :name => "fk_ts_asr"
   end
 end

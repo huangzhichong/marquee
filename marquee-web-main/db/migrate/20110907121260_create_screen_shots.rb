@@ -9,6 +9,6 @@ class CreateScreenShots < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_foreign_key :screen_shots, :automation_case_results, :dependent => :delete
+    add_foreign_key :screen_shots, :automation_case_results, :dependent => :delete, :name => "fk_ss_acr"
   end
 end

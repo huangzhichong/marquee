@@ -5,7 +5,7 @@
 #itself an array with first element as label and second element as value
 xml = Builder::XmlMarkup.new
 labelStep = (arr_data.length / 10) + 1
-xml.chart(:caption=>caption, :formatNumberScale=>'0', :xAxis => 'Date', :yAxis => 'Issues', :yAxisMinValue => '0', :showValues => '0', :anchorAlpha => '0', :lineThickness => '5', :labelStep => labelStep, :labelDisplay => 'Wrap') do
+xml.chart(:caption=>caption, :formatNumberScale=>'0', :xAxis => 'Date', :yAxis => 'Issues', :yAxisMinValue => '0', :showValues => '0', :anchorAlpha => '0', :lineThickness => '5', :labelStep => labelStep, :labelDisplay => 'Rotate', :slantLabels=>'1') do
   xml.categories do
     arr_data.each do |data|
       xml.category(:label => format_date(data.date, "%m/%d/%y"))

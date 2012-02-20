@@ -8,7 +8,7 @@ class StatusController < ApplicationController
       test_object = "#{ci_value} #{params[:version]}"
       CiMapping.find_all_by_ci_value(ci_value).each do |ci_mapping|
         test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object)
-        LongTasks.new.delay.distribute_test_round_task(test_round)
+        TestRoundDistributor.distribute(test_round)
       end
     end
   end
@@ -19,11 +19,14 @@ class StatusController < ApplicationController
     test_round_id = protocol[:round_id]
     test_round = TestRound.find(test_round_id)
 
-    case what
-    when 'Script'
-      update_automation_script(test_round, protocol[:data])
-    when 'Case'
-      update_automation_case(test_round, protocol[:data])
+    automation_script_result = test_round.find_automation_script_result_by_script_name(protocol[:data]['script_name'])
+    if automation_script_result and not automation_script_result.end?
+      case what
+      when 'Script'
+        update_automation_script(test_round, protocol[:data])
+      when 'Case'
+        update_automation_case(test_round, protocol[:data])
+      end
     end
     render :nothing => true
   end
@@ -42,11 +45,12 @@ class StatusController < ApplicationController
       if automation_script_result.end?
         automation_script_result.slave_assignments.each do |sa|
           sa.end!
+          SlaveAssignmentsHelper.send_slave_assignment_to_list sa, "complete"
           sa.slave.free! unless sa.slave.nil?
         end
       end
       if test_round.end?
-        LongTasks.new.delay.send_finish_mail(test_round)
+        TestRoundMailer.finish_mail(test_round.id).deliver
       end
     end
   end
