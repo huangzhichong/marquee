@@ -39,6 +39,8 @@ class User < ActiveRecord::Base
   has_many :oracle_projects, :through => :oracle_project_permissions
   has_many :user_ability_definitions
 
+  has_and_belongs_to_many :projects_roles, :class_name => "ProjectsRoles"
+
   def self.automator
     User.find_by_email('automator@marquee.com')
   end
@@ -76,4 +78,6 @@ class User < ActiveRecord::Base
     end
     u
   end
+
+
 end
