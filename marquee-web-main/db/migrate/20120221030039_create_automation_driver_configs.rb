@@ -3,6 +3,8 @@ class CreateAutomationDriverConfigs < ActiveRecord::Migration
     create_table :automation_driver_configs do |t|
       t.belongs_to :project
       t.belongs_to :automation_driver
+      t.string :name
+      t.string :source_control
       t.text :extra_parameters
       t.text :source_paths
       t.text :script_main_path
