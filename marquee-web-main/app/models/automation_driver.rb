@@ -10,8 +10,15 @@
 
 class AutomationDriver < ActiveRecord::Base
   has_many :automation_scripts
-  
+
   def to_s
     self.name
+  end
+
+  def as_json(options={})
+    {
+      name: self.name,
+      version: self.version
+    }
   end
 end
