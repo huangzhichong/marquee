@@ -4,7 +4,7 @@ module SlaveAssignmentsHelper
 
     slave_assignments = $redis.hgetall :slave_assignments
 
-    simplifiedSA = SimplifiedSlaveAssignment.new(slave_assignment)
+    #simplifiedSA = SimplifiedSlaveAssignment.new(slave_assignment)
 
     # if slave assignments is not nil and expected list has been created, update it
     slave_assignments.each do |name, value|
@@ -12,14 +12,15 @@ module SlaveAssignmentsHelper
       # remove it if it exist
       sa_list.reject! {|sa| sa.nil? || sa["id"] == simplifiedSA.id}
       # add to list if the list is what we expected to add in
-      sa_list << JSON.parse(simplifiedSA.to_json) if name == list_name.to_s
+      sa_list << JSON.parse(slave_assignment.to_json) if name == list_name.to_s
       $redis.hset :slave_assignments, name, JSON.generate(sa_list)
-    end 
+    end
 
     # if slave assignments is nil or expected list has't been created, create it
     if slave_assignments.nil? || !slave_assignments.has_key?(list_name.to_s)
       sa_list = Array.new
-      sa_list << JSON.parse(simplifiedSA.to_json)
+#      sa_list << JSON.parse(simplifiedSA.to_json)
+      sa_list << slave_assignment.as_json
       $redis.hset :slave_assignments, list_name, JSON.generate(sa_list)
     end
 
@@ -42,4 +43,4 @@ class SimplifiedSlaveAssignment
     @created_at = slave_assignment.created_at
     @updated_at = slave_assignment.updated_at
   end
-end 
+end

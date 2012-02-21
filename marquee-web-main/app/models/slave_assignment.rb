@@ -38,9 +38,14 @@ class SlaveAssignment < ActiveRecord::Base
     self.updated_at = Time.now
   end
 
+  def automation_driver_config
+    AutomationDriverConfig.find(:first, :conditions => ['project_id = ? AND automation_driver_id = ?', self.test_round.project.id, self.automation_script.automation_driver.id])
+  end
+
   def as_json(options={})
     {
       id: self.id,
+      project: self.test_round.project.name,
       slave_id: self.slave.nil? ? nil : self.slave.id,
       time_out_limit: self.automation_script.time_out_limit.nil? ? AutomationScript::DEFAULT_TIME_OUT_LIMIT : self.automation_script.time_out_limit,
       test_round_id: self.test_round.id,
@@ -48,6 +53,8 @@ class SlaveAssignment < ActiveRecord::Base
       test_environment: self.test_round.test_environment.value,
       test_type: self.test_round.test_suite.test_type.name,
       automation_driver: self.automation_script.automation_driver.as_json,
+      script_main_path: self.automation_script.script_main_path,
+      automation_driver_config: self.automation_driver_config.as_json
     }
   end
 

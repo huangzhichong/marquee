@@ -10,6 +10,8 @@
 
 class AutomationDriver < ActiveRecord::Base
   has_many :automation_scripts
+  has_many :automation_driver_configs
+
 
   def to_s
     self.name
