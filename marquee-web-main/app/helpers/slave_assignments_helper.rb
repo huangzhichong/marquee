@@ -10,7 +10,7 @@ module SlaveAssignmentsHelper
     slave_assignments.each do |name, value|
       sa_list = JSON.parse value
       # remove it if it exist
-      sa_list.reject! {|sa| sa.nil? || sa["id"] == simplifiedSA.id}
+      sa_list.reject! {|sa| sa.nil? || sa["id"] == slave_assignment.id}
       # add to list if the list is what we expected to add in
       sa_list << JSON.parse(slave_assignment.to_json) if name == list_name.to_s
       $redis.hset :slave_assignments, name, JSON.generate(sa_list)
