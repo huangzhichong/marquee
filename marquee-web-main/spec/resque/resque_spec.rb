@@ -31,8 +31,8 @@ describe Resque do
     ts.test_type = TestType.new
     tr.test_suite = ts
 
-    TestRoundDistributor.distribute(tr)
-    TestRoundDistributor.should have_queued(tr)
+    TestRoundDistributor.distribute(tr.id)
+    TestRoundDistributor.should have_queued(tr.id)
 
 #     TestRoundMailer.finish_mail(tr).deliver
 #     TestRoundMailer.should have_queued(TestRoundMailer, :finish_mail, tr)
