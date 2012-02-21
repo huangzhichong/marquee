@@ -11,7 +11,7 @@ class CreateTestCases < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :test_cases, :test_plan_id
-    add_foreign_key :test_cases, :test_plans, :dependent => :delete
+    add_index :test_cases, :test_plan_id, :name => "idx_tc_tp"
+    add_foreign_key :test_cases, :test_plans, :dependent => :delete, :name => "fk_tc_tp"
   end
 end

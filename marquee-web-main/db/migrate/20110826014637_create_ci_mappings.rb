@@ -7,11 +7,11 @@ class CreateCiMappings < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :ci_mappings, :project_id
-    add_index :ci_mappings, :test_suite_id
+    add_index :ci_mappings, :project_id, :name => "idx_cm_p"
+    add_index :ci_mappings, :test_suite_id, :name => "idx_cm_ts"
 
-    add_foreign_key :ci_mappings, :projects, :dependent => :delete
-    add_foreign_key :ci_mappings, :test_suites, :dependent => :delete
+    add_foreign_key :ci_mappings, :projects, :dependent => :delete, :name => "fk_cm_p"
+    add_foreign_key :ci_mappings, :test_suites, :dependent => :delete, :name => "fk_cm_ts"
 
   end
 end

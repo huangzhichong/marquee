@@ -10,8 +10,9 @@
 #
 
 class TestEnvironment < ActiveRecord::Base
-  acts_as_audited :protect => false, :only => [:create, :destroy]
-  
+  acts_as_audited :protect => false
+  # acts_as_audited :protect => false, :only => [:create, :destroy]
+
   def to_s
     self.name
   end

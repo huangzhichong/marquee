@@ -7,7 +7,7 @@ class CreateOperationSystemInfos < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :operation_system_infos, :slave_id
-    add_foreign_key :operation_system_infos, :slaves, :column => 'slave_id', :dependent => :delete
+    add_index :operation_system_infos, :slave_id, :name => "idx_osi_s"
+    add_foreign_key :operation_system_infos, :slaves, :column => 'slave_id', :dependent => :delete, :name => "fk_osi_s"
   end
 end

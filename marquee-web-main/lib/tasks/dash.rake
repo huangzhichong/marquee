@@ -105,11 +105,18 @@ namespace :dash do
     end
 
     ability_definition = AbilityDefinition.new do |ad|
+      ad.role = qa_role
+      ad.ability = :create
+      ad.resource = 'TestRound'
+    end 
+    ability_definition.save
+
+    ability_definition = AbilityDefinition.new do |ad|
       ad.role = qa_developer_role
       ad.ability = :create
       ad.resource = 'TestRound'
-    end
-    ability_definition.save
+    end 
+    ability_definition.save    
 
     ability_definition = AbilityDefinition.new do |ad|
       ad.role = qa_developer_role

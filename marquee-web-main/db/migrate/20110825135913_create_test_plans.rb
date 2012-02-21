@@ -8,7 +8,7 @@ class CreateTestPlans < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :test_plans, :project_id
-    add_foreign_key :test_plans, :projects, :dependent => :delete
+    add_index :test_plans, :project_id, :name => "idx_tp_p"
+    add_foreign_key :test_plans, :projects, :dependent => :delete, :name => "fk_tp_p"
   end
 end
