@@ -22,7 +22,10 @@ class User < ActiveRecord::Base
   # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-  acts_as_audited :except => [:password, :password_confirmation], :protect => false, :only => [:create, :destroy]
+
+  # remove the :only because there's an issue with devise combined using :only. see https://github.com/collectiveidea/acts_as_audited/issues/55
+  # acts_as_audited :except => [:password, :password_confirmation], :protect => false, :only => [:create, :destroy]
+  acts_as_audited :except => [:password, :password_confirmation], :protect => false
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :display_name, :oracle_project_ids
@@ -62,8 +65,8 @@ class User < ActiveRecord::Base
   def self.find_or_create_default_by_email(strEmail)
     u = User.find_by_email(strEmail)
     if u.nil?
-      names = strEmail.split("@").first.split(".")    
-      u = User.new(        
+      names = strEmail.split("@").first.split(".")
+      u = User.new(
         :email => strEmail,
         :display_name => "#{names.first.capitalize} #{names.last.capitalize}",
         :password => "111111"
@@ -71,6 +74,6 @@ class User < ActiveRecord::Base
       u.roles << Role.find_by_name("qa_developer")
       u.save
     end
-    u  
+    u
   end
 end

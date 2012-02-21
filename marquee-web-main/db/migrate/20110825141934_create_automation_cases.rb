@@ -9,7 +9,7 @@ class CreateAutomationCases < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :automation_cases, :automation_script_id
-    add_foreign_key :automation_cases, :automation_scripts, :dependent => :delete
+    add_index :automation_cases, :automation_script_id, :name => "idx_ac_as"
+    add_foreign_key :automation_cases, :automation_scripts, :dependent => :delete, :name => "fk_ac_as"
   end
 end

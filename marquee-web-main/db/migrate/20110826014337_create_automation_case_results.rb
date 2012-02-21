@@ -10,10 +10,10 @@ class CreateAutomationCaseResults < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :automation_case_results, :automation_case_id
-    add_index :automation_case_results, :automation_script_result_id
+    add_index :automation_case_results, :automation_case_id, :name => "idx_acr_ac"
+    add_index :automation_case_results, :automation_script_result_id, :name => "idx_acr_asr"
 
-    add_foreign_key :automation_case_results, :automation_cases, :dependent => :delete
-    add_foreign_key :automation_case_results, :automation_script_results, :dependent => :delete
+    add_foreign_key :automation_case_results, :automation_cases, :dependent => :delete, :name => "fk_acr_ac"
+    add_foreign_key :automation_case_results, :automation_script_results, :dependent => :delete, :name => "fk_acr_asr"
   end
 end

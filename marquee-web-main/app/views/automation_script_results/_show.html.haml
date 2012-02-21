@@ -3,10 +3,9 @@
     %img.big-icon{:src => asset_path("#{@automation_script_result.result}.png")}
     %h2
       =link_to "Test Rounds", project_test_rounds_path(@test_round.project), :remote => true
-      = " / "
+      %span= " / "
       =link_to "#{@test_round.test_type.name}##{@test_round.id}", project_test_round_path(@test_round.project, @test_round), :remote => true
-      =" / "
-      = @automation_script_result.automation_script.name
+      %span=" / #{@automation_script_result.automation_script.name}"
 
 = render 'brief_info'
 = render :partial => "partial/service_info", :locals => {:asr => @automation_script_result}
