@@ -16,11 +16,11 @@
       .clearfix
         = f.label :password
         .input
-          = f.password_field :password, :class => "validate[required]"
+          = f.password_field :password, :class => "validate[required, funcCall[checkPassword]]"
       .clearfix
         = f.label :confirm_password
         .input
-          %input{:id => "confirm_password", :type => "password", :class => "validate[required,equals[user_password]]"}
+          %input{:id => "confirm_password", :type => "password", :class => "validate[required, funcCall[checkPassword], equals[user_password]]"}
     .clearfix
       = f.label :time_card_project_permissions
       .input
@@ -162,4 +162,10 @@
         $('#tcpps').append($(elem));
       });
     });
-  })
+  });
+  function checkPassword(field, rules, i, options){
+    var patrn = /^(\w){6,20}$/; 
+    if (!patrn.exec(field.val())) {
+        return "* Only character, number and underline allowed(6-20)";
+    }
+  }
