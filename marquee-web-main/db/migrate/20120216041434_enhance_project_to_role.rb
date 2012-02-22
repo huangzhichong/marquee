@@ -32,6 +32,26 @@ class EnhanceProjectToRole < ActiveRecord::Migration
       else
         say "Table :projects_roles_users already exists."
       end
+
+      # create project_role for role and using nil as project 
+      role_cache = Hash.new
+      ProjectsRolesUsers.delete_all
+      RolesUsers.all.each do |ru|
+        project_role_id = nil
+        user_id = ru.user_id
+        if role_cache.has_key?(ru.role_id)
+          project_role_id = role_cache.fetch(ru.role_id)
+        else
+          project_role = ProjectsRoles.find_by_role_id_and_project_id(ru.role_id)
+          project_role = ProjectsRoles.new(:role_id => ru.role_id, :project_id => nil) if project_role.nil?
+          project_role.save
+          project_role_id = project_role.id
+          role_cache[ru.role_id] = project_role_id
+        end
+        project_role_user = ProjectsRolesUsers.new(:projects_roles_id => project_role_id, :user_id => ru.user_id)
+        project_role_user.save!
+      end
+
     rescue
       say "Error occurs. Deleting table :projects_roles_users and :projects_roles."
       down
