@@ -1,21 +1,25 @@
 -if flash[:error]
   .alert-message.error= flash[:error].html_safe 
   
-= form_for(@user, :as => @user, :url => password_path(@user), :html => { :method => :put }) do |f|
+= form_for(@user, :as => @user, :id => "user_form", :url => password_path(@user), :html => { :method => :put }) do |f|
   %fieldset
     %legend Change your password
     .clearfix
       = f.label :current_password, "Current password"
       .input
-        = f.password_field :current_password
+        = f.password_field :current_password, :class => "validate[required]"
     .clearfix
       = f.label :password, "New password"
       .input
-        = f.password_field :password
+        = f.password_field :password, :class => "validate[required]"
     .clearfix
       = f.label :password_confirmation, "Confirm password"
       .input
-        = f.password_field :password_confirmation
+        = f.password_field :password_confirmation, :class => "validate[required,equals[user_password]]"
     .actions
       = f.submit "Change my password", :class => "btn primary"
 / = render :partial => "devise/shared/links"
+:javascript
+  $(function(){
+    $("form").validationEngine({promptPosition : "bottomRight", scroll: false});
+  })

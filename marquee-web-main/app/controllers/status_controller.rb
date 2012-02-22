@@ -8,7 +8,7 @@ class StatusController < ApplicationController
       test_object = "#{ci_value} #{params[:version]}"
       CiMapping.find_all_by_ci_value(ci_value).each do |ci_mapping|
         test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object)
-        TestRoundDistributor.distribute(test_round)
+        TestRoundDistributor.distribute(test_round.id)
       end
     end
   end

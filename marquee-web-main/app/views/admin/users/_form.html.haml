@@ -1,4 +1,6 @@
-
+-if flash[:error]
+  .alert-message.error= flash[:error].html_safe 
+  
 = form_for([:admin, @user]) do |f|
   %fieldset
     %legend= title

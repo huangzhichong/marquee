@@ -1,3 +1,6 @@
+-if flash[:error]
+  .alert-message.error= flash[:error].html_safe
+
 = form_for ([:admin, @project, @mail_notify_setting]) do |f|
   -if @mail_notify_setting.errors.any?
     #error_explanation
@@ -10,7 +13,7 @@
     .clearfix
       =f.label :mail
       .input
-        =f.text_field :mail
+        =f.text_field :mail, :class => "validate[required,custom[email]]"
     .clearfix
       =f.label :mail_notify_group
       .input
@@ -65,6 +68,7 @@
 
 :javascript
   $(function(){
+    $("#new_mail_notify_setting").validationEngine({promptPosition : "bottomRight", scroll: false});
     $('#mnsgs-selected').children().each(function(idx, elem){
       $('#mnsg-ids').append($('#mail_notify_setting_mail_notify_group_ids_').clone().val($(elem).attr('value')));
     });
