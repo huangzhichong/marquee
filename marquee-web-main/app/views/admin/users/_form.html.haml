@@ -192,8 +192,8 @@
       if (upr_current_value.match(regex) != null) {
         alert("User already has a role for the project!");
       } else {
-        if ($("table.project_role tbody tr.no_tata").length>0) {
-          $("table.project_role tbody tr.no_tada").remove();
+        if ($("table.project_role tbody tr.no-tata").length>0) {
+          $("table.project_role tbody tr.no-tata").remove();
         }
         var ele = $("#hidden_upr").clone();
         var first = ele.children("td").first();
