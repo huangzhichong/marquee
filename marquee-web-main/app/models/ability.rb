@@ -33,7 +33,8 @@ class Ability
       can uad.ability.to_sym, uad.resource.constantize
     end
 
-    user.roles.each do |role|
+    user.projects_roles.each do |project_role|
+      role = project_role.role
       if role.name == 'admin'
         can :manage, :all
       else

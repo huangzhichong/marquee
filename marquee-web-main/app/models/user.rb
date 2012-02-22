@@ -45,8 +45,15 @@ class User < ActiveRecord::Base
     User.find_by_email('automator@marquee.com')
   end
 
-  def role?(role)
-    return !!self.roles.find_by_name(role)
+  def role?(role_name)
+    if (role_name)
+      roles = Role.find_all_by_name(role_name)
+      if (roles && !roles.empty?) 
+        role_ids = roles.map { |role| role.id }
+        return !!self.projects_roles.find_by_role_id(role_ids)
+      end
+    end
+    return
   end
 
   def update_role(role_id)
@@ -73,7 +80,10 @@ class User < ActiveRecord::Base
         :display_name => "#{names.first.capitalize} #{names.last.capitalize}",
         :password => "111111"
       )
-      u.roles << Role.find_by_name("qa_developer")
+      qa_developer = Role.find_by_name("qa_developer")
+      project_role = ProjectsRoles.find_by_role_id_and_project_id(qa_developer.id, nil)
+      u.projects_roles << project_role
+      # u.roles << Role.find_by_name("qa_developer")
       u.save
     end
     u

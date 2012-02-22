@@ -18,13 +18,30 @@ class Admin::UsersController < InheritedResources::Base
 
     user = User.new(:email => params[:user][:email], :display_name => display_name, :password => passowrd)
 
-    role_id = params[:role_id]
-    user.update_role(role_id) if role_id
+    # role_id = params[:role_id]
+    # user.update_role(role_id) if role_id
 
     oracle_project_ids = params[:user][:oracle_project_ids]
     if oracle_project_ids
       oracle_project_ids.shift
       user.update_oracle_projects(oracle_project_ids) if oracle_project_ids.count > 0
+    end
+
+    uprs = params[:user][:projects_roles]
+    if uprs
+      upr_array = uprs.split("||")
+      upr_array.shift
+      if upr_array.count > 0
+        upr_array.each do |upr|
+          upr_str = upr.split(",")
+          role_id = upr_str[0]
+          project_id = upr_str[1]
+          project_id = nil if project_id == "0"
+          project_role = ProjectsRoles.find_by_role_id_and_project_id(role_id, project_id)
+          project_role = ProjectsRoles.new(:role_id => role_id, :project_id => project_id) if project_role.nil?
+          user.projects_roles << project_role
+        end
+      end
     end
 
     uads = params[:user][:user_ability_definitions]
@@ -60,7 +77,6 @@ class Admin::UsersController < InheritedResources::Base
     end
 
     uprs = params[:user][:projects_roles]
-    projects_roles = Array.new
     if uprs
       upr_array = uprs.split("||")
       upr_array.shift
@@ -72,11 +88,10 @@ class Admin::UsersController < InheritedResources::Base
           project_id = nil if project_id == "0"
           project_role = ProjectsRoles.find_by_role_id_and_project_id(role_id, project_id)
           project_role = ProjectsRoles.new(:role_id => role_id, :project_id => project_id) if project_role.nil?
-          projects_roles << project_role
+          user.projects_roles << project_role
         end
       end
     end
-    user.projects_roles = projects_roles
 
     uads = params[:user][:user_ability_definitions]
     if uads
