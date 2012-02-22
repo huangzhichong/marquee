@@ -1,6 +1,9 @@
 class ScreenShotsController < InheritedResources::Base
   def create
-    @screen_shot = ScreenShot.new(params[:screen_shot])
+    logger.info "------request parameters-------------"
+    logger.info "#{request.request_parameters}"
+    logger.info "-------------------"
+    @screen_shot = ScreenShot.new(request.request_parameters)
 
     acr = AutomationCaseResult.where("screen_shot LIKE ?","%#{@screen_shot.screen_shot_file_name}%").last
     if acr

@@ -16,13 +16,14 @@
 #
 
 class AutomationScript < ActiveRecord::Base
+  DEFAULT_TIME_OUT_LIMIT= 7200
   belongs_to :test_plan
   belongs_to :project
   belongs_to :owner, :class_name => "User", :foreign_key => "owner_id"
   has_many :automation_cases
   has_many :suite_selections
   has_many :test_suites, :through => :suite_selections
-  belongs_to :automation_driver
+  belongs_to :automation_driver_config
 
   def find_case_by_case_id(case_id)
     self.automation_cases.find_by_case_id(case_id)
