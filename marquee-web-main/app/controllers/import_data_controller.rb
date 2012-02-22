@@ -172,6 +172,7 @@ class ImportDataController < ApplicationController
         end
       end
     end
+
     get_test_steps = ("
     select ts.step_number as step_number,
     ts.action as step_action,
@@ -184,9 +185,11 @@ class ImportDataController < ApplicationController
     ")
     old_test_steps = LocalTestlink.connection.execute(get_test_steps)
     old_test_steps.each do |ts|
-      ts[3] = TestCase.where(:case_id =>ts[3]).first['id'] if TestCase.where(:case_id =>ts[3]).first != nil
-      ts = ts.collect{ |d| "'" + d.to_s.gsub("'","").gsub("\"","") + "'" }.join(",")
-        ActiveRecord::Base.connection.insert("INSERT INTO tc_steps (step_number,step_action,expected_result,test_case_id,test_link_id) VALUES (#{ts})")
+      if TestCase.where(:case_id =>ts[3]).first != nil
+        ts[3] = TestCase.where(:case_id =>ts[3]).first['id']
+        ts = ts.collect{ |d| "'" + d.to_s.gsub("\\","%5c").gsub("'","%27").gsub("\"","%22") + "'" }.join(",")
+          ActiveRecord::Base.connection.insert("INSERT INTO tc_steps (step_number,step_action,expected_result,test_case_id,test_link_id) VALUES (#{ts})")
+        end
       end
     end
   end
