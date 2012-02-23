@@ -16,6 +16,7 @@ class Admin::ProjectsController < InheritedResources::Base
       return
     end
 
+    params[:project][:name] = params[:project][:name].strip
     super
   end
 

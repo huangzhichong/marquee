@@ -15,6 +15,7 @@ class Admin::TestRoundsController < InheritedResources::Base
       return
     end
 
+    params[:test_round][:test_object] = params[:test_round][:test_object].strip
     super
   end
   
