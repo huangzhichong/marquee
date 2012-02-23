@@ -13,7 +13,7 @@
     .clearfix
       = f.label :name
       .input
-        = f.text_field :name, :class => "validate[required]"
+        = f.text_field :name, :class => "validate[required, funcCall[checkOnlySpace]]"
     .actions
       = f.submit 'Save', :class => 'btn primary'
       = link_to 'Back', admin_project_categories_path, :class => 'btn'
@@ -21,3 +21,9 @@
   $(function(){
     $("#new_project_category").validationEngine({promptPosition : "bottomRight", scroll: false});
   })
+  function checkOnlySpace(field, rules, i, options){
+    var patrn = /^(\s)+$/i;
+    if (patrn.test(field.val())) {
+        return "* Only space not allowed";
+    }
+  }
