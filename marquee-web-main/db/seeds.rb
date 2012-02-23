@@ -137,3 +137,10 @@ ac6 = AutomationCase.create({
   :priority => "P1",
   :automation_script => as2
 })
+
+ts = TestSuite.create({
+  :name => "BVT Suite"
+})
+ts.automation_scripts << as1
+ts.automation_scripts << as2
+ts.save!
