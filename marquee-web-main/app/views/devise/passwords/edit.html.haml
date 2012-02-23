@@ -11,11 +11,11 @@
     .clearfix
       = f.label :password, "New password"
       .input
-        = f.password_field :password, :class => "validate[required]"
+        = f.password_field :password, :class => "validate[required, funcCall[checkPassword]]"
     .clearfix
       = f.label :password_confirmation, "Confirm password"
       .input
-        = f.password_field :password_confirmation, :class => "validate[required,equals[user_password]]"
+        = f.password_field :password_confirmation, :class => "validate[required, funcCall[checkPassword], equals[user_password]]"
     .actions
       = f.submit "Change my password", :class => "btn primary"
 / = render :partial => "devise/shared/links"
@@ -23,3 +23,9 @@
   $(function(){
     $("form").validationEngine({promptPosition : "bottomRight", scroll: false});
   })
+  function checkPassword(field, rules, i, options){
+    var patrn = /^(\w){6,20}$/; 
+    if (!patrn.exec(field.val())) {
+        return "* Only character, number and underline allowed(6-20)";
+    }
+  }
