@@ -11,7 +11,8 @@ class ImportDataController < ApplicationController
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = owner_id
-      as.automation_driver_id  = AutomationDriver.find_or_create_by_name(script["auto_driver"]).id
+      adc =  AutomationDriverConfig.find_by_name(script["auto_driver"])
+      as.automation_driver_config_id = adc.id if adc
       as.time_out_limit = script["timeout"]
       case_array = ([]<<cases["case_id"]).flatten
       case_array.each do |c|
@@ -39,7 +40,8 @@ class ImportDataController < ApplicationController
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = owner_id
-      as.automation_driver_id  = AutomationDriver.find_or_create_by_name(script["auto_driver"]).id
+      adc =  AutomationDriverConfig.find_by_name(script["auto_driver"])
+      as.automation_driver_config_id = adc.id if adc
       as.time_out_limit = script["timeout"]
       case_array = ([]<<cases["case_id"]).flatten
       case_array.each do |c|
@@ -71,7 +73,8 @@ class ImportDataController < ApplicationController
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = User.find_or_create_default_by_email(script["owner"]).id
-      as.automation_driver_id  = AutomationDriver.find_or_create_by_name(script["auto_driver"]).id
+      adc =  AutomationDriverConfig.find_by_name(script["auto_driver"])
+      as.automation_driver_config_id = adc.id if adc
       as.time_out_limit = script["timeout"]
       as.save
       info_array = ([]<<cases["case_info"]).flatten
