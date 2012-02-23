@@ -14,6 +14,7 @@ class Admin::CiMappingsController < InheritedResources::Base
       return
     end
 
+    params[:ci_mapping][:ci_value] = params[:ci_mapping][:ci_value].strip
     super
   end
 end

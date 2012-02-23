@@ -41,6 +41,7 @@
 :javascript
   $(function(){
     $("#new_project").validationEngine({promptPosition : "bottomRight", scroll: false});
+    $(".edit_project").validationEngine({promptPosition : "bottomRight", scroll: false});
   });
   function checkOnlySpace(field, rules, i, options){
     var patrn = /^(\s)+$/i;

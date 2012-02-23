@@ -12,6 +12,7 @@ class Admin::ProjectCategoriesController < InheritedResources::Base
       return
     end
 
+    params[:project_category][:name] = params[:project_category][:name].strip
     super
   end
 end
