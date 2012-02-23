@@ -4,6 +4,19 @@ class Admin::TestSuitesController < InheritedResources::Base
   layout "admin"
   before_filter :authenticate_user!
   load_and_authorize_resource
+
+  def create
+    project = Project.find(params[:project_id])
+    test_suite_name = params[:test_suite][:name].strip
+    test_suites = project.test_suites.where("name = '" + test_suite_name + "'")
+    if test_suites.length > 0 then
+      flash[:error] = test_suite_name + " already exists"
+      render :action => "new"
+      return
+    end
+
+    super
+  end
   
   def search_automation_script
     project = Project.find(params[:project_id])

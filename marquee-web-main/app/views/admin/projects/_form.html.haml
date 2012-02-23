@@ -1,3 +1,6 @@
+-if flash[:error]
+  .alert-message.error= flash[:error].html_safe 
+
 = form_for ([:admin, @project]) do |f|
   -if @project.errors.any?
     #error_explanation
@@ -10,7 +13,7 @@
     .clearfix
       = f.label :name
       .input
-        = f.text_field :name
+        = f.text_field :name,  :class => "validate[required]"
     .clearfix
       = f.label :leader
       .input
@@ -34,3 +37,8 @@
     .actions
       = f.submit 'Save', :class => 'btn primary'
       = link_to 'Cancel', admin_projects_path, :class => 'btn'
+
+:javascript
+  $(function(){
+    $("#new_project").validationEngine({promptPosition : "bottomRight", scroll: false});
+  });

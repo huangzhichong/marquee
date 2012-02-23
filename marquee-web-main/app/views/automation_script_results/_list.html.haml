@@ -44,7 +44,7 @@
           - else
             = asr.triage_result
         %td
-          - if asr.result != "pass" && asr.result != "pending" && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin))
+          - if asr.result != "pass" && asr.result != "pending" && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && asr.triage_result == "N/A"
             = link_to "Rerun", "/automation_script_results/#{asr.id}/rerun", :remote => true, :class => "btn primary rerun_btn"
 
 = paginate automation_script_results
