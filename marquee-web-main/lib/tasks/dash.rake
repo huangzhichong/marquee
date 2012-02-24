@@ -101,42 +101,67 @@ namespace :dash do
       end
     end
 
+    resources = %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult)
+    abilities = %w(Manage Create Update)
+    abilities.each do |ability|
+      resources.each do |resource|
+        ability_definition = AbilityDefinition.new(:ability => ability, :resource => resource)
+        ability_definition.save
+      end
+    end
+
+    # qa_manager get all manage abilities
+    qa_manager_role.ability_definitions << AbilityDefinition.find_all_by_ability(:Manage)
+    qa_manager_role.ability_definitions.flatten
+    qa_manager_role.save
+    # qa_developer abilities
+    create_tr = AbilityDefinition.find_by_ability_and_resource(:Create, :TestRound)
+    update_ts = AbilityDefinition.find_by_ability_and_resource(:Update, :TestSuite)
+    update_asr = AbilityDefinition.find_by_ability_and_resource(:Update, :AutomationScriptResult)
+    qa_developer_role.ability_definitions << [create_tr, update_ts, update_asr]
+    qa_developer_role.ability_definitions.flatten
+    qa_developer_role.save
+    # qa abilities
+    qa_role.ability_definitions << create_tr
+    qa_role.ability_definitions.flatten
+    qa_role.save
+
     # todo: define ability for each role
-    %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult).each do |resource|
-      ad = AbilityDefinition.create
-      ad.role = qa_manager_role
-      ad.ability = :manage
-      ad.resource = resource
-      ad.save
-    end
+    # %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult).each do |resource|
+    #   ad = AbilityDefinition.create
+    #   ad.role = qa_manager_role
+    #   ad.ability = :manage
+    #   ad.resource = resource
+    #   ad.save
+    # end
 
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_role
-      ad.ability = :create
-      ad.resource = 'TestRound'
-    end 
-    ability_definition.save
+    # ability_definition = AbilityDefinition.new do |ad|
+    #   ad.role = qa_role
+    #   ad.ability = :create
+    #   ad.resource = 'TestRound'
+    # end 
+    # ability_definition.save
 
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_developer_role
-      ad.ability = :create
-      ad.resource = 'TestRound'
-    end 
-    ability_definition.save    
+    # ability_definition = AbilityDefinition.new do |ad|
+    #   ad.role = qa_developer_role
+    #   ad.ability = :create
+    #   ad.resource = 'TestRound'
+    # end 
+    # ability_definition.save    
 
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_developer_role
-      ad.ability = :update
-      ad.resource = 'TestSuite'
-    end
-    ability_definition.save
+    # ability_definition = AbilityDefinition.new do |ad|
+    #   ad.role = qa_developer_role
+    #   ad.ability = :update
+    #   ad.resource = 'TestSuite'
+    # end
+    # ability_definition.save
 
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_developer_role
-      ad.ability = :update
-      ad.resource = 'AutomationScriptResult'
-    end
-    ability_definition.save
+    # ability_definition = AbilityDefinition.new do |ad|
+    #   ad.role = qa_developer_role
+    #   ad.ability = :update
+    #   ad.resource = 'AutomationScriptResult'
+    # end
+    # ability_definition.save
 
     smart = User.find_by_email("smart.huang@activenetwork.com")
     jabco = User.find_by_email("jabco.shen@activenetwork.com")
