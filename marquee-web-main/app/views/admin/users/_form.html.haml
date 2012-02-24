@@ -1,4 +1,6 @@
-
+-if flash[:error]
+  .alert-message.error= flash[:error].html_safe 
+  
 = form_for([:admin, @user]) do |f|
   %fieldset
     %legend= title
@@ -14,11 +16,11 @@
       .clearfix
         = f.label :password
         .input
-          = f.password_field :password, :class => "validate[required]"
+          = f.password_field :password, :class => "validate[required, funcCall[checkPassword]]"
       .clearfix
         = f.label :confirm_password
         .input
-          %input{:id => "confirm_password", :type => "password", :class => "validate[required,equals[user_password]]"}
+          %input{:id => "confirm_password", :type => "password", :class => "validate[required, funcCall[checkPassword], equals[user_password]]"}
     .clearfix
       = f.label :time_card_project_permissions
       .input
@@ -52,7 +54,7 @@
     .clearfix
       %label Select roles
       .input
-        = select_tag "role_id", options_from_collection_for_select(Role.all, :id, :name, Role.find_by_name("qa").id), :id => "user_role", :class => "roles chzn-select"
+        = select_tag "role_id", options_from_collection_for_select(Role.all, :id, :name, (user_role = RolesUsers.find_by_user_id(@user.id)) ? user_role.role_id : Role.find_by_name("qa").id), :id => "user_role", :class => "roles chzn-select"
         = link_to 'Add specific abilities (Not required)', '#', :class => 'btn add_specific_abilities', :id => 'add_specific_abilities_btn'
     .clearfix.user-ability-definitions-box
       %label User ability definitions
@@ -160,4 +162,10 @@
         $('#tcpps').append($(elem));
       });
     });
-  })
+  });
+  function checkPassword(field, rules, i, options){
+    var patrn = /\s/i;
+    if (patrn.test(field.val())) {
+        return "* Invalid character";
+    }
+  }

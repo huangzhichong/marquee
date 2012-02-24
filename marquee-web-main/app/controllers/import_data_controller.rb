@@ -11,7 +11,8 @@ class ImportDataController < ApplicationController
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = owner_id
-      as.automation_driver_id  = AutomationDriver.find_or_create_by_name(script["auto_driver"]).id
+      adc =  AutomationDriverConfig.find_by_name(script["auto_driver"])
+      as.automation_driver_config_id = adc.id if adc
       as.time_out_limit = script["timeout"]
       case_array = ([]<<cases["case_id"]).flatten
       case_array.each do |c|
@@ -39,7 +40,8 @@ class ImportDataController < ApplicationController
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = owner_id
-      as.automation_driver_id  = AutomationDriver.find_or_create_by_name(script["auto_driver"]).id
+      adc =  AutomationDriverConfig.find_by_name(script["auto_driver"])
+      as.automation_driver_config_id = adc.id if adc
       as.time_out_limit = script["timeout"]
       case_array = ([]<<cases["case_id"]).flatten
       case_array.each do |c|
@@ -71,7 +73,8 @@ class ImportDataController < ApplicationController
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = User.find_or_create_default_by_email(script["owner"]).id
-      as.automation_driver_id  = AutomationDriver.find_or_create_by_name(script["auto_driver"]).id
+      adc =  AutomationDriverConfig.find_by_name(script["auto_driver"])
+      as.automation_driver_config_id = adc.id if adc
       as.time_out_limit = script["timeout"]
       as.save
       info_array = ([]<<cases["case_info"]).flatten
@@ -154,7 +157,6 @@ class ImportDataController < ApplicationController
             mtp.status = "completed"
             mtp.version = tp[3]
             mtp.plan_type = tp[5]
-            mtp.test_steps.delete_all
             mtp.save
             get_tc_query = "select * from old_test_cases where test_plan_id = '#{tp[0]}' limit 9999999"
             local_test_cases = LocalTestlink.connection.execute(get_tc_query)
@@ -173,6 +175,7 @@ class ImportDataController < ApplicationController
         end
       end
     end
+
     get_test_steps = ("
     select ts.step_number as step_number,
     ts.action as step_action,
@@ -185,9 +188,11 @@ class ImportDataController < ApplicationController
     ")
     old_test_steps = LocalTestlink.connection.execute(get_test_steps)
     old_test_steps.each do |ts|
-      ts[3] = TestCase.where(:case_id =>ts[3]).first['id'] if TestCase.where(:case_id =>ts[3]).first != nil
-      ts = ts.collect{ |d| "'" + d.to_s.gsub("'","").gsub("\"","") + "'" }.join(",")
-        ActiveRecord::Base.connection.insert("INSERT INTO tc_steps (step_number,step_action,expected_result,test_case_id,test_link_id) VALUES (#{ts})")
+      if TestCase.where(:case_id =>ts[3]).first != nil
+        ts[3] = TestCase.where(:case_id =>ts[3]).first['id']
+        ts = ts.collect{ |d| "'" + d.to_s.gsub("\\","%5c").gsub("'","%27").gsub("\"","%22") + "'" }.join(",")
+          ActiveRecord::Base.connection.insert("INSERT INTO tc_steps (step_number,step_action,expected_result,test_case_id,test_link_id) VALUES (#{ts})")
+        end
       end
     end
   end

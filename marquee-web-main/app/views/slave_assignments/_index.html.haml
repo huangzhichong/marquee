@@ -2,8 +2,7 @@
   .span10.columns
     %h2
       =link_to "Farm", "/slaves", :remote => true
-      \/
-      = @slave.name
+      %span=" / #{@slave.name}"
   .span6.columns#right
     %span.creation-info= "Created at #{in_time_zone(@slave.created_at)}"
 

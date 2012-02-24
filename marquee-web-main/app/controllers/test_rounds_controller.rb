@@ -7,8 +7,8 @@ class TestRoundsController < InheritedResources::Base
     create! do
       @test_round.set_default_value
       @test_round.save
-      @test_round.init_automation_script_result
-      LongTasks.new.delay.distribute_test_round_task(@test_round)
+      AutomationScriptResultsInitializer.createAutomationScriptResults(@test_round.id)
+      TestRoundDistributor.distribute(@test_round.id)
       project_test_rounds_path(@project)
     end
   end
@@ -26,5 +26,5 @@ class TestRoundsController < InheritedResources::Base
     @search = @project.test_rounds.order('id desc').search(params[:search])
     @test_rounds ||= @search.page(params[:page]).per(15)
   end
-  
+
 end

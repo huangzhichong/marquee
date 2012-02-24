@@ -2,8 +2,7 @@
   .span16.columns
     %h2
       =link_to "#{@test_plan.name}", project_test_plan_path(@project, @test_plan), :remote => true
-      =" / "
-      = @test_case.name
+      %span=" / #{@test_case.name}"
 
 = render 'brief_info'
 

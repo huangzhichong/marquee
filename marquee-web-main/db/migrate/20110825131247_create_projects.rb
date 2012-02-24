@@ -12,10 +12,10 @@ class CreateProjects < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :projects, :project_category_id
-    add_index :projects, :leader_id
+    add_index :projects, :project_category_id, :name => "idx_p_pc"
+    add_index :projects, :leader_id, :name => 'idx_p_l'
 
-    add_foreign_key :projects, :users, :column => 'leader_id'
-    add_foreign_key :projects, :project_categories, :dependent => :delete
+    add_foreign_key :projects, :users, :column => 'leader_id', :name => "fk_p_u"
+    add_foreign_key :projects, :project_categories, :dependent => :delete, :name => "fk_p_pc"
   end
 end

@@ -10,10 +10,10 @@ class CreateAutomationScripts < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :automation_scripts, :test_plan_id
-    add_index :automation_scripts, :project_id
+    add_index :automation_scripts, :test_plan_id, :name => "idx_as_tp"
+    add_index :automation_scripts, :project_id, :name => "idx_as_p"
 
-    add_foreign_key :automation_scripts, :test_plans, :dependent => :delete
-    add_foreign_key :automation_scripts, :projects, :dependent => :delete
+    add_foreign_key :automation_scripts, :test_plans, :dependent => :delete, :name => "fk_as_tp"
+    add_foreign_key :automation_scripts, :projects, :dependent => :delete, :name => "fk_as_p"
   end
 end

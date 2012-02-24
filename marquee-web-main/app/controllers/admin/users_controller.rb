@@ -18,6 +18,13 @@ class Admin::UsersController < InheritedResources::Base
 
     user = User.new(:email => params[:user][:email], :display_name => display_name, :password => passowrd)
 
+    if(User.where(:email => params[:user][:email].strip).length > 0)
+      flash[:error] = params[:user][:email].strip + " already exists"
+      @user.email = ""
+      render :action => "new"
+      return
+    end
+
     role_id = params[:role_id]
     user.update_role(role_id) if role_id
 
