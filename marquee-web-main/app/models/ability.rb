@@ -29,8 +29,9 @@ class Ability
 
     can :read, [TestRound, TestPlan, TestSuite, AutomationScript, AutomationCase, TestCase, AutomationScriptResult, AutomationCaseResult, Project, ProjectCategory]
 
-    user.user_ability_definitions.each do |uad|
+    user.ability_definitions.each do |uad|
       can uad.ability.to_sym, uad.resource.constantize
+      puts "#{uad.ability}, #{uad.resource}"
     end
 
     user.projects_roles.each do |project_role|
@@ -38,8 +39,9 @@ class Ability
       if role.name == 'admin'
         can :manage, :all
       else
-        AbilityDefinition.find_all_by_role_id(role.id).each do |ad|
+        role.ability_definitions.each do |ad|
           can ad.ability.to_sym, ad.resource.constantize
+          puts "#{ad.ability}, #{ad.resource}"
         end
       end
     end
