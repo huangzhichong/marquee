@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
   validates :email, :presence => true, :uniqueness => true
 
   has_many :projects
-  has_and_belongs_to_many :roles
+  # has_and_belongs_to_many :roles
   has_many :automation_scripts
   has_many :test_suites
   has_many :oracle_project_permissions
@@ -40,6 +40,7 @@ class User < ActiveRecord::Base
   has_many :user_ability_definitions
 
   has_and_belongs_to_many :projects_roles, :class_name => "ProjectsRoles"
+  has_and_belongs_to_many :ability_definitions
 
   def self.automator
     User.find_by_email('automator@marquee.com')
