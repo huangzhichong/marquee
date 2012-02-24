@@ -23,7 +23,8 @@ task :add_initial_adc => :environment do
 
   sc_username = "campsauto"
   sc_password = "!qaz2wsx1"
-
+  hf_svn_username = "subrina"
+  hf_svn_password = "active"
   p = Project.find_by_name('Camps')
   unless p.nil?
     bvt_source_paths = [
@@ -143,6 +144,16 @@ task :add_initial_adc => :environment do
     create_adc_for_project(p, '', rspec_driver, bvt_source_paths, bvt_main_path, 'svn', sc_username, sc_password)
   end
 
+  #adc for HF project 
+  p = Project.find_by_name("Florida")
+  unless p.nil?
+    bvt_source_paths = [
+      {"local" => "E:\\HF\\workspace\\Florida\\target\\classes", "remote" => "https://10.109.0.96/data/hfpa/ChengDuAutomation/Florida/target/classes"},
+      {"local" => "E:\\HF\\workspace\\Florida\\target\\test-classes", "remote" => "https://10.109.0.96/data/hfpa/ChengDuAutomation/Florida/target/test-classes"}
+    ]
+    bvt_main_path = "E:\\HF\\workspace\\Florida\\target\\test-classes\\"
+    create_adc_for_project(p, 'config', testng_driver, bvt_source_paths, bvt_main_path, 'svn', hf_svn_username, hf_svn_password)
+  end
 
   # adc for marquee project
   p = Project.find_by_name("Marquee_Lynn")
