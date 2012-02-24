@@ -15,6 +15,7 @@ class Admin::TestSuitesController < InheritedResources::Base
       return
     end
 
+    params[:test_suite][:name] = params[:test_suite][:name].strip
     super
   end
   

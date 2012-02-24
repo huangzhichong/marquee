@@ -69,6 +69,7 @@
 :javascript
   $(function(){
     $("#new_mail_notify_setting").validationEngine({promptPosition : "bottomRight", scroll: false});
+    $(".edit_mail_notify_setting").validationEngine({promptPosition : "bottomRight", scroll: false});
     $('#mnsgs-selected').children().each(function(idx, elem){
       $('#mnsg-ids').append($('#mail_notify_setting_mail_notify_group_ids_').clone().val($(elem).attr('value')));
     });

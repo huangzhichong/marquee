@@ -164,8 +164,8 @@
     });
   });
   function checkPassword(field, rules, i, options){
-    var patrn = /^(\w){6,20}$/; 
-    if (!patrn.exec(field.val())) {
-        return "* Only character, number and underline allowed(6-20)";
+    var patrn = /\s/i;
+    if (patrn.test(field.val())) {
+        return "* Invalid character";
     }
   }
