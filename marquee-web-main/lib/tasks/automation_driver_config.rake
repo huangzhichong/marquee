@@ -10,8 +10,12 @@ def create_adc_for_project(project, test_type, automation_driver, source_paths, 
   adc.save
 end
 
+
 desc "add initial automation driver configs"
 task :add_initial_adc => :environment do
+  # remove existing adc
+  AutomationDriverConfig.delete_all
+
   qtp_driver = AutomationDriver.create(:name => 'qtp', :version => '10.0')
   soapui_driver = AutomationDriver.create(:name => 'soapui', :version => '10.0')
   rspec_driver = AutomationDriver.create(:name => 'rspec', :version => '10.0')
@@ -141,12 +145,25 @@ task :add_initial_adc => :environment do
 
 
   # adc for marquee project
-  bvt_source_paths = [
-    {"local" => "C:\\QA Automation\\marquee-auto\\common", "remote" => "git://git.dev.activenetwork.com/aw-automation/marquee-auto.git"},
-    {"local" => "C:\\QA Automation\\marquee-auto\\testsuites", "remote" => "git://git.dev.activenetwork.com/aw-automation/marquee-auto.git"}
-  ]
-  bvt_main_path = "C:\\QA Automation\\marquee-auto"
+  p = Project.find_by_name("Marquee_Lynn")
+  unless p.nil?
+    bvt_source_paths = [
+      {"local" => "C:\\QA Automation\\marquee-auto\\common", "remote" => "git://git.dev.activenetwork.com/aw-automation/marquee-auto.git"},
+      {"local" => "C:\\QA Automation\\marquee-auto\\testsuites", "remote" => "git://git.dev.activenetwork.com/aw-automation/marquee-auto.git"}
+    ]
+    bvt_main_path = "C:\\QA Automation\\marquee-auto"
 
-  create_adc_for_project(p, "marquee", rspec_driver, bvt_source_paths, bvt_main_path, 'git', sc_username, sc_password)
+    create_adc_for_project(p, "", rspec_driver, bvt_source_paths, bvt_main_path, 'git', "", "")
+  end
 
+  p = Project.find_by_name("Marquee_Emma")
+  unless p.nil?
+    bvt_source_paths = [
+      {"local" => "C:\\QA Automation\\marquee-auto\\common", "remote" => "git://git.dev.activenetwork.com/aw-automation/marquee-auto.git"},
+      {"local" => "C:\\QA Automation\\marquee-auto\\testsuites", "remote" => "git://git.dev.activenetwork.com/aw-automation/marquee-auto.git"}
+    ]
+    bvt_main_path = "C:\\QA Automation\\marquee-auto"
+
+    create_adc_for_project(p, "", rspec_driver, bvt_source_paths, bvt_main_path, 'git', "", "")
+  end
 end
