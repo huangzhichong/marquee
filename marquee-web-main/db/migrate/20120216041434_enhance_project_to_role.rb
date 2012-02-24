@@ -27,30 +27,29 @@ class EnhanceProjectToRole < ActiveRecord::Migration
         add_index :projects_roles_users, :user_id, :name => "idx_pru_u"
         add_index :projects_roles_users, :projects_roles_id, :name => "idx_pru_pr"
 
-        add_foreign_key :projects_roles_users, :users, :name => "fk_pru_p"
+        add_foreign_key :projects_roles_users, :users, :name => "fk_pru_u"
         add_foreign_key :projects_roles_users, :projects_roles, :column => "projects_roles_id", :name => "fk_pru_pr"
       else
         say "Table :projects_roles_users already exists."
       end
 
       # create project_role for role and using nil as project 
-      role_cache = Hash.new
-      ProjectsRolesUsers.delete_all
-      RolesUsers.all.each do |ru|
-        project_role_id = nil
-        user_id = ru.user_id
-        if role_cache.has_key?(ru.role_id)
-          project_role_id = role_cache.fetch(ru.role_id)
-        else
-          project_role = ProjectsRoles.find_by_role_id_and_project_id(ru.role_id)
-          project_role = ProjectsRoles.new(:role_id => ru.role_id, :project_id => nil) if project_role.nil?
-          project_role.save
-          project_role_id = project_role.id
-          role_cache[ru.role_id] = project_role_id
-        end
-        project_role_user = ProjectsRolesUsers.new(:projects_roles_id => project_role_id, :user_id => ru.user_id)
-        project_role_user.save!
-      end
+      execute <<-SQL
+        DELETE FROM projects_roles_users
+      SQL
+
+      execute <<-SQL
+        INSERT INTO projects_roles(role_id)
+          SELECT DISTINCT(role_id) FROM roles_users
+      SQL
+
+      execute <<-SQL
+        INSERT INTO projects_roles_users(user_id, projects_roles_id)
+          SELECT ru.user_id, pr.id FROM roles_users ru
+            INNER JOIN projects_roles pr ON ru.role_id = pr.role_id      
+      SQL
+
+      # todo: delete table/model: roles_users
 
     rescue
       say "Error occurs. Deleting table :projects_roles_users and :projects_roles."
