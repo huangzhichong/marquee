@@ -49,7 +49,7 @@ class ExtractAbilityDefinitions < ActiveRecord::Migration
         AbilityDefinition.reset_column_information
         say "Initiate abilities"
         resources = %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult)
-        abilities = %w(Manage Create Update)
+        abilities = %w(manage create update)
         abilities.each do |ability|
           resources.each do |resource|
             ability_definition = AbilityDefinition.new(:ability => ability, :resource => resource)
@@ -61,14 +61,14 @@ class ExtractAbilityDefinitions < ActiveRecord::Migration
         # qa_manager get all manage abilities
         say "Assign appropriate ability_definitions to role"
         manager = Role.find_by_name(:qa_manager)
-        manager.ability_definitions << AbilityDefinition.find_all_by_ability(:Manage)
+        manager.ability_definitions << AbilityDefinition.find_all_by_ability(:manage)
         manager.ability_definitions.flatten
         manager.save
         # qa_developer abilities
         developer = Role.find_by_name(:qa_developer)
-        create_tr = AbilityDefinition.find_by_ability_and_resource(:Create, :TestRound)
-        update_ts = AbilityDefinition.find_by_ability_and_resource(:Update, :TestSuite)
-        update_asr = AbilityDefinition.find_by_ability_and_resource(:Update, :AutomationScriptResult)
+        create_tr = AbilityDefinition.find_by_ability_and_resource(:create, :TestRound)
+        update_ts = AbilityDefinition.find_by_ability_and_resource(:update, :TestSuite)
+        update_asr = AbilityDefinition.find_by_ability_and_resource(:update, :AutomationScriptResult)
         developer.ability_definitions << [create_tr, update_ts, update_asr]
         developer.ability_definitions.flatten
         developer.save

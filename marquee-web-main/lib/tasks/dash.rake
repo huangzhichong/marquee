@@ -102,7 +102,7 @@ namespace :dash do
     end
 
     resources = %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult)
-    abilities = %w(Manage Create Update)
+    abilities = %w(manage create update)
     abilities.each do |ability|
       resources.each do |resource|
         ability_definition = AbilityDefinition.new(:ability => ability, :resource => resource)
@@ -111,13 +111,13 @@ namespace :dash do
     end
 
     # qa_manager get all manage abilities
-    qa_manager_role.ability_definitions << AbilityDefinition.find_all_by_ability(:Manage)
+    qa_manager_role.ability_definitions << AbilityDefinition.find_all_by_ability(:manage)
     qa_manager_role.ability_definitions.flatten
     qa_manager_role.save
     # qa_developer abilities
-    create_tr = AbilityDefinition.find_by_ability_and_resource(:Create, :TestRound)
-    update_ts = AbilityDefinition.find_by_ability_and_resource(:Update, :TestSuite)
-    update_asr = AbilityDefinition.find_by_ability_and_resource(:Update, :AutomationScriptResult)
+    create_tr = AbilityDefinition.find_by_ability_and_resource(:create, :TestRound)
+    update_ts = AbilityDefinition.find_by_ability_and_resource(:update, :TestSuite)
+    update_asr = AbilityDefinition.find_by_ability_and_resource(:update, :AutomationScriptResult)
     qa_developer_role.ability_definitions << [create_tr, update_ts, update_asr]
     qa_developer_role.ability_definitions.flatten
     qa_developer_role.save
