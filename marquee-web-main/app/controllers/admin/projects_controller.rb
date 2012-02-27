@@ -40,6 +40,6 @@ class Admin::ProjectsController < InheritedResources::Base
       end
     end
 
-    redirect_to admin_projects_display_order_path
+    redirect_to admin_projects_path
   end
 end
