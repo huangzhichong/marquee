@@ -60,6 +60,14 @@
       var id = $(this).attr("id");
       var url = "/update_automation_script_result_triagge_result?id="+id+"&triage_result="+triage_result;
       var ele = $(this);
-      $.ajax({url:url,dataType:"json"}).success(function(data) { $("a[href='/automation_script_results/"+id+"/rerun']").remove(); ele.parent().parent().children().first().children("img").attr("src","/assets/"+data.asr_result+".png"); $("img.big-icon").attr("src","/assets/"+data.tr_result+".png"); ele.parent().html(triage_result);});
+      $.ajax({url:url,dataType:"json"}).success(function(data) {
+        if (data.result == "failed") {
+          alert("Updating triage result failed, something is wrong with the server. Please try again later.");
+        } else{
+          $("a[href='/automation_script_results/"+id+"/rerun']").remove();
+          ele.parent().parent().children().first().children("img").attr("src","/assets/"+data.asr_result+".png");
+          $("img.big-icon").attr("src","/assets/"+data.tr_result+".png"); ele.parent().html(triage_result);
+        }
+      });
     });
   });

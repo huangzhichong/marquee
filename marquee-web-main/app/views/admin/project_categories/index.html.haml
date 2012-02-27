@@ -18,7 +18,7 @@
         %td= project_category.name
         %td= in_time_zone(project_category.created_at)
         %td= in_time_zone(project_category.updated_at)
-        = render :partial => 'partial/table_actions', :locals => {:show_url => admin_project_category_path(project_category), :edit_url => edit_admin_project_category_path(project_category)}
+        = render :partial => 'partial/table_actions', :locals => {:show_url => admin_project_category_path(project_category), :edit_url => edit_admin_project_category_path(project_category), :no_view_action => true}
 %br
 
 = link_to 'New Project category', new_admin_project_category_path, :class => 'btn primary'
