@@ -139,7 +139,7 @@ task :add_initial_adc => :environment do
       {"local" => "C:\\QA Automation\\Membership\\trunk\\framework\\objects", "remote" => "https://fndsvn.dev.activenetwork.com/foundation/QA Automation/Membership/trunk/framework/objects"},
       {"local" => "C:\\QA Automation\\Membership\\trunk\\framework\\testsuites", "remote" => "https://fndsvn.dev.activenetwork.com/foundation/QA Automation/Membership/trunk/framework/testsuites"}
     ]
-    bvt_main_path = "C:\\QA Automation\\Membership\\trunk\framework\\"
+    bvt_main_path = "C:\\QA Automation\\Membership\\trunk\\framework\\"
 
     create_adc_for_project(p, '', rspec_driver, bvt_source_paths, bvt_main_path, 'svn', sc_username, sc_password)
   end
