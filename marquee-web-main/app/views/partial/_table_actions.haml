@@ -1,11 +1,14 @@
 - confirm_msg ||= 'Are you sure?'
 - no_delete_action ||= false
-
+- no_view_action ||= false
+- no_edit_action ||= false
 %td.table-actions
-  %a{:href => show_url}
-    %img{:src => asset_path('show.png'), :onmouseover => "this.src='#{asset_path 'show-hover.png'}'", :onmouseout => "this.src='#{asset_path 'show.png'}'"}
-  %a{:href => edit_url}
-    %img{:src => asset_path('edit.png'), :onmouseover => "this.src='#{asset_path 'edit-hover.png'}'", :onmouseout => "this.src='#{asset_path 'edit.png'}'"}
+  - unless no_view_action
+    %a{:href => show_url}
+      %img{:src => asset_path('show.png'), :onmouseover => "this.src='#{asset_path 'show-hover.png'}'", :onmouseout => "this.src='#{asset_path 'show.png'}'"}
+  - unless no_edit_action
+    %a{:href => edit_url}
+      %img{:src => asset_path('edit.png'), :onmouseover => "this.src='#{asset_path 'edit-hover.png'}'", :onmouseout => "this.src='#{asset_path 'edit.png'}'"}
   - unless no_delete_action
     %a{:href => show_url, "data-confirm" => confirm_msg, 'data-method' => "delete", :rel => "nofollow"}
       %img{:src => asset_path('cross.png'), :onmouseover => "this.src='#{asset_path 'cross-hover.png'}'", :onmouseout => "this.src='#{asset_path 'cross.png'}'"}
