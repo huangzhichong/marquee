@@ -3,6 +3,10 @@ class Admin::ProjectsController < InheritedResources::Base
   before_filter :authenticate_user!
   load_and_authorize_resource :only => [:new, :show, :index, :edit, :update]
 
+  def update
+    update!{ admin_projects_url }
+  end
+
   def create
     project_name = params[:project][:name].strip
     projects = Project.where("name = '" + project_name + "'")
