@@ -13,10 +13,11 @@
       %th Test Type
       %th Creator
       %th Created At
+      %th 
 
     - if test_suites.nil? or test_suites.count == 0
       %tr
-        %td{:colspan => "4"}
+        %td{:colspan => "5"}
           %h4 No data
     - else
       - test_suites.each do |test_suite|
