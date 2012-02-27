@@ -7,10 +7,11 @@
       %th Mail
       %th Test Types
       %th Groups
+      %th 
 
     - if @mail_notify_settings.nil? or @mail_notify_settings.count == 0
       %tr
-        %td{:colspan => "3"}
+        %td{:colspan => "4"}
           %h4 No data
     - else
       - @mail_notify_settings.each do |mail_notify_setting|
