@@ -71,7 +71,7 @@ class Admin::UsersController < InheritedResources::Base
       uad_array = uads.split("||")
       uad_array.shift
       if uad_array.count > 0
-        user.user_ability_definitions.delete_all 
+        user.user_ability_definitions.delete_all
         uad_array.each do |uad|
           iterms = uad.split(" ")
           ability = iterms[1]
@@ -82,7 +82,7 @@ class Admin::UsersController < InheritedResources::Base
     end
 
     user.save
-    redirect_to admin_user_path(user)
+    redirect_to admin_users_path
   end
 
   protected
