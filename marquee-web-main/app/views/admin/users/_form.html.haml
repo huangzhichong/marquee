@@ -132,7 +132,7 @@
       }
     });
     $('#add_uad_btn').click(function(){
-      var ability = $('#uad_ability option:selected').text();
+      var ability = $('#uad_ability option:selected').val();
       var resource = $('#uad_resource option:selected').text();
       var text = "Can "+ability+" "+resource;
       var uads_current_value = $("#user_ability_definitions").val();

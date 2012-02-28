@@ -6,7 +6,7 @@
         - @project_category.errors.full_messages.each do |msg|
           %li= msg
   %fieldset
-    %legend New Project Category
+    %legend= title
     .clearfix
       = f.label :name
       .input
