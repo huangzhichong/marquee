@@ -14,12 +14,14 @@
 
 :javascript
   $(function(){
-    $("body").data("reload","true");
+    var first_time = true;
+    var pre_url = null;
+
     var menu = $("a[data-remote]");
-    if ($.address.path()!=location.pathname&&(location.pathname.match("/coverage")!=null||location.pathname.match("/dre/overall")!=null)){
-      $.address.path(location.pathname);
-    }
-    $.address.crawlable(1).init(function(event){
+    //if ($.address.path()!=location.pathname&&(location.pathname.match("/coverage")!=null||location.pathname.match("/dre/overall")!=null)){
+      //$.address.path(location.pathname);
+    // }
+    $.address.state("/").init(function(event){
       menu.address();
     });
     $.address.internalChange(function(event){
@@ -28,10 +30,13 @@
         //$.getScript(event.value);
       }
     }).externalChange(function(event){
-      if ($("body").data("reload")=="true") {
-        $("body").data("reload","false");
+      if (first_time == true) {
+        first_time = false;
       }else{
-        $.getScript($.address.value());
+        if ((pre_url != "/") || (pre_url == "/" && $.address.value() == "/")) {
+          $.getScript($.address.value());
+        }
       }
+      pre_url = $.address.value();
     }).history(true);
   })
