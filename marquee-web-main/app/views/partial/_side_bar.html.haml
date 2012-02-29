@@ -3,7 +3,11 @@
     %input#hidden-item{:type => "hidden"}
     .project-name
       %img.project-icon{:src => @project.icon_image.url(:thumb)}
-      %h2= @project.name
+      - project_name = @project.name
+      - if @project.name && @project.name.length >= 10
+        - project_name = @project.name.slice(0,8).concat("...")
+
+      %h2{:title => @project.name}= project_name
       .clear
     %ul.menu
       %li.odd= link_to 'Coverage', coverage_project_path(@project), :remote => true
