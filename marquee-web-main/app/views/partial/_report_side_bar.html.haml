@@ -21,26 +21,32 @@
   %ul.play-menu{:style => "display:none;"}
     - @play_list.each do |play_item|
       %li= link_to play_item[:title], play_item[:path]
+
 :javascript
   $(function(){
-    $("body").data("reload","true");
+    var first_time = true;
+    var pre_url = null;
+
     var menu = $("a[data-remote]");
-    if ($.address!==undefined){  
-      if ($.address.path()!=location.pathname&&(location.pathname.match("/coverage")!=null||location.pathname.match("/dre/overall")!=null)){
-        $.address.path(location.pathname);
+    //if ($.address.path()!=location.pathname&&(location.pathname.match("/coverage")!=null||location.pathname.match("/dre/overall")!=null)){
+      //$.address.path(location.pathname);
+    // }
+    $.address.state("/").init(function(event){
+      menu.address();
+    });
+    $.address.internalChange(function(event){
+      $(this).attr("href","#");
+      if (event.value!=null) {
+        //$.getScript(event.value);
       }
-      $.address.crawlable(1).init(function(event){
-        menu.address();
-      }).internalChange(function(event){
-        if (event.value!=null) {
-          $.getScript(event.value);
-        }
-      }).externalChange(function(event){
-        if ($("body").data("reload")=="true") {
-          $("body").data("reload","false");
-        }else{
+    }).externalChange(function(event){
+      if (first_time == true) {
+        first_time = false;
+      }else{
+        if ((pre_url != "/") || (pre_url == "/" && $.address.value() == "/")) {
           $.getScript($.address.value());
         }
-      }).history(true);
-    }
+      }
+      pre_url = $.address.value();
+    }).history(true);
   })

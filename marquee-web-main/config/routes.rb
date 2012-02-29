@@ -91,6 +91,7 @@ MarqueeWebMain::Application.routes.draw do
 
   get "update_automation_script_result_triagge_result", :controller => 'automation_script_results', :action => 'update_triage_result'
   get "automation_script_results/:id/rerun", :controller => 'automation_script_results', :action => 'rerun'
+  get "automation_script_results/:id/stop", :controller => 'automation_script_results', :action => 'stop'
 
   get "dre/slide"
   get "dre/overall_slide"
