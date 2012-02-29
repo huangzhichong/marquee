@@ -29,7 +29,7 @@
         .row
           .columns.span7
             %select.as-select#automationscripts{:multiple => 'multiple'}
-              - @project.automation_scripts.reject{|as| @test_suite.automation_scripts.include?(as)}.each do |as|
+              - (@project.automation_scripts - @test_suite.automation_scripts).each do |as|
                 %option{:value => as.id}= as.name
             %a#add-all-button
               %span.multi-select-item-add.ui-icon
