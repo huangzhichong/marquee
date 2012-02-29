@@ -13,13 +13,11 @@ end
 
 desc "add initial automation driver configs"
 task :add_initial_adc => :environment do
-  # remove existing adc
-  AutomationDriverConfig.delete_all
 
-  qtp_driver = AutomationDriver.create(:name => 'qtp', :version => '10.0')
-  soapui_driver = AutomationDriver.create(:name => 'soapui', :version => '10.0')
-  rspec_driver = AutomationDriver.create(:name => 'rspec', :version => '10.0')
-  testng_driver = AutomationDriver.create(:name => 'testng', :version => '10.0')
+  qtp_driver = AutomationDriver.find_or_create_by_name_and_version(:name => 'qtp', :version => '10.0')
+  soapui_driver = AutomationDriver.find_or_create_by_name_and_version(:name => 'soapui', :version => '10.0')
+  rspec_driver = AutomationDriver.find_or_create_by_name_and_version(:name => 'rspec', :version => '10.0')
+  testng_driver = AutomationDriver.find_or_create_by_name_and_version(:name => 'testng', :version => '10.0')
 
   sc_username = "campsauto"
   sc_password = "!qaz2wsx1"
@@ -148,10 +146,22 @@ task :add_initial_adc => :environment do
   p = Project.find_by_name("Florida")
   unless p.nil?
     bvt_source_paths = [
+      {"local" => "E:\\HF\\workspace\\HFReferenceProject\\target\\classes", "remote" => "https://10.109.0.96/data/hfpa/ChengDuAutomation/HFReferenceProject/target/classes"},
       {"local" => "E:\\HF\\workspace\\Florida\\target\\classes", "remote" => "https://10.109.0.96/data/hfpa/ChengDuAutomation/Florida/target/classes"},
       {"local" => "E:\\HF\\workspace\\Florida\\target\\test-classes", "remote" => "https://10.109.0.96/data/hfpa/ChengDuAutomation/Florida/target/test-classes"}
     ]
     bvt_main_path = "E:\\HF\\workspace\\Florida\\target\\test-classes\\"
+    create_adc_for_project(p, 'config', testng_driver, bvt_source_paths, bvt_main_path, 'svn', hf_svn_username, hf_svn_password)
+  end
+
+  p = Project.find_by_name("Pennsylvania")
+  unless p.nil?
+    bvt_source_paths = [
+      {"local" => "E:\\HF\\workspace\\HFReferenceProject\\target\\classes", "remote" => "https://10.109.0.96/data/hfpa/ChengDuAutomation/HFReferenceProject/target/classes"},
+      {"local" => "E:\\HF\\workspace\\Pennsylvania\\target\\classes", "remote" => "https://10.109.0.96/data/hfpa/ChengDuAutomation/Pennsylvania/target/classes"},
+      {"local" => "E:\\HF\\workspace\\Pennsylvania\\target\\test-classes", "remote" => "https://10.109.0.96/data/hfpa/ChengDuAutomation/Pennsylvania/target/test-classes"}
+    ]
+    bvt_main_path = "E:\\HF\\workspace\\Pennsylvania\\target\\test-classes\\"
     create_adc_for_project(p, 'config', testng_driver, bvt_source_paths, bvt_main_path, 'svn', hf_svn_username, hf_svn_password)
   end
 
