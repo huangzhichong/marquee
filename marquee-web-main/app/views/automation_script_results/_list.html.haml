@@ -26,7 +26,10 @@
       %tr
         %td
           %img.ui-icon{:src => asset_path("#{asr.result}.png")}
-          %b= link_to "#{asr.name}", test_round_automation_script_result_path(test_round, asr), :remote => true
+          - asr_name = asr.name
+          - if asr.name and asr.name.length >= 30
+            - asr_name = asr.name.slice(0,30).concat("...")
+          %b= link_to "#{asr_name}", test_round_automation_script_result_path(test_round, asr), :remote => true, :title => asr.name
         %td= asr.state
         %td
           -sa = asr.slave_assignments.last

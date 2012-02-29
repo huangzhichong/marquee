@@ -5,7 +5,11 @@
       =link_to "Test Rounds", project_test_rounds_path(@test_round.project), :remote => true
       %span= " / "
       =link_to "#{@test_round.test_type.name}##{@test_round.id}", project_test_round_path(@test_round.project, @test_round), :remote => true
-      %span=" / #{@automation_script_result.automation_script.name}"
+      %span=" / "
+      - as_name = @automation_script_result.name
+      - if @automation_script_result.name && @automation_script_result.name.length >= 30
+        - as_name = @automation_script_result.name.slice(0,30).concat("...")
+      %span{:title => @automation_script_result.name}="#{as_name}"
 
 = render 'brief_info'
 = render :partial => "partial/service_info", :locals => {:asr => @automation_script_result}

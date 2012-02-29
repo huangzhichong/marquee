@@ -10,11 +10,13 @@
     .span4.columns
       %ul.value
         -left_values.each do |v|
-          - if v && v.length >= 30
+          - value = v
+          - if v && v.to_s.length >= 30
             - value = v.slice(0,30).concat("...")
-            %li.long-name{:title => v}= value
-          - else
+          - if v.start_with?('<select class="triage-result"')
             %li= v
+          - else
+            %li.long-name{:title => v}= value
   .span8.columns.brief-right
     .span3.columns
       %ul.title
@@ -23,4 +25,7 @@
     .span4.columns
       %ul.value
         -right_values.each do |v|
-          %li= v
+          - value = v
+          - if v && v.to_s.length >= 30
+            - value = v.slice(0,30).concat("...")
+          %li.long-name{:title => v}= value
