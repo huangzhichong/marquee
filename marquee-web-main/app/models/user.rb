@@ -40,7 +40,8 @@ class User < ActiveRecord::Base
   has_many :user_ability_definitions
 
   has_and_belongs_to_many :projects_roles, :class_name => "ProjectsRoles"
-  has_and_belongs_to_many :ability_definitions
+  # has_and_belongs_to_many :ability_definitions
+  has_many :ability_definitions, :class_name => "AbilityDefinitionsUsers", :dependent => :delete_all
 
   def self.automator
     User.find_by_email('automator@marquee.com')

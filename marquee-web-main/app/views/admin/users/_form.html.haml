@@ -47,7 +47,7 @@
       - val_uad = ""
       - if not(@user.ability_definitions.nil?) and not(@user.ability_definitions.empty?)
         - @user.ability_definitions.each do |uad|
-          - val_uad += "||Can #{uad.ability} #{uad.resource}"
+          - val_uad += "||Can #{uad.ability_definition.ability} #{uad.ability_definition.resource} in #{uad.project.nil? ? "All" : "#{uad.project.name}"}"
       = f.text_area :ability_definitions, {:value => val_uad}
       - val_upr = ""
       - if not(@user.projects_roles.nil?) and not (@user.projects_roles.empty?)
@@ -94,6 +94,7 @@
       .input
         = select_tag "uad abilities", options_for_select({"Manage" => "manage", "Create" => "create", "Update" => "update"}), :include_blank => true, :id => "uad_ability", :class => "ability chzn-select"
         = select_tag "uad resources", options_for_select({"TestRound" => "TestRound", "TestPlan" => "TestPlan", "TestSuite" => "TestSuite", "AutomationScript" => "AutomationScript", "AutomationCase" => "AutomationCase", "TestCase" => "TestCase", "AutomationScriptResult" => "AutomationScriptResult", "AutomationCaseResult" => "AutomationCaseResult", "Project" => "Project", "ProjectCategory" => "ProjectCategory"}), :include_blank => true, :id => "uad_resource", :class => "user-ability-definitions chzn-select"
+        = select_tag "uad projects", options_from_collection_for_select(Project.all, :id, :name), :id => "uad_project", :class => "ability chzn-select", :prompt => "All"
         = link_to 'Add', '#', :class => 'btn user-ability-definitions', :id => 'add_uad_btn'
         %table.abilities
           %tr
@@ -112,7 +113,7 @@
           - else
             - @user.ability_definitions.each do |uad|
               %tr.data-list
-                %td= "Can #{uad.ability} #{uad.resource}"
+                %td= "Can #{uad.ability_definition.ability} #{uad.ability_definition.resource} in #{uad.project.nil? ? "All" : "#{uad.project.name}"}"
                 %td
                   %a{:class => "delete_uad", :href => "#"}
                     %img{:src => asset_path("cross-hover.png")}
@@ -134,7 +135,8 @@
     $('#add_uad_btn').click(function(){
       var ability = $('#uad_ability option:selected').val();
       var resource = $('#uad_resource option:selected').text();
-      var text = "Can "+ability+" "+resource;
+      var project = $('#uad_project option:selected').text();
+      var text = "Can " + ability + " " + resource + " in " + project;
       var uads_current_value = $("#user_ability_definitions").val();
       if ($.trim(ability) == "" || $.trim(resource) == ""){
         alert("Please select an ability and an object!");
@@ -149,10 +151,10 @@
         var ele = $("#hidden_uad").clone();
         ele.children("td").first().html(text);
         ele.appendTo("table.abilities tbody").show("slow");
-        $("#user_ability_definitions").val(uads_current_value+"||"+text);
+        $("#user_ability_definitions").val(uads_current_value + "||" + text);
         ele.children("td").last().children(".delete_uad").bind('click', function(){
           $(this).parent().parent().fadeOut("slow");
-          var delete_uad = "||"+$(this).parent().prev().text();
+          var delete_uad = "||" + $(this).parent().prev().text();
           var new_uads_value = $("#user_ability_definitions").val().replace(delete_uad,"");
           $("#user_ability_definitions").val(new_uads_value);
         });
@@ -160,7 +162,7 @@
     });
     $('.delete_uad').click(function(){
       $(this).parent().parent().fadeOut("slow");
-      var delete_uad = "||"+$(this).parent().prev().text();
+      var delete_uad = "||" + $(this).parent().prev().text();
       var new_uads_value = $("#user_ability_definitions").val().replace(delete_uad,"");
       $("#user_ability_definitions").val(new_uads_value);
     });

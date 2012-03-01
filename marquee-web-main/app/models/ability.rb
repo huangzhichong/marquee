@@ -30,21 +30,18 @@ class Ability
 
     can :read, [TestRound, TestPlan, TestSuite, AutomationScript, AutomationCase, TestCase, AutomationScriptResult, AutomationCaseResult, Project]
 
-    puts "initialized user: #{user.inspect}"
-    puts "user projects roles: #{user.projects_roles.inspect}"
-
     if extra_args.nil? or extra_args.empty?
       set_role_ability_definitions(user.projects_roles)
+      set_user_ability_definitions(user.ability_definitions)
     else
       set_role_ability_definitions(user.projects_roles.select {|pr| pr.project_id.nil? || pr.project_id == extra_args[0]})
+      set_user_ability_definitions(user.ability_definitions.select {|ad| ad.project_id.nil? || ad.project_id == extra_args[0]})
     end
-    set_user_ability_definitions(user.ability_definitions)
 
   end
 
   def can?(action, subject, *extra_args)
 
-    puts "self: #{self}"
     unless extra_args.nil? and extra_args.empty?
       extra_arg0 = extra_args[0]
       if extra_arg0.respond_to? :has_key? and extra_arg0.has_key?(:project_id)
@@ -58,10 +55,8 @@ class Ability
     else
       @project_ability_cache = Hash.new if @project_ability_cache.nil?
       if @project_ability_cache.has_key? project_id
-        puts "get project_ability for project #{project_id} from cache"
         project_ability = @project_ability_cache[project_id]
       else
-        puts "create new project_ability for project #{project_id}"
         project_ability = Ability.new(@user, project_id)
         @project_ability_cache[project_id] = project_ability
       end
@@ -80,17 +75,17 @@ class Ability
       else
         role.ability_definitions.each do |ad|
           can ad.ability.to_sym, ad.resource.constantize
-          puts "#{ad.ability}, #{ad.resource}"
+          puts "from role: #{ad.ability}, #{ad.resource}"
         end
       end
     end
   end
 
-  def set_user_ability_definitions(ability_definitions)
-    ability_definitions.each do |uad|
-      can uad.ability.to_sym, uad.resource.constantize
-      puts "#{uad.ability}, #{uad.resource}"
-    end   
+  def set_user_ability_definitions(ability_definitions_users)
+    ability_definitions_users.each do |uad|
+      can uad.ability_definition.ability.to_sym, uad.ability_definition.resource.constantize
+      puts "from user: #{uad.ability_definition.ability}, #{uad.ability_definition.resource}" 
+    end
   end
 
 end

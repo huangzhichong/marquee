@@ -17,9 +17,6 @@ class Admin::UsersController < InheritedResources::Base
 
     user = User.new(:email => params[:user][:email], :display_name => display_name, :password => password)
 
-    # role_id = params[:role_id]j
-    # user.update_role(role_id) if role_id
-
     save_user!(user, params)
 
     redirect_to admin_users_path
@@ -28,9 +25,6 @@ class Admin::UsersController < InheritedResources::Base
   def update
     user = User.find(params[:id])
     user.display_name = params[:user][:display_name]
-
-    # role_id = params[:role_id]
-    # user.update_role(role_id) if role_id
 
     save_user!(user, params)
 
@@ -90,12 +84,21 @@ class Admin::UsersController < InheritedResources::Base
       uad_array = uads.split("||")
       uad_array.shift
       uad_array.each do |uad|
-        iterms = uad.split(" ")
-        ability = iterms[1]
-        resource = iterms[2]
+        ad_projects_array = uad.split("in")
+        ad = ad_projects_array[0]
+        project_name = ad_projects_array[1].strip
+        ad_array = ad.split(" ")
+        ability = ad_array[1]
+        resource = ad_array[2]
         ability_definition = AbilityDefinition.find_by_ability_and_resource(ability, resource)
         ability_definition = AbilityDefinition.new(:ability => ability, :resource => resource) if ability_definition.nil?
-        user.ability_definitions << ability_definition
+        if project_name != "All"
+          project_name = project_name.strip
+          project = Project.find_by_name(project_name.strip)
+          project_id = project.id
+        end
+        ability_definition_user = AbilityDefinitionsUsers.new(:ability_definition => ability_definition, :user_id => user.id, :project_id => project_id)
+        user.ability_definitions << ability_definition_user
       end
     end   
   end

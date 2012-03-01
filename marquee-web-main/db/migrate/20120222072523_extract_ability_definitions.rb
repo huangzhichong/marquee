@@ -20,16 +20,19 @@ class ExtractAbilityDefinitions < ActiveRecord::Migration
       end
 
       if !table_exists?(:ability_definitions_users)
-        create_table :ability_definitions_users, :id => false do |t|
+        create_table :ability_definitions_users do |t|
           t.references :user
           t.references :ability_definition
+          t.references :project
         end
 
         add_index :ability_definitions_users, :user_id, :name => "idx_adu_u"
         add_index :ability_definitions_users, :ability_definition_id, :name => "idx_adu_ad"
+        add_index :ability_definitions_users, :project_id, :name => "idx_adu_p"
 
         add_foreign_key :ability_definitions_users, :users, :name => "fk_adu_u"
         add_foreign_key :ability_definitions_users, :ability_definitions, :name => "fk_adu_ad"
+        add_foreign_key :ability_definitions_users, :projects, :name => "fk_adu_p"
       else
         say "Table :ability_definitions_users already exists."
       end     
