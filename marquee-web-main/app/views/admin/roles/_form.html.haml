@@ -52,7 +52,6 @@
 :javascript
   $(function(){
     $('#add_rad_btn').click(function(){
-      alert ("Before:" + $('#ability_definitions').val())
       var ability = $('#rad_ability option:selected').val();
       var resource = $('#rad_resource option:selected').text();
       var text = "Can " + ability + " " + resource;
@@ -70,22 +69,17 @@
         ele.appendTo("table.abilities tbody").show("slow");
         $("#ability_definitions").val(rads_current_value + "||" + text);
         ele.children("td").last().children(".delete_rad").bind('click', function(){
-          alert ("Before:" + $('#ability_definitions').val());
           $(this).parent().parent().fadeOut("slow");
           var delete_rad = "||" + $(this).parent().prev().text();
           var new_rads_value = $("#ability_definitions").val().replace(delete_rad,"");
           $("#ability_definitions").val(new_rads_value);
-          alert ("After:" + $('#ability_definitions').val());
         });
       }
-      alert ("After:" + $('#ability_definitions').val())
     });
     $('.delete_rad').click(function(){
-      alert ("Before:" + $('#ability_definitions').val())
       $(this).parent().parent().fadeOut("slow");
       var delete_rad = "||" + $(this).parent().prev().text();
       var new_rads_value = $("#ability_definitions").val().replace(delete_rad,"");
       $("#ability_definitions").val(new_rads_value);
-      alert ("After:" + $('#ability_definitions').val())
     });
   })

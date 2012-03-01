@@ -1,6 +1,5 @@
 .page-header
   %h1 Listing Projects
-
 %table.zebra-striped
   %tr
     %th Name
@@ -22,11 +21,11 @@
         %td= in_time_zone(project.created_at)
         %td= project.source_control_path
         - show_url, edit_url, delete_url = nil
-        - if can? :read, Project
+        - if can? :read, Project, {:project_id => project.id}
           - show_url = admin_project_path(project)
-        - if can? :update, Project
+        - if can? :update, Project, {:project_id => project.id}
           - edit_url = edit_admin_project_path(project)
-        - if can? :delete, Project
+        - if can? :delete, Project, {:project_id => project.id}
           - delete_url = admin_project_path(project)
         = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url}
 

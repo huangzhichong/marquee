@@ -1,7 +1,8 @@
 class Ability
   include CanCan::Ability
+  alias_method :framework_can?, :can?
 
-  def initialize(user)
+  def initialize(user, *extra_args)
     # Define abilities for the passed in user here. For example:
     #
     #   user ||= User.new # guest user (not logged in)
@@ -25,11 +26,54 @@ class Ability
     #
     # See the wiki for details: https://github.com/ryanb/cancan/wiki/Defining-Abilities
 
-    user ||= User.new # guest user
+    @user = user ||= User.new # guest user
 
     can :read, [TestRound, TestPlan, TestSuite, AutomationScript, AutomationCase, TestCase, AutomationScriptResult, AutomationCaseResult, Project]
 
-    user.projects_roles.each do |project_role|
+    puts "initialized user: #{user.inspect}"
+    puts "user projects roles: #{user.projects_roles.inspect}"
+
+    if extra_args.nil? or extra_args.empty?
+      set_role_ability_definitions(user.projects_roles)
+    else
+      set_role_ability_definitions(user.projects_roles.select {|pr| pr.project_id.nil? || pr.project_id == extra_args[0]})
+    end
+    set_user_ability_definitions(user.ability_definitions)
+
+  end
+
+  def can?(action, subject, *extra_args)
+
+    puts "self: #{self}"
+    unless extra_args.nil? and extra_args.empty?
+      extra_arg0 = extra_args[0]
+      if extra_arg0.respond_to? :has_key? and extra_arg0.has_key?(:project_id)
+        project_id = extra_arg0[:project_id]
+        extra_args.shift
+      end
+    end
+
+    if project_id.nil?
+      return framework_can? action, subject, extra_args
+    else
+      @project_ability_cache = Hash.new if @project_ability_cache.nil?
+      if @project_ability_cache.has_key? project_id
+        puts "get project_ability for project #{project_id} from cache"
+        project_ability = @project_ability_cache[project_id]
+      else
+        puts "create new project_ability for project #{project_id}"
+        project_ability = Ability.new(@user, project_id)
+        @project_ability_cache[project_id] = project_ability
+      end
+      return project_ability.can? action, subject
+    end
+
+  end  
+
+  private
+
+  def set_role_ability_definitions(projects_roles)
+    projects_roles.each do |project_role|
       role = project_role.role
       if role.name == 'admin'
         can :manage, :all
@@ -40,11 +84,13 @@ class Ability
         end
       end
     end
+  end
 
-    user.ability_definitions.each do |uad|
+  def set_user_ability_definitions(ability_definitions)
+    ability_definitions.each do |uad|
       can uad.ability.to_sym, uad.resource.constantize
       puts "#{uad.ability}, #{uad.resource}"
-    end
-
+    end   
   end
+
 end

@@ -1,7 +1,7 @@
 .page-header
   %h2 Listing Test Rounds
-  -if can? :create, TestRound and (@current_user.role?(:admin) or @current_user.role?(:qa_manager))
-    = link_to 'Schedule', new_admin_project_test_round_path(project), :class => 'btn primary'
+  -# if can? :create, TestRound, {:project_id => project.id} and (@current_user.role?(:admin) or @current_user.role?(:qa_manager))
+    =# link_to 'Schedule', new_admin_project_test_round_path(project), :class => 'btn primary'
   = form_for search, :url => admin_project_test_rounds_path, :remote => true do |f|
     %span.search
       = f.text_field :test_suite_test_type_name_or_test_environment_name_or_test_suite_name_or_test_object_contains, {:id => 'search'}
@@ -28,9 +28,9 @@
           %td= test_round.test_suite.name
           %td= test_round.test_object
           - show_url, edit_url, delete_url = nil
-          - if can? :update, Project
+          - if can? :update, Project, {:project_id => project.id}
             - edit_url = edit_admin_project_test_round_path(project, test_round)
-          - if can? :delete, Project
+          - if can? :delete, Project, {:project_id => project.id}
             - delete_url = admin_project_test_round_path(project, test_round)          
           = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url}
 
