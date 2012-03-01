@@ -21,10 +21,19 @@
         %td= project.leader.display_name
         %td= in_time_zone(project.created_at)
         %td= project.source_control_path
-        = render :partial => 'partial/table_actions', :locals => {:show_url => admin_project_path(project), :edit_url => edit_admin_project_path(project)}
+        - show_url, edit_url, delete_url = nil
+        - if can? :read, Project
+          - show_url = admin_project_path(project)
+        - if can? :update, Project
+          - edit_url = edit_admin_project_path(project)
+        - if can? :delete, Project
+          - delete_url = admin_project_path(project)
+        = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url}
 
 %br
 
-= link_to 'New Project', new_admin_project_path, :class => 'btn primary'
-= link_to 'Display Order', admin_projects_display_order_path, :class => 'btn'
+- if can? :create, Project
+  = link_to 'New Project', new_admin_project_path, :class => 'btn primary'
+- if can? :update, Project
+  = link_to 'Display Order', admin_projects_display_order_path, :class => 'btn'
 

@@ -14,7 +14,13 @@
     - @roles.each do |role|
       %tr
         %td= role.name
-        = render :partial => 'partial/table_actions', :locals => {:show_url => admin_role_path(role), :edit_url => edit_admin_role_path(role)}
+        - show_url, edit_url, delete_url = nil
+        - if can? :update, Role
+          - edit_url = edit_admin_role_path(role)
+        - if can? :delete, Role
+          - delete_url = admin_role_path(role)
+        = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url}
 %br
 
-= link_to 'New role', new_admin_role_path, :class => 'btn primary'
+- if can? :create, Role
+  = link_to 'New role', new_admin_role_path, :class => 'btn primary'

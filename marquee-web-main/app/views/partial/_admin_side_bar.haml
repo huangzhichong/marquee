@@ -1,15 +1,21 @@
 %ul.menu
-  %li
-    =link_to 'Project Categories', admin_project_categories_path
-  %li
-    =link_to 'Projects', admin_projects_path
-  %li
-    =link_to 'Roles', admin_roles_path
-  %li
-    =link_to 'Users', admin_users_path
-  %li
-    =link_to 'Time Card Members', admin_team_members_path, :remote => true
-  %li
-    =link_to 'DRE slide show', admin_dre_slide_show_configure_path
+  - if can? :read, ProjectCategory
+    %li
+      =link_to 'Project Categories', admin_project_categories_path
+  - if can? :read, Project
+    %li
+      =link_to 'Projects', admin_projects_path
+  - if can? :read, Role      
+    %li
+      =link_to 'Roles', admin_roles_path
+  - if can? :read, User    
+    %li
+      =link_to 'Users', admin_users_path
+  - if can? :update, TeamMember    
+    %li
+      =link_to 'Time Card Members', admin_team_members_path, :remote => true
+  - if can? :update, :dre_slide_show
+    %li
+      =link_to 'DRE slide show', admin_dre_slide_show_configure_path
 
 .clearfix

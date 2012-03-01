@@ -27,12 +27,7 @@ class Ability
 
     user ||= User.new # guest user
 
-    can :read, [TestRound, TestPlan, TestSuite, AutomationScript, AutomationCase, TestCase, AutomationScriptResult, AutomationCaseResult, Project, ProjectCategory]
-
-    user.ability_definitions.each do |uad|
-      can uad.ability.to_sym, uad.resource.constantize
-      puts "#{uad.ability}, #{uad.resource}"
-    end
+    can :read, [TestRound, TestPlan, TestSuite, AutomationScript, AutomationCase, TestCase, AutomationScriptResult, AutomationCaseResult, Project]
 
     user.projects_roles.each do |project_role|
       role = project_role.role
@@ -45,5 +40,11 @@ class Ability
         end
       end
     end
+
+    user.ability_definitions.each do |uad|
+      can uad.ability.to_sym, uad.resource.constantize
+      puts "#{uad.ability}, #{uad.resource}"
+    end
+
   end
 end

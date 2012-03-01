@@ -1,10 +1,10 @@
 = form_for ([:admin, @role]) do |f|
   - unless flash[:error].nil?
-    #error_explanation
-      %ul
+    .alert-message.error
+      .alert
         - flash[:error].messages.each_pair do |field, msgs|
           - msgs.each do |msg|
-            %li= field.to_s + " " + msg
+            = field.to_s.capitalize + " " + msg
   %fieldset
     %legend= title
     .clearfix

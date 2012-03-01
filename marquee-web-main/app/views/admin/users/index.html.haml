@@ -2,7 +2,8 @@
   %h2
     Users
     %smal= "#{User.count} in total"
-  = link_to 'New User', new_admin_user_path, :class => 'btn primary'
+  - if can? :create, User
+    = link_to 'New User', new_admin_user_path, :class => 'btn primary'
   = form_for @search, :url => admin_users_path, :html => {:method => :get} do |f|
     %span.search
       = f.text_field :email_or_display_name_or_oracle_projects_name_contains, {:id => 'search'}
@@ -22,6 +23,11 @@
       %tr
         %td= user.email
         %td= user.display_name
-        = render :partial => 'partial/table_actions', :locals => {:show_url => admin_user_path(user), :edit_url => edit_admin_user_path(user)}
+        - show_url, edit_url, delete_url = nil
+        - if can? :update, Project
+          - edit_url = edit_admin_user_path(user)
+        - if can? :delete, Project
+          - delete_url = admin_user_path(user)        
+        = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url}
 %br
 = paginate @users

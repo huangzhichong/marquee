@@ -1,7 +1,10 @@
 %td.table-actions
-  %a{:href => show_url}
-    %img{:src => asset_path('show.png'), :onmouseover => "this.src='#{asset_path 'show-hover.png'}'", :onmouseout => "this.src='#{asset_path 'show.png'}'"}
-  %a{:href => edit_url}
-    %img{:src => asset_path('edit.png'), :onmouseover => "this.src='#{asset_path 'edit-hover.png'}'", :onmouseout => "this.src='#{asset_path 'edit.png'}'"}
-  %a{:href => show_url, "data-confirm" => "Are you sure?", 'data-method' => "delete", :rel => "nofollow"}
-    %img{:src => asset_path('cross.png'), :onmouseover => "this.src='#{asset_path 'cross-hover.png'}'", :onmouseout => "this.src='#{asset_path 'cross.png'}'"}
+  - unless show_url.nil?
+    %a{:href => show_url}
+      %img{:src => asset_path('show.png'), :onmouseover => "this.src='#{asset_path 'show-hover.png'}'", :onmouseout => "this.src='#{asset_path 'show.png'}'"}
+  - unless edit_url.nil?      
+    %a{:href => edit_url}
+      %img{:src => asset_path('edit.png'), :onmouseover => "this.src='#{asset_path 'edit-hover.png'}'", :onmouseout => "this.src='#{asset_path 'edit.png'}'"}
+  - unless delete_url.nil?
+    %a{:href => delete_url, "data-confirm" => "Are you sure?", 'data-method' => "delete", :rel => "nofollow"}
+      %img{:src => asset_path('cross.png'), :onmouseover => "this.src='#{asset_path 'cross-hover.png'}'", :onmouseout => "this.src='#{asset_path 'cross.png'}'"}

@@ -14,7 +14,7 @@
       %th Test Environment
       %th Test Suite
       %th Test Object
-
+      %th
     - if test_rounds.nil? or test_rounds.count == 0
       %tr
         %td{:colspan => "5"}
@@ -27,7 +27,12 @@
           %td= test_round.test_environment.name
           %td= test_round.test_suite.name
           %td= test_round.test_object
-          = render :partial => 'partial/table_actions', :locals => {:show_url => admin_project_test_round_path(project, test_round), :edit_url => edit_admin_project_test_round_path(project, test_round)}
+          - show_url, edit_url, delete_url = nil
+          - if can? :update, Project
+            - edit_url = edit_admin_project_test_round_path(project, test_round)
+          - if can? :delete, Project
+            - delete_url = admin_project_test_round_path(project, test_round)          
+          = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url}
 
 = paginate test_rounds
 
