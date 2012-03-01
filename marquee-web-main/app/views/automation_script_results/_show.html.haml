@@ -7,8 +7,8 @@
       =link_to "#{@test_round.test_type.name}##{@test_round.id}", project_test_round_path(@test_round.project, @test_round), :remote => true
       %span=" / "
       - as_name = @automation_script_result.name
-      - if @automation_script_result.name && @automation_script_result.name.length >= 30
-        - as_name = @automation_script_result.name.slice(0,30).concat("...")
+      - if as_name && as_name.length >= 30
+        - as_name = as_name.slice(0,30).concat("...")
       %span{:title => @automation_script_result.name}="#{as_name}"
 
 = render 'brief_info'

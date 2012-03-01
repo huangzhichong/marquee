@@ -22,7 +22,11 @@
     - else
       - test_suites.each do |test_suite|
         %tr
-          %td= test_suite.name
+          %td
+            - ts_name = test_suite.name
+            - if ts_name && ts_name.length >= 100
+              - ts_name = ts_name.slice(0,100).concat("...")
+            %span{:title => test_suite.name}= ts_name
           %td= test_suite.test_type.name
           %td= test_suite.creator.display_name
           %td= in_time_zone(test_suite.created_at)

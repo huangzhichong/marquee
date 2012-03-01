@@ -36,10 +36,10 @@
         %td= tr.not_run_count
         %td= tr.creator.display_name
         %td
-          - v = tr.test_object 
-          - if tr.test_object and tr.test_object.to_s.length >= 30
-            - v = tr.test_object.slice(0,30).concat("...")
-          %span{:title => tr.test_object}= v
+          - test_object = tr.test_object 
+          - if test_object and test_object.length >= 30
+            - test_object = test_object.slice(0,30).concat("...")
+          %span{:title => tr.test_object}= test_object
         %td= tr.test_environment.name
         %td= in_time_zone(tr.start_time)
         %td= in_time_zone(tr.end_time)
