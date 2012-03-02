@@ -3,6 +3,10 @@ class Admin::ProjectsController < InheritedResources::Base
   before_filter :authenticate_user!
   load_and_authorize_resource :only => [:new, :show, :index, :edit, :update]
 
+  def update
+    update!{ admin_projects_url }
+  end
+
   def create
     project_name = params[:project][:name].strip
     projects = Project.where("name = '" + project_name + "'")
@@ -11,12 +15,13 @@ class Admin::ProjectsController < InheritedResources::Base
       flash[:error] = project_name + " already exists"
       @project = project = Project.new(:name => project_name, :leader_id => params[:project][:leader_id],
         :test_link_plan => params[:project][:test_link_plan],
-        :source_control_path => params[:project][:source_control_path])
+        :source_control_path => params[:project][:source_control_path],)
       render :action => "new"
       return
     end
 
     params[:project][:name] = params[:project][:name].strip
+    params[:project][:display_order] = Project.count
     super
   end
 
@@ -35,6 +40,6 @@ class Admin::ProjectsController < InheritedResources::Base
       end
     end
 
-    redirect_to admin_projects_display_order_path
+    redirect_to admin_projects_path
   end
 end

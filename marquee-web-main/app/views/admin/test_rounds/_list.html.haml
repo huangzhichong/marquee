@@ -1,7 +1,5 @@
 .page-header
   %h2 Listing Test Rounds
-  -if can? :create, TestRound and (@current_user.role?(:admin) or @current_user.role?(:qa_manager))
-    = link_to 'Schedule', new_admin_project_test_round_path(project), :class => 'btn primary'
   = form_for search, :url => admin_project_test_rounds_path, :remote => true do |f|
     %span.search
       = f.text_field :test_suite_test_type_name_or_test_environment_name_or_test_suite_name_or_test_object_contains, {:id => 'search'}
@@ -14,10 +12,11 @@
       %th Test Environment
       %th Test Suite
       %th Test Object
+      %th
 
     - if test_rounds.nil? or test_rounds.count == 0
       %tr
-        %td{:colspan => "5"}
+        %td{:colspan => "6"}
           %h4 No data
     - else
       - test_rounds.each do |test_round|
@@ -25,9 +24,17 @@
           %td= test_round.id
           %td= test_round.test_suite.test_type.name
           %td= test_round.test_environment.name
-          %td= test_round.test_suite.name
-          %td= test_round.test_object
-          = render :partial => 'partial/table_actions', :locals => {:show_url => admin_project_test_round_path(project, test_round), :edit_url => edit_admin_project_test_round_path(project, test_round)}
+          %td
+            - ts_name = test_round.test_suite.name
+            - if ts_name && ts_name.length >= 30
+              - ts_name = ts_name.slice(0,30).concat("...")
+            %span{:title => test_round.test_suite.name}= ts_name
+          %td
+            - test_object = test_round.test_object
+            - if test_object && test_object.length >= 40
+              - test_object = test_object.slice(0,40).concat("...")
+            %span{:title => test_round.test_object}= test_object
+          = render :partial => 'partial/table_actions', :locals => {:show_url => admin_project_test_round_path(project, test_round), :no_edit_action => true, :no_view_action => true}
 
 = paginate test_rounds
 

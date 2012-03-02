@@ -148,9 +148,12 @@ class DreController < ApplicationController
     if request.remote_ip != '127.0.0.1'
       render :text => "Not allowed to generate from anywhere other than the server itself."
     else
-    import_data_from_jira
-
-    render :nothing => true
+      # now the data importing and calculation has been moved out to other server, we only reload the cache here.
+      cache_to_delete = ['overall_dre_history', 'membership_dre_history', 'framework_dre_history', 'platform_dre_history', 'endurance_dre_history', 'camps_dre_history', 'sports_dre_history', 'swimming_dre_history', 'overall_dre', 'endurance_dre', 'camps_dre', 'sports_dre', 'framework_dre', 'platform_dre', 'membership_dre', 'swimming_dre', 'ams_dre', 'els_dre', 'mobile_dre', 'commerce_dre', 'email_dre', 'fus_aus_dre', 'endurance_bugs_by_severity', 'camps_bugs_by_severity', 'sports_bugs_by_severity', 'swimming_bugs_by_severity', 'membership_bugs_by_severity', 'framework_bugs_by_severity', 'platform_bugs_by_severity', 'endurance_bugs_buy_who_found', 'camps_bugs_by_who_found', 'sports_bugs_by_who_found', 'swimming_bugs_by_who_found', 'membership_bugs_by_who_found', 'platform_bugs_by_who_found', 'framework_bugs_by_who_found', 'endurance_tech_debt', 'camps_tech_debt', 'sports_tech_debt', 'swimming_tech_debt', 'membership_tech_debt', 'platform_tech_debt', 'framework_tech_debt', 'ext_found_bugs', 'ext_bugs_all', 'open_p0_bugs', 'open_p1_bugs', 'open_p2_bugs', 'open_p3_bugs', 'open_p4_bugs']
+      cache_to_delete.each do |name|
+        Rails.cache.delete(name)
+      end
+      render :nothing => true
     end
   end
 

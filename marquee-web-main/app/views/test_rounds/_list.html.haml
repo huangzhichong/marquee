@@ -35,7 +35,11 @@
         %td= tr.failed_count
         %td= tr.not_run_count
         %td= tr.creator.display_name
-        %td= tr.test_object
+        %td
+          - test_object = tr.test_object 
+          - if test_object and test_object.length >= 30
+            - test_object = test_object.slice(0,30).concat("...")
+          %span{:title => tr.test_object}= test_object
         %td= tr.test_environment.name
         %td= in_time_zone(tr.start_time)
         %td= in_time_zone(tr.end_time)
