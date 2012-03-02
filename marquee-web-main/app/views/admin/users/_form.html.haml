@@ -1,4 +1,6 @@
-
+-if flash[:error]
+  .alert-message.error= flash[:error].html_safe 
+  
 = form_for([:admin, @user]) do |f|
   %fieldset
     %legend= title
@@ -14,11 +16,11 @@
       .clearfix
         = f.label :password
         .input
-          = f.password_field :password, :class => "validate[required]"
+          = f.password_field :password, :class => "validate[required, funcCall[checkPassword]]"
       .clearfix
         = f.label :confirm_password
         .input
-          %input{:id => "confirm_password", :type => "password", :class => "validate[required,equals[user_password]]"}
+          %input{:id => "confirm_password", :type => "password", :class => "validate[required, funcCall[checkPassword], equals[user_password]]"}
     .clearfix
       = f.label :time_card_project_permissions
       .input
@@ -249,4 +251,10 @@
         $('#tcpps').append($(elem));
       });
     });
-  })
+  });
+  function checkPassword(field, rules, i, options){
+    var patrn = /\s/i;
+    if (patrn.test(field.val())) {
+        return "* Invalid character";
+    }
+  }

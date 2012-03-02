@@ -39,12 +39,12 @@
         %td= in_time_zone(asr.start_time)
         %td= in_time_zone(asr.end_time)
         %td
-          - if asr.end? && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && asr.result!="pass" && asr.triage_result == "N/A"
+          - if asr.end? && asr.result!="pass" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
             = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error"}, asr.triage_result), :id => asr.id, :class => "triage-result"
           - else
             = asr.triage_result
         %td
-          - if asr.result != "pass" && asr.result != "pending" && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin))
+          - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
             = link_to "Rerun", "/automation_script_results/#{asr.id}/rerun", :remote => true, :class => "btn primary rerun_btn"
 
 = paginate automation_script_results
@@ -60,6 +60,6 @@
       var id = $(this).attr("id");
       var url = "/update_automation_script_result_triagge_result?id="+id+"&triage_result="+triage_result;
       var ele = $(this);
-      $.ajax({url:url,dataType:"json"}).success(function(data) { alert("Modifying "+data.result); ele.parent().parent().children().first().children("img").attr("src","/assets/"+data.asr_result+".png"); $("img.big-icon").attr("src","/assets/"+data.tr_result+".png"); ele.parent().html(triage_result);});
+      $.ajax({url:url,dataType:"json"}).success(function(data) { $("a[href='/automation_script_results/"+id+"/rerun']").remove(); ele.parent().parent().children().first().children("img").attr("src","/assets/"+data.asr_result+".png"); $("img.big-icon").attr("src","/assets/"+data.tr_result+".png"); ele.parent().html(triage_result);});
     });
   });

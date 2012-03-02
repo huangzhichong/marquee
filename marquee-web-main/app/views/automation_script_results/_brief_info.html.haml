@@ -1,6 +1,6 @@
 - left_titles = ['Result:', 'Start Time:', 'End Time:', 'Duration:', 'Triage Result:']
 - triage = nil
-- if @automation_script_result.end? && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && @automation_script_result.result!="pass" && @automation_script_result.triage_result == "N/A"
+- if @automation_script_result.end? && @automation_script_result.result!="pass" && @automation_script_result.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => @automation_script_result.test_round.project.id})
   - triage = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error"}, @automation_script_result.triage_result), :id => @automation_script_result.id, :class => "triage-result"
 - else
   - triage = @automation_script_result.triage_result
@@ -16,6 +16,6 @@
       var id = $(this).attr("id");
       var url = "/update_automation_script_result_triagge_result?id="+id+"&triage_result="+triage_result;
       var ele = $(this);
-      $.ajax({url:url,dataType:"json"}).success(function(data) { alert("Modifying "+data.result); $("img.big-icon").attr("src","/assets/"+data.asr_result+".png"); ele.parent().html(triage_result);});
+      $.ajax({url:url,dataType:"json"}).success(function(data) { $("img.big-icon").attr("src","/assets/"+data.asr_result+".png"); ele.parent().html(triage_result);});
     });
   });

@@ -12,16 +12,27 @@ class Admin::UsersController < InheritedResources::Base
     end
     display_name = "#{names.first.capitalize} #{names.last.capitalize}"
 
+<<<<<<< HEAD
     password = params[:user][:password]
     password = "111111" if password.nil? or password.strip.empty?
+=======
+    passowrd = params[:user][:password]
+    password = "111111" if params[:user][:password] or params[:user][:password] == ""
 
-    user = User.new(:email => params[:user][:email], :display_name => display_name, :password => password)
+    user = User.new(:email => params[:user][:email], :display_name => display_name, :password => passowrd)
 
-    if User.find_all_by_email(params[:user][:email].strip).length >0
+    if(User.where(:email => params[:user][:email].strip).length > 0)
       flash[:error] = params[:user][:email].strip + " already exists"
       @user.email = ""
-      render :action => "new" and return
+      render :action => "new"
+      return
     end
+
+    role_id = params[:role_id]
+    user.update_role(role_id) if role_id
+>>>>>>> develop
+
+    user = User.new(:email => params[:user][:email], :display_name => display_name, :password => password)
 
     save_user!(user, params)
 
