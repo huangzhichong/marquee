@@ -172,14 +172,12 @@
       var role = $('#upr_role option:selected').text();
       if (role == "admin") {
         $('#upr_project').children().first().attr("selected",true);
-        $('#upr_project_chzn span').text($('#upr_project').children().first().text());
-        $('#upr_project_chzn ul').children().each(function(i) {
-          if (i == 0) {
-            $(this).toggleClass('result-selected', true);
-          } else {
-            $(this).toggleClass('result-selected', false);
-          }
-        });
+        $('#upr_project').trigger("liszt:updated");
+        $('#upr_project_chzn .chzn-drop').toggle(false);
+        $('#upr_project_chzn a div').toggle(false);
+      } else {
+        $('#upr_project_chzn .chzn-drop').toggle(true);
+        $('#upr_project_chzn a div').toggle(true);       
       }
     });
     $('#add_upr_btn').click(function(){
