@@ -2,7 +2,11 @@
   .span10.columns
     %h2
       =link_to "Test Suites", project_test_suites_path(@project)
-      %span= " / #{@test_suite.name}##{@test_suite.id}"
+      %span= " / "
+      - ts_name = @test_suite.name
+      - if ts_name && ts_name.length >= 30
+        - ts_name = ts_name.slice(0,30).concat("...")
+      %span{:title => @test_suite.name}= "#{ts_name}"
   .span6.columns#right
     %span.creation-info= "Created by #{@test_suite.creator.display_name}"
 

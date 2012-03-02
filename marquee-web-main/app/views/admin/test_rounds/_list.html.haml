@@ -24,9 +24,17 @@
           %td= test_round.id
           %td= test_round.test_suite.test_type.name
           %td= test_round.test_environment.name
-          %td= test_round.test_suite.name
-          %td= test_round.test_object
-          = render :partial => 'partial/table_actions', :locals => {:show_url => admin_project_test_round_path(project, test_round), :edit_url => edit_admin_project_test_round_path(project, test_round), :no_view_action => true}
+          %td
+            - ts_name = test_round.test_suite.name
+            - if ts_name && ts_name.length >= 30
+              - ts_name = ts_name.slice(0,30).concat("...")
+            %span{:title => test_round.test_suite.name}= ts_name
+          %td
+            - test_object = test_round.test_object
+            - if test_object && test_object.length >= 40
+              - test_object = test_object.slice(0,40).concat("...")
+            %span{:title => test_round.test_object}= test_object
+          = render :partial => 'partial/table_actions', :locals => {:show_url => admin_project_test_round_path(project, test_round), :no_edit_action => true, :no_view_action => true}
 
 = paginate test_rounds
 

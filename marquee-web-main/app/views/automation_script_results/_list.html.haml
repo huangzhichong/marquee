@@ -25,10 +25,12 @@
     -automation_script_results.each do |asr|
       %tr
         %td
-          %img.ui-icon{:src => asset_path("#{asr.result}.png")}
+          - icon_name = asr.result
+          - icon_name = asr.state if asr.state == "stopping"
+          %img.ui-icon{:src => asset_path("#{icon_name}.png")}
           - asr_name = asr.name
-          - if asr.name and asr.name.length >= 30
-            - asr_name = asr.name.slice(0,30).concat("...")
+          - if asr_name and asr_name.length >= 30
+            - asr_name = asr_name.slice(0,30).concat("...")
           %b= link_to "#{asr_name}", test_round_automation_script_result_path(test_round, asr), :remote => true, :title => asr.name
         %td= asr.state
         %td
@@ -48,9 +50,14 @@
             = asr.triage_result
         %td
           - if asr.result != "pass" && asr.result != "pending" && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && asr.triage_result == "N/A"
-            = link_to "Rerun", "/automation_script_results/#{asr.id}/rerun", :remote => true, :class => "btn primary rerun_btn"
+            %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun"}
           - if asr.result == "pending" && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && asr.slave_assignments.last && asr.slave_assignments.last.slave
-            = link_to "Stop", "/automation_script_results/#{asr.id}/stop", :remote => true, :class => "btn primary rerun_btn"
+            - stop_class = "btn primary rerun_btn"
+            - value = "Stop"
+            - if asr.state == "stopping"
+              - stop_class = "btn primary rerun_btn disabled" 
+              - value = "Stopping"
+            %input{:type => "button", :value => value, "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => stop_class}
 
 = paginate automation_script_results
 
@@ -60,6 +67,12 @@
       $(this).addClass("disabled");
     });
     
+    $("input.rerun_btn").click(function(){
+      $.ajax({url: $(this).attr("remote-data")}).success(function(data) {
+        location.reload();
+      })
+    });
+
     $(".triage-result").change(function(){
       var triage_result = $("option:selected",this).text();
       var id = $(this).attr("id");
@@ -69,7 +82,7 @@
         if (data.result == "failed") {
           alert("Updating triage result failed, something is wrong with the server. Please try again later.");
         } else{
-          $("a[href='/automation_script_results/"+id+"/rerun']").remove();
+          $("input[remote-data='/automation_script_results/"+id+"/rerun']").remove();
           ele.parent().parent().children().first().children("img").attr("src","/assets/"+data.asr_result+".png");
           $("img.big-icon").attr("src","/assets/"+data.tr_result+".png"); ele.parent().html(triage_result);
         }

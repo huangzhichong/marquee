@@ -12,11 +12,11 @@
     .clearfix
       = f.label :test_suite
       .input
-        = f.select :test_suite_id, options_from_collection_for_select(@project.test_suites, :id, :name)
+        = f.select :test_suite_id, options_from_collection_for_select(@project.test_suites, :id, :name), {}, {:class => "chzn-select"}
     .clearfix
       = f.label :test_environment
       .input
-        = f.select :test_environment_id, options_from_collection_for_select(TestEnvironment.all, :id, :name)
+        = f.select :test_environment_id, options_from_collection_for_select(TestEnvironment.all, :id, :name), {}, {:class => "chzn-select"}
     = f.hidden_field :creator_id, :value => current_user.id
     .actions
       = f.submit 'Schedule!', :class => 'btn primary', :id => 'schedule_commit_button'

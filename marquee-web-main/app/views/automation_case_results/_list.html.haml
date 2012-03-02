@@ -25,8 +25,8 @@
           = link_to "#{automation_case_result.case_id}", automation_script_result_automation_case_result_path(automation_script_result, automation_case_result), :remote => true
         %td
           - acr_name = automation_case_result.name
-          - if automation_case_result.name and automation_case_result.name.length >= 60
-            - acr_name = automation_case_result.name.slice(0,60).concat("...")
+          - if acr_name and acr_name.length >= 60
+            - acr_name = acr_name.slice(0,60).concat("...")
           %span{:title => automation_case_result.name}= acr_name
         %td= automation_case_result.version
         %td= automation_case_result.priority

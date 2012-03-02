@@ -36,6 +36,8 @@ class AutomationScriptResultsController < InheritedResources::Base
 
   def stop
     asr = AutomationScriptResult.find(params[:id])
+    asr.state = "stopping"
+    asr.save
     sa = asr.slave_assignments.last if asr
     SlaveAssignmentsHelper.send_slave_assignment_to_list sa, "stop" if sa
     render :nothing => true

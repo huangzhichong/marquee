@@ -4,8 +4,8 @@
     .project-name
       %img.project-icon{:src => @project.icon_image.url(:thumb)}
       - project_name = @project.name
-      - if @project.name && @project.name.length >= 10
-        - project_name = @project.name.slice(0,8).concat("...")
+      - if project_name && project_name.length >= 10
+        - project_name = project_name.slice(0,8).concat("...")
 
       %h2{:title => @project.name}= project_name
       .clear
