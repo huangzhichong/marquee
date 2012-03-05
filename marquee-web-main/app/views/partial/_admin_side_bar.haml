@@ -8,6 +8,9 @@
   - if can? :read, Browser
     %li
       = link_to 'Browsers', admin_browsers_path
+  - if can? :read, OperationSystem
+    %li
+      = link_to 'Operation Systems', admin_operation_systems_path
   - if can? :read, Role
     %li
       =link_to 'Roles', admin_roles_path

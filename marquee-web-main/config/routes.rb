@@ -7,6 +7,7 @@ MarqueeWebMain::Application.routes.draw do
 
     get '/', :controller => 'projects', :action => 'index'
     resources :browsers
+    resources :operation_systems
 
     resources :project_categories, :users, :roles
     resources :team_members
