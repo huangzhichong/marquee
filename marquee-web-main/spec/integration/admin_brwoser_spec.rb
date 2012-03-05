@@ -61,4 +61,26 @@ describe 'browser admin page' do
       page.should have_link("", {:href => "/admin/browsers/#{b.id}", "data-method" => 'delete'})
     end
   end
+
+  it "should not allow empty browser name or version" do
+    visit '/admin/browsers'
+    page.click_link "New Browser"
+    fill_in 'browser[version]', :with => '3.5'
+    click_button 'Save'
+    page.should have_content("Name can't be blank")
+    fill_in 'browser[version]', :with => ''
+    fill_in 'browser[name]', :with => 'Firefox'
+    click_button 'Save'
+    page.should have_content("Version can't be blank")
+  end
+
+  it "should not allow create duplicate browser combinations" do
+    Browser.create!(:name => "IE", :version => "6.0")
+    visit '/admin/browsers'
+    page.click_link "New Browser"
+    fill_in 'browser[name]', :with => "IE"
+    fill_in 'browser[version]', :with => "6.0"
+    click_button 'Save'
+    page.should have_content("Version has already been taken")
+  end
 end
