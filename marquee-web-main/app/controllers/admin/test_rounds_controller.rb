@@ -8,11 +8,10 @@ class Admin::TestRoundsController < InheritedResources::Base
   def create
     project = Project.find(params[:project_id])
     test_object = params[:test_round][:test_object].strip
-    test_objects = project.test_rounds.where("test_object = '" + test_object + "'")
+    test_objects = project.test_rounds.find_all_by_test_object(test_object)
     if test_objects.length > 0 then
       flash[:error] = test_object + " already exists"
-      render :action => "new"
-      return
+      render :action => "new" and return
     end
 
     params[:test_round][:test_object] = params[:test_round][:test_object].strip

@@ -5,11 +5,10 @@ class Admin::ProjectCategoriesController < InheritedResources::Base
 
   def create
     project_category_name = params[:project_category][:name].strip
-    project_categorys = ProjectCategory.where("name = '" + project_category_name + "'")
-    if project_categorys.length > 0 then
+    project_categories = ProjectCategory.find_all_by_name(project_category_name)
+    if project_categories.length > 0 then
       flash[:error] = project_category_name + " already exists"
-      render :action => "new"
-      return
+      render :action => "new" and return
     end
 
     params[:project_category][:name] = params[:project_category][:name].strip

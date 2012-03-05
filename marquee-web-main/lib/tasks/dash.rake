@@ -3,9 +3,10 @@ namespace :dash do
   desc "Init some user and project data"
   task :init_data => :environment do
     AbilityDefinition.delete_all
-    User.delete_all
-    Role.delete_all
+    ProjectsRolesUsers.delete_all
+    ProjectsRoles.delete_all
     RolesUsers.delete_all
+    Role.delete_all
     AutomationCaseResult.delete_all
     AutomationCase.delete_all
     AutomationScriptResult.delete_all
@@ -18,6 +19,7 @@ namespace :dash do
     TargetService.delete_all
     Project.delete_all
     ProjectCategory.delete_all
+    User.delete_all
     TestType.delete_all
     TestEnvironment.delete_all
     AutomationDriver.delete_all
@@ -61,6 +63,7 @@ namespace :dash do
     admins << tyrael = { "email" => 'tyrael.tong@activenetwork.com', "name" => 'Tyrael Tong' }
     admins << chris = { "email" => 'chris.zhang@activenetwork.com', "name" => 'Chris Zhang' }
     admins << eric = { "email" => 'eric.yang@activenetwork.com', "name" => 'Eric Yang' }
+    admins << leo = {"email" => 'leo.yin@active.com', "name" => 'Leo Yin'}
 
     qa_managers << smart = { "email" => 'smart.huang@activenetwork.com', "name" => 'Smart Huang' }
     qa_managers << jabco = { "email" => 'jabco.shen@activenetwork.com', "name" => 'Jabco Shen' }
@@ -84,53 +87,81 @@ namespace :dash do
 
     role_hashes.each do |k,v|
       role = Role.find_by_name(k)
+      project_role = ProjectsRoles.new(:role_id => role.id, :project_id => nil)
+      project_role.save
       v.each do |user|
         u = User.new(
           :email => user["email"],
           :display_name => user["name"],
           :password => "111111"
         )
-        u.roles << role
+        u.projects_roles << project_role
+        # u.roles << role
         u.save
       end
     end
 
+    resources = %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult)
+    abilities = %w(manage create update)
+    abilities.each do |ability|
+      resources.each do |resource|
+        ability_definition = AbilityDefinition.new(:ability => ability, :resource => resource)
+        ability_definition.save
+      end
+    end
+
+    # qa_manager get all manage abilities
+    qa_manager_role.ability_definitions << AbilityDefinition.find_all_by_ability(:manage)
+    qa_manager_role.ability_definitions.flatten
+    qa_manager_role.save
+    # qa_developer abilities
+    create_tr = AbilityDefinition.find_by_ability_and_resource(:create, :TestRound)
+    update_ts = AbilityDefinition.find_by_ability_and_resource(:update, :TestSuite)
+    update_asr = AbilityDefinition.find_by_ability_and_resource(:update, :AutomationScriptResult)
+    qa_developer_role.ability_definitions << [create_tr, update_ts, update_asr]
+    qa_developer_role.ability_definitions.flatten
+    qa_developer_role.save
+    # qa abilities
+    qa_role.ability_definitions << create_tr
+    qa_role.ability_definitions.flatten
+    qa_role.save
+
     # todo: define ability for each role
-    %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult).each do |resource|
-      ad = AbilityDefinition.create
-      ad.role = qa_manager_role
-      ad.ability = :manage
-      ad.resource = resource
-      ad.save
-    end
+    # %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult).each do |resource|
+    #   ad = AbilityDefinition.create
+    #   ad.role = qa_manager_role
+    #   ad.ability = :manage
+    #   ad.resource = resource
+    #   ad.save
+    # end
 
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_role
-      ad.ability = :create
-      ad.resource = 'TestRound'
-    end 
-    ability_definition.save
+    # ability_definition = AbilityDefinition.new do |ad|
+    #   ad.role = qa_role
+    #   ad.ability = :create
+    #   ad.resource = 'TestRound'
+    # end 
+    # ability_definition.save
 
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_developer_role
-      ad.ability = :create
-      ad.resource = 'TestRound'
-    end 
-    ability_definition.save    
+    # ability_definition = AbilityDefinition.new do |ad|
+    #   ad.role = qa_developer_role
+    #   ad.ability = :create
+    #   ad.resource = 'TestRound'
+    # end 
+    # ability_definition.save    
 
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_developer_role
-      ad.ability = :update
-      ad.resource = 'TestSuite'
-    end
-    ability_definition.save
+    # ability_definition = AbilityDefinition.new do |ad|
+    #   ad.role = qa_developer_role
+    #   ad.ability = :update
+    #   ad.resource = 'TestSuite'
+    # end
+    # ability_definition.save
 
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_developer_role
-      ad.ability = :update
-      ad.resource = 'AutomationScriptResult'
-    end
-    ability_definition.save
+    # ability_definition = AbilityDefinition.new do |ad|
+    #   ad.role = qa_developer_role
+    #   ad.ability = :update
+    #   ad.resource = 'AutomationScriptResult'
+    # end
+    # ability_definition.save
 
     smart = User.find_by_email("smart.huang@activenetwork.com")
     jabco = User.find_by_email("jabco.shen@activenetwork.com")
@@ -303,6 +334,7 @@ namespace :dash do
 
     role_hashes.each do |k,v|
       role = Role.find_by_name(k)
+      project_role = ProjectsRoles.find_by_role_id(role.id)
       v.each do |user|
         name = user["email"].split("@").first
         display_name = "#{name.split(".").first.capitalize} #{name.split(".").last.capitalize}"
@@ -311,7 +343,8 @@ namespace :dash do
           :display_name => display_name,
           :password => "111111"
         )
-        u.roles << role
+        u.projects_roles << project_role
+        # u.roles << role
         u.save
       end
     end

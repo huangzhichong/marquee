@@ -13,7 +13,6 @@ end
 
 desc "add initial automation driver configs"
 task :add_initial_adc => :environment do
-
   qtp_driver = AutomationDriver.find_or_create_by_name_and_version(:name => 'qtp', :version => '10.0')
   soapui_driver = AutomationDriver.find_or_create_by_name_and_version(:name => 'soapui', :version => '10.0')
   rspec_driver = AutomationDriver.find_or_create_by_name_and_version(:name => 'rspec', :version => '10.0')

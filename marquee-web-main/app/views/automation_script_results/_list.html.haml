@@ -44,14 +44,14 @@
         %td= in_time_zone(asr.start_time)
         %td= in_time_zone(asr.end_time)
         %td
-          - if asr.end? && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && asr.result!="pass" && asr.triage_result == "N/A"
+          - if asr.end? && asr.result!="pass" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
             = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error"}, asr.triage_result), :id => asr.id, :class => "triage-result"
           - else
             = asr.triage_result
         %td
-          - if asr.result != "pass" && asr.result != "pending" && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && asr.triage_result == "N/A"
+          - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
             %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun"}
-          - if asr.result == "pending" && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && asr.slave_assignments.last && asr.slave_assignments.last.slave
+          - if asr.result == "pending" && can?(:update, AutomationScriptResult, {:project_id => project.id}) && asr.slave_assignments.last && asr.slave_assignments.last.slave
             - stop_class = "btn primary rerun_btn"
             - value = "Stop"
             - if asr.state == "stopping"

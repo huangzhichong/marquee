@@ -8,11 +8,10 @@ class Admin::TestSuitesController < InheritedResources::Base
   def create
     project = Project.find(params[:project_id])
     test_suite_name = params[:test_suite][:name].strip
-    test_suites = project.test_suites.where("name = '" + test_suite_name + "'")
+    test_suites = project.test_suites.find_all_by_name(test_suite_name)
     if test_suites.length > 0 then
       flash[:error] = test_suite_name + " already exists"
-      render :action => "new"
-      return
+      render :action => "new" and return
     end
 
     params[:test_suite][:name] = params[:test_suite][:name].strip
