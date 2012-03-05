@@ -5,13 +5,16 @@
   - if can? :read, Project
     %li
       =link_to 'Projects', admin_projects_path
-  - if can? :read, Role      
+  - if can? :read, Browser
+    %li
+      = link_to 'Browsers', admin_browsers_path
+  - if can? :read, Role
     %li
       =link_to 'Roles', admin_roles_path
-  - if can? :read, User    
+  - if can? :read, User
     %li
       =link_to 'Users', admin_users_path
-  - if can? :update, TeamMember    
+  - if can? :update, TeamMember
     %li
       =link_to 'Time Card Members', admin_team_members_path, :remote => true
   - if can? :update, :dre_slide_show
