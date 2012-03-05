@@ -1,10 +1,10 @@
 class SlavesController < InheritedResources::Base
   layout 'no_sidebar'
   respond_to :js
-  
+
   def collection
     @search = Slave.scoped.search(params[:search])
-    @slaves = @search.page(params[:page]).per(15)
+    @slaves = @search.page(params[:page]).order('status').per(15)
   end
 
   def resource
