@@ -63,7 +63,7 @@
             = hidden_field_tag "mail_notify_setting[test_type_ids][]", ""
           #testtype-ids
     .actions
-      = f.submit 'Save', :class => 'btn primary'
+      = f.submit 'Save', :class => 'btn primary', :id => 'save'
       = link_to 'Back', admin_project_mail_notify_settings_path(@project), :class => 'btn'
 
 :javascript
@@ -138,5 +138,19 @@
       $('#testtypes-selected option').each(function(idx, elem){
         $('#testtypes').append($(elem));
       });
+    });
+    $('#save').click(function(){
+      if ($('#mnsg-ids #mail_notify_setting_mail_notify_group_ids_').length == 0) {
+        $('#mnsgs-selected').addClass('validate[required]');
+      } else {
+        $('#mnsgs-selected').validationEngine('hidePrompt');
+        $('#mnsgs-selected').removeClass('validate[required]');
+      }
+      if ($('#testtype-ids #mail_notify_setting_test_type_ids_').length == 0) {
+        $('#testtypes-selected').addClass('validate[required]');
+      } else {
+        $('#testtypes-selected').validationEngine('hidePrompt');
+        $('#testtypes-selected').removeClass('validate[required]');
+      }      
     });
   });
