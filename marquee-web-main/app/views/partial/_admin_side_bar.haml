@@ -1,21 +1,37 @@
-%ul.menu
-  - if can? :read, ProjectCategory
-    %li
-      =link_to 'Project Categories', admin_project_categories_path
-  - if can? :read, Project
-    %li
-      =link_to 'Projects', admin_projects_path
-  - if can? :read, Role      
-    %li
-      =link_to 'Roles', admin_roles_path
-  - if can? :read, User    
-    %li
-      =link_to 'Users', admin_users_path
-  - if can? :update, TeamMember    
-    %li
-      =link_to 'Time Card Members', admin_team_members_path, :remote => true
-  - if can? :update, :dre_slide_show
-    %li
-      =link_to 'DRE slide show', admin_dre_slide_show_configure_path
+- can_read_project_category = can? :read, ProjectCategory
+- can_read_project = can? :read, Project
+- can_read_role = can? :read, Role
+- can_read_user = can? :read, User
+- can_update_teammember = can? :update, TeamMember
+- can_update_dre_slide_show = can? :update, :dre_slide_show
 
-.clearfix
+- menu_item_count = 0
+- menu_item_count += can_read_project_category ? 1 : 0
+- menu_item_count += can_read_project ? 1 : 0
+- menu_item_count += can_read_role ? 1 : 0
+- menu_item_count += can_read_user ? 1 : 0
+- menu_item_count += can_update_teammember ? 1 : 0
+- menu_item_count += can_update_dre_slide_show ? 1 : 0
+
+- if menu_item_count > 1
+  %ul.menu
+    - if can_read_project_category
+      %li
+        =link_to 'Project Categories', admin_project_categories_path
+    - if can_read_project
+      %li
+        =link_to 'Projects', admin_projects_path
+    - if can_read_role
+      %li
+        =link_to 'Roles', admin_roles_path
+    - if can_read_user
+      %li
+        =link_to 'Users', admin_users_path
+    - if can_update_teammember
+      %li
+        =link_to 'Time Card Members', admin_team_members_path, :remote => true
+    - if can_update_dre_slide_show
+      %li
+        =link_to 'DRE slide show', admin_dre_slide_show_configure_path
+
+  .clearfix
