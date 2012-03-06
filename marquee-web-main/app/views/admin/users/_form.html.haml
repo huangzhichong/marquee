@@ -61,7 +61,7 @@
       .input
         = select_tag "upr roles", options_from_collection_for_select(Role.all, :id, :name), :id => "upr_role", :class => "roles chzn-select"
         = select_tag "upr projects", options_from_collection_for_select(Project.all, :id, :name), :id => "upr_project", :class => "roles chzn-select", :prompt => "All"
-        = link_to 'Add', '#', :class => 'btn user-projects-roles', :id => 'add_upr_btn'
+        %span#add_upr_btn{:class => 'btn user-projects-roles'} Add
         %table.project_role
           %tr
             %th Roles In Projects
@@ -75,8 +75,7 @@
             %td#hidden
               To be cloned
             %td
-              %a{:class => "delete_upr", :href => "#"}
-                %img{:src => asset_path("cross-hover.png")}
+              %img{:class => "delete_upr", :src => asset_path("cross-hover.png")}
           - if @user.projects_roles.nil? or @user.projects_roles.empty?
             %tr.no-tata
               %td{:colspan => 3}
@@ -88,16 +87,14 @@
                 %td= pr.project ? pr.project.name : "All"
                 %td#hidden= "||#{pr.role.id},#{pr.project ? pr.project.id : 0}"
                 %td
-                  %a{:class => "delete_upr", :href => "#"}
-                    %img{:src => asset_path("cross-hover.png")}        
-        = link_to 'Add specific abilities (Not required)', '#', :class => 'btn add_specific_abilities', :id => 'add_specific_abilities_btn'
+                  %img{:class => "delete_upr", :src => asset_path("cross-hover.png")}        
     .clearfix.user-ability-definitions-box
       %label User ability definitions
       .input
         = select_tag "uad abilities", options_for_select({"Manage" => "manage", "Create" => "create", "Update" => "update"}), :include_blank => true, :id => "uad_ability", :class => "ability chzn-select"
         = select_tag "uad resources", options_for_select({"TestRound" => "TestRound", "TestPlan" => "TestPlan", "TestSuite" => "TestSuite", "AutomationScript" => "AutomationScript", "AutomationCase" => "AutomationCase", "TestCase" => "TestCase", "AutomationScriptResult" => "AutomationScriptResult", "AutomationCaseResult" => "AutomationCaseResult", "Project" => "Project", "ProjectCategory" => "ProjectCategory"}), :include_blank => true, :id => "uad_resource", :class => "user-ability-definitions chzn-select"
         = select_tag "uad projects", options_from_collection_for_select(Project.all, :id, :name), :id => "uad_project", :class => "ability chzn-select", :prompt => "All"
-        = link_to 'Add', '#', :class => 'btn user-ability-definitions', :id => 'add_uad_btn'
+        %span#add_uad_btn{:class => 'btn user-ability-definitions'} Add
         %table.abilities
           %tr
             %th Ability
@@ -106,8 +103,7 @@
             %td
               To be cloned
             %td
-              %a{:class => "delete_uad", :href => "#"}
-                %img{:src => asset_path("cross-hover.png")}
+              %img{:class => "delete_uad", :src => asset_path("cross-hover.png")}
           - if @user.ability_definitions.nil? or @user.ability_definitions.empty?
             %tr.no-tata
               %td{:colspan => 2}
@@ -117,8 +113,7 @@
               %tr.data-list
                 %td= "Can #{uad.ability_definition.ability} #{uad.ability_definition.resource} in #{uad.project.nil? ? "All" : "#{uad.project.name}"}"
                 %td
-                  %a{:class => "delete_uad", :href => "#"}
-                    %img{:src => asset_path("cross-hover.png")}
+                  %img{:class => "delete_uad", :src => asset_path("cross-hover.png")}
     .actions
       = f.submit 'Save', :class => 'btn primary'
       = link_to 'Cancel', admin_users_path, :class => 'btn'
@@ -126,14 +121,6 @@
 :javascript
   $(function(){
     $("#new_user").validationEngine({promptPosition : "bottomRight", scroll: false});
-    $('.add_specific_abilities').click(function(){
-      $('.user-ability-definitions-box').toggle();
-      if ($(".user-ability-definitions-box").is(":visible")) {
-        $('.add_specific_abilities').addClass("primary").text("Cancel");
-      } else {
-        $('.add_specific_abilities').removeClass("primary").text("Add specific abilities (Not required)");
-      }
-    });
     $('#add_uad_btn').click(function(){
       var ability = $('#uad_ability option:selected').val();
       var resource = $('#uad_resource option:selected').text();
