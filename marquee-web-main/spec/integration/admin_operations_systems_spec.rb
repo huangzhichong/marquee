@@ -83,4 +83,12 @@ describe "operation system admin page" do
     page.should have_content("Version has already been taken")
   end
 
+  it "should be able to edit operaton system" do
+    OperationSystem.create!(:name => "Windows", :version => "XP")
+    visit "/admin/operation_systems/#{OperationSystem.last.id}/edit"
+    fill_in 'operation_system[version]', :with => '7'
+    click_button 'Save'
+    OperationSystem.last.version.should eql '7'
+
+  end
 end

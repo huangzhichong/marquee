@@ -7,4 +7,8 @@ class Admin::BrowsersController < InheritedResources::Base
     create!{admin_browsers_url}
   end
 
+  def update
+    update!{admin_browsers_url}
+  end
+
 end

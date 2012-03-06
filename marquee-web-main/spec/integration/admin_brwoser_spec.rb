@@ -83,4 +83,12 @@ describe 'browser admin page' do
     click_button 'Save'
     page.should have_content("Version has already been taken")
   end
+
+  it "should be able to edit browser" do
+    Browser.create!(:name => 'ie', :version => '5.0')
+    visit "/admin/browsers/#{Browser.last.id}/edit"
+    fill_in 'browser[version]', :with => '6.0'
+    click_button 'Save'
+    Browser.last.version.should eql '6.0'
+  end
 end

@@ -6,4 +6,8 @@ class Admin::OperationSystemsController < InheritedResources::Base
   def create
     create!{admin_operation_systems_url}
   end
+
+  def update
+    update!{admin_operation_systems_url}
+  end
 end
