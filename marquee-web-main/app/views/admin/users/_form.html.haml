@@ -88,7 +88,7 @@
                 %td#hidden= "||#{pr.role.id},#{pr.project ? pr.project.id : 0}"
                 %td
                   %img{:class => "delete_upr", :src => asset_path("cross-hover.png")}        
-    .clearfix.user-ability-definitions-box
+    .clearfix
       %label User ability definitions
       .input
         = select_tag "uad abilities", options_for_select({"Manage" => "manage", "Create" => "create", "Update" => "update"}), :include_blank => true, :id => "uad_ability", :class => "ability chzn-select"
