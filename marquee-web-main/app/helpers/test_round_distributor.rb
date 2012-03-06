@@ -6,12 +6,12 @@ class TestRoundDistributor
     test_round.automation_script_results.each do |asr|
       sa = SlaveAssignment.create!
       sa.automation_script_result = asr
-
-      # remove this because we'll assemble the command line string in the automation command
-      # sa.command = "#{driver} $#{as.name} $BuildNumber=#{test_round.id} $AUT_ENV=#{test_round.test_environment.value} $MarketName=#{test_round.project.name} $TimeOut=#{time_out_limit}"
-
       sa.status = "pending"
       sa.save
+      sa.browser_name = test_round.browser.name
+      sa.browser_version = test_round.browser.version
+      sa.operation_system_name = test_round.operation_system.name
+      sa.operation_system_version = test_round.operation_system.version
 
       # besides saving it to db, we need to save sa to redis, too.
       # farm server will query redis instead of db to get the latest sa status

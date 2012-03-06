@@ -16,6 +16,14 @@
 #
 
 class Project < ActiveRecord::Base
+  has_many :project_browser_configs
+  has_many :browsers, :through => :project_browser_configs
+  accepts_nested_attributes_for :project_browser_configs
+
+  has_many :project_operation_system_configs
+  has_many :operation_systems, :through => :project_operation_system_configs
+  accepts_nested_attributes_for :project_operation_system_configs
+
   belongs_to :project_category
   belongs_to :leader, :class_name => "User", :foreign_key => "leader_id"
   has_many :test_plans
@@ -30,6 +38,8 @@ class Project < ActiveRecord::Base
 
   attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
   after_update :reprocess_icon_image, :if => :cropping?
+  validates_presence_of :browsers
+  validates_presence_of :operation_systems
 
   def to_s
     self.name

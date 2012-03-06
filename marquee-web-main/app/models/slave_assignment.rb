@@ -52,6 +52,10 @@ class SlaveAssignment < ActiveRecord::Base
       id: self.id,
       slave_id: self.slave.nil? ? nil : self.slave.id,
       time_out_limit: self.automation_script.time_out_limit.nil? ? AutomationScript::DEFAULT_TIME_OUT_LIMIT : self.automation_script.time_out_limit,
+      browser_name: self.browser_name,
+      browser_version: self.browser_version,
+      os_name: self.operation_system_name,
+      os_version: self.operation_system_version,
       created_at: self.created_at,
       updated_at: self.updated_at
     }

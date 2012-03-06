@@ -6,4 +6,5 @@ class Admin::BrowsersController < InheritedResources::Base
   def create
     create!{admin_browsers_url}
   end
+
 end
