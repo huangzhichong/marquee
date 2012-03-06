@@ -1,5 +1,5 @@
 -if flash[:error]
-  .alert-message.error= flash[:error].html_safe 
+  .alert-message.error= flash[:error].html_safe
 
 = form_for ([:admin, @project]) do |f|
   -if @project.errors.any?
@@ -34,6 +34,14 @@
       = f.label :icon
       .input
         = f.file_field :icon_image
+    .clearfix
+      = f.label 'operation_systems'
+      .input
+        = select_tag 'project[operation_systems][]', options_from_collection_for_select(OperationSystem.all, :id, :name_with_version, @project.operation_systems.collect{|os|os.id}), {:multiple => true}
+    .clearfix
+      = f.label :browsers
+      .input
+        = select_tag 'project[browsers][]', options_from_collection_for_select(Browser.all, :id, :name_with_version, @project.browsers.collect{|b|b.id}), {:multiple => true}
     .actions
       = f.submit 'Save', :class => 'btn primary'
       = link_to 'Cancel', admin_projects_path, :class => 'btn'
@@ -48,4 +56,9 @@
     if (patrn.test(field.val())) {
         return "* Only space not allowed";
     }
+  }
+
+:css
+  select#project_operation_systems_,select#project_browsers_{
+    height: 120px;
   }

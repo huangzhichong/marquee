@@ -26,6 +26,8 @@
 class TestRound < ActiveRecord::Base
   include CounterUpdatable
   belongs_to :test_environment
+  belongs_to :browser
+  belongs_to :operation_system
   belongs_to :project
   belongs_to :test_suite
   belongs_to :creator, :class_name => "User", :foreign_key => "creator_id"
