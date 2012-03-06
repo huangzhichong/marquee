@@ -44,7 +44,7 @@ namespace :dash do
     TestEnvironment.create(:name => 'INT Latest', :value => 'INT').save
     TestEnvironment.create(:name => 'INT Released', :value => 'INTR').save
     TestEnvironment.create(:name => 'QA Latest', :value => 'QA').save
-    TestEnvironment.create(:name => 'QA Released', :value => 'QAR').save
+    TestEnvironment.create(:name => 'QA Regression', :value => 'QAR').save
     TestEnvironment.create(:name => 'QA Staging', :value => 'QAS').save
     TestEnvironment.create(:name => 'Platform INT', :value => 'PINT').save
     TestEnvironment.create(:name => 'Platform QA', :value => 'PQA').save
@@ -200,36 +200,36 @@ namespace :dash do
       :icon_image_file_size => 16291
     ).save
   end
-  
+
   desc "Delete duplicated data from dre report."
   task :delete_duplicated_data => :environment do
     Report::Project.all.each do |p|
       p.dres.each do |d|
         d.destroy unless p.dres.where(date: d.date).count == 1
       end
-      
+
       p.bugs_by_severities.each do |bbs|
         bbs.destroy unless p.bugs_by_severities.where(date: bbs.date).count == 1
       end
-      
+
       p.bugs_by_who_founds.each do |bbw|
         bbw.destroy unless p.bugs_by_who_founds.where(date: bbw.date).count == 1
       end
-      
+
       p.technical_debts.each do |td|
         td.destroy unless p.technical_debts.where(date: td.date).count == 1
       end
-      
+
       p.external_bugs_by_day_alls.each do |ebbda|
         ebbda.destroy unless p.external_bugs_by_day_alls.where(date: ebbda.date).count == 1
       end
-      
+
       p.external_bugs_found_by_days.each do |ebbd|
         ebbd.destroy unless p.external_bugs_found_by_days.where(date: ebbd.date).count == 1
       end
     end
   end
-  
+
   task :reset_specified_data , [:date] => :environment do |t, args|
     specified_date = args[:date]
     markets = ["Endurance","Camps","Sports","Swimming","Membership","Platform","Framework"]
@@ -245,9 +245,9 @@ namespace :dash do
         current.save
       end
     end
-    
+
   end
-  
+
   task :delete_specified_data => :environment do
     specified_date = "2011-11-06"
     dres = []
@@ -260,48 +260,48 @@ namespace :dash do
       p.dres.each do |d|
         dres << d if d.date.to_s == specified_date
       end
-      
+
       p.bugs_by_severities.each do |bbs|
         bugs_by_severities << bbs if bbs.date.to_s == specified_date
       end
-      
+
       p.bugs_by_who_founds.each do |bbw|
         bugs_by_who_founds << bbw if bbw.date.to_s == specified_date
       end
-      
+
       p.technical_debts.each do |td|
         technical_debts << td if td.date.to_s == specified_date
       end
-      
+
       p.external_bugs_by_day_alls.each do |ebbda|
         external_bugs_by_day_alls << ebbda if ebbda.date.to_s == specified_date
       end
-      
+
       p.external_bugs_found_by_days.each do |ebbd|
         external_bugs_found_by_days << ebbd if ebbd.date.to_s == specified_date
       end
     end
-    
+
     dres.each do |d|
       d.destroy
     end
-    
+
     bugs_by_severities.each do |d|
       d.destroy
     end
-    
+
     bugs_by_who_founds.each do |d|
       d.destroy
     end
-    
+
     technical_debts.each do |d|
       d.destroy
     end
-    
+
     external_bugs_by_day_alls.each do |d|
       d.destroy
     end
-    
+
     external_bugs_found_by_days.each do |d|
       d.destroy
     end
@@ -323,7 +323,7 @@ namespace :dash do
     qa_managers << karen = { "email" => 'Karen.Bishop@activenetwork.com'}
     qa_managers << adan = { "email" => 'adam.english@activenetwork.com'}
     qa_managers << huiping = { "email" => 'Huiping.Zheng@activenetwork.com'}
-      
+
     qa_developers << rob = { "email" => 'Rob.Wallace@activenetwork.com'}
     qa_developers << michael = { "email" => 'Michael.Begley@activenetwork.com'}
     qa_developers << ophelia = { "email" => 'Ophelia.Chan@activenetwork.com'}
@@ -339,7 +339,7 @@ namespace :dash do
         name = user["email"].split("@").first
         display_name = "#{name.split(".").first.capitalize} #{name.split(".").last.capitalize}"
         u = User.new(
-          :email => user["email"],       
+          :email => user["email"],
           :display_name => display_name,
           :password => "111111"
         )
