@@ -7,11 +7,11 @@ class TestRoundDistributor
       sa = SlaveAssignment.create!
       sa.automation_script_result = asr
       sa.status = "pending"
-      sa.save
       sa.browser_name = test_round.browser.name
       sa.browser_version = test_round.browser.version
       sa.operation_system_name = test_round.operation_system.name
       sa.operation_system_version = test_round.operation_system.version
+      sa.save!
 
       # besides saving it to db, we need to save sa to redis, too.
       # farm server will query redis instead of db to get the latest sa status
