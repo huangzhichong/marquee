@@ -17,6 +17,14 @@
       = f.label :test_environment
       .input
         = f.select :test_environment_id, options_from_collection_for_select(TestEnvironment.all, :id, :name), {}, {:class => "chzn-select"}
+    .clearfix
+      = f.label :operation_system
+      .input
+        = f.select :operation_system_id, options_from_collection_for_select(@project.operation_systems, :id, :name_with_version), {}, {:class => "chzn-select"}
+    .clearfix
+      = f.label :browser
+      .input
+        = f.select :browser_id, options_from_collection_for_select(@project.browsers, :id, :name_with_version), {}, {:class => "chzn-select"}
     = f.hidden_field :creator_id, :value => current_user.id
     .actions
       = f.submit 'Schedule!', :class => 'btn primary', :id => 'schedule_commit_button'

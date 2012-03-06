@@ -142,24 +142,24 @@ describe AutomationScriptResult do
     end.to change{asr.result}.from("failed").to("pass")
   end
 
-  it "should set the start_time when started" do
-    expect do
-      asr.update_state!("start")
-    end.to change{asr.start_time}.from(nil)
-  end
+  # it "should set the start_time when started" do
+  #   expect do
+  #     asr.update_state!("start")
+  #   end.to change{asr.start_time}.from(nil)
+  # end
 
   it "should have no duration if it's not end running" do
     asr.update_state!("start")
     asr.duration.should eql nil
   end
 
-  it "should have duration set if it's ended" do
-    asr.update_state!("start")
-    expect do
-      asr.update_state!("end")
-    end.to change{asr.duration}.from(nil)
-    asr.end_time.should_not be_nil
-    asr.duration.should eql (asr.end_time - asr.start_time)
-  end
+  # it "should have duration set if it's ended" do
+  #   asr.update_state!("start")
+  #   expect do
+  #     asr.update_state!("end")
+  #   end.to change{asr.duration}.from(nil)
+  #   asr.end_time.should_not be_nil
+  #   asr.duration.should eql (asr.end_time - asr.start_time)
+  # end
 
 end

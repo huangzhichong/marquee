@@ -4,10 +4,28 @@ class Admin::ProjectsController < InheritedResources::Base
   load_and_authorize_resource :only => [:new, :show, :index, :edit, :update]
 
   def update
+    browsers = []
+    if params[:project][:browsers]
+      params[:project][:browsers].each do |b|
+        browsers << Browser.find(b)
+      end
+    end
+
+    operation_systems = []
+    if params[:project][:operation_systems]
+      params[:project][:operation_systems].each do |os|
+        operation_systems << OperationSystem.find(os)
+      end
+    end
+
+    params[:project][:browsers] = browsers
+    params[:project][:operation_systems] = operation_systems
+
     update!{ admin_projects_url }
   end
 
   def create
+    logger.info 'create'
     project_name = params[:project][:name].strip
     projects = Project.find_all_by_name(project_name)
 
@@ -21,6 +39,22 @@ class Admin::ProjectsController < InheritedResources::Base
 
     params[:project][:name] = params[:project][:name].strip
     params[:project][:display_order] = Project.count
+    browsers = []
+    if params[:project][:browsers]
+      params[:project][:browsers].each do |b|
+        browsers << Browser.find(b)
+      end
+    end
+
+    operation_systems = []
+    if params[:project][:operation_systems]
+      params[:project][:operation_systems].each do |os|
+        operation_systems << OperationSystem.find(os)
+      end
+    end
+
+    params[:project][:browsers] = browsers
+    params[:project][:operation_systems] = operation_systems
     super
   end
 
