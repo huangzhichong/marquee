@@ -7,6 +7,7 @@ namespace :dash do
     ProjectsRoles.delete_all
     RolesUsers.delete_all
     Role.delete_all
+    RolesUsers.delete_all
     AutomationCaseResult.delete_all
     AutomationCase.delete_all
     AutomationScriptResult.delete_all
