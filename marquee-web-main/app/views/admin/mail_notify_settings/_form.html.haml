@@ -95,7 +95,6 @@
       });
     });
     $('#add-all-mnsg-button').click(function(){
-      $('#mnsg-ids').empty();
       $('#mnsgs option').each(function(idx, elem){
         $('#mnsgs-selected').append($(elem));
         $('#mnsg-ids').append($('#mail_notify_setting_mail_notify_group_ids_').clone().val($(elem).attr('value')));
@@ -127,7 +126,6 @@
       });
     });
     $('#add-all-testtype-button').click(function(){
-      $('#testtype-ids').empty();
       $('#testtypes option').each(function(idx, elem){
         $('#testtypes-selected').append($(elem));
         $('#testtype-ids').append($('#mail_notify_setting_test_type_ids_').clone().val($(elem).attr('value')));
