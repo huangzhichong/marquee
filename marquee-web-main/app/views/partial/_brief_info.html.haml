@@ -2,21 +2,30 @@
   .span16.columns
     %h3 Details
 .row.brief-info
-  .span7.columns.brief-left
+  .span8.columns.brief-left
     .span3.columns
       %ul.title
         -left_titles.each do |t|
           %li= t
-    .span4.columns
+    .span5.columns
       %ul.value
         -left_values.each do |v|
-          %li= v
+          - value = v
+          - if value && value.to_s.length >= 30
+            - value = value.slice(0,30).concat("...")
+          - if v.start_with?('<select class="triage-result"')
+            %li= v
+          - else
+            %li.long-name{:title => v}= value
   .span8.columns.brief-right
     .span3.columns
       %ul.title
         -right_titles.each do |t|
           %li= t
-    .span4.columns
+    .span5.columns
       %ul.value
         -right_values.each do |v|
-          %li= v
+          - value = v
+          - if value && value.to_s.length >= 30
+            - value = value.slice(0,30).concat("...")
+          %li.long-name{:title => v}= value

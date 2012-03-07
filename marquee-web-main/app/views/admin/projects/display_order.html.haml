@@ -7,25 +7,34 @@
           - Project.all.sort_by{|p| p.display_order}.each do |project|
             %li{:value => project.id}= project.name
   = hidden_field_tag "slides[]", ""
-  
+
   #slides
     - Project.all.sort_by{|p| p.display_order}.each do |project|
       = hidden_field_tag "slides[]", project.name
-                  
+
   .actions
-    = submit_tag 'Save', :class => 'btn primary'            
+    = submit_tag 'Save', :class => 'btn primary'
+    = link_to 'Cancel', admin_projects_path, :class => 'btn'
+
+:javascript
+  $(function(){
+    var rebuildProjectOrders = function(){
+      $('#projects').empty()
+      $()
+    }
+  })
 
 :css
-  #selected-slides-list{ 
-    width:320px; 
-    font-family:Georgia, Times, serif; 
-    font-size:15px; 
+  #selected-slides-list{
+    width:320px;
+    font-family:Georgia, Times, serif;
+    font-size:15px;
   }
   #selected-slides-list li{
     display:block;
-    text-decoration:none; 
-    color:#000000; 
-    background-color:#FFFFFF; 
+    text-decoration:none;
+    color:#000000;
+    background-color:#FFFFFF;
     line-height:30px;
     list-style-type: none;
     border-bottom-style: solid;
@@ -37,4 +46,4 @@
   #selected-slides-list li:hover{
     color: #FFFFFF;
     background: #8db4e3;
-  }          
+  }

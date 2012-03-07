@@ -22,6 +22,6 @@
       %tr
         %td= user.email
         %td= user.display_name
-        = render :partial => 'partial/table_actions', :locals => {:show_url => admin_user_path(user), :edit_url => edit_admin_user_path(user)}
+        = render :partial => 'partial/table_actions', :locals => {:show_url => admin_user_path(user), :edit_url => edit_admin_user_path(user), :no_view_action => true}
 %br
 = paginate @users

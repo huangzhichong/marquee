@@ -34,6 +34,15 @@ class AutomationScriptResultsController < InheritedResources::Base
     render :nothing => true
   end
 
+  def stop
+    asr = AutomationScriptResult.find(params[:id])
+    asr.state = "stopping"
+    asr.save
+    sa = asr.slave_assignments.last if asr
+    SlaveAssignmentsHelper.send_slave_assignment_to_list sa, "stop" if sa
+    render :nothing => true
+  end
+
   protected
   def resource
     @test_round ||= TestRound.find(params[:test_round_id])
