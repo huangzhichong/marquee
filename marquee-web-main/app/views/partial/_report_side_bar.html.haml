@@ -31,9 +31,16 @@
     //if ($.address.path()!=location.pathname&&(location.pathname.match("/coverage")!=null||location.pathname.match("/dre/overall")!=null)){
       //$.address.path(location.pathname);
     // }
-    $.address.state("/").init(function(event){
-      menu.address();
-    });
+    if (window.ActiveXObject){
+      $.address.init(function(event){
+        menu.address();
+      });
+    }
+    else{
+      $.address.state("/").init(function(event){
+        menu.address();
+      });
+    }
     $.address.internalChange(function(event){
       $(this).attr("href","#");
       if (event.value!=null) {
