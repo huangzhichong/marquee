@@ -34,8 +34,6 @@
               - test_object = test_object.slice(0,40).concat("...")
             %span{:title => test_round.test_object}= test_object
           - show_url, edit_url, delete_url = nil
-          - if can? :update, TestRound, {:project_id => project.id}
-            - edit_url = edit_admin_project_test_round_path(project, test_round)
           - if can? :delete, TestRound, {:project_id => project.id}
             - delete_url = admin_project_test_round_path(project, test_round)          
           = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url}
