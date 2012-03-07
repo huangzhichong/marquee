@@ -13,4 +13,9 @@ class Role < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => true
 
   acts_as_audited :protect => false
+
+  def could_be_deleted?
+    return ProjectsRoles.find_all_by_role_id(id).empty?
+  end
+
 end
