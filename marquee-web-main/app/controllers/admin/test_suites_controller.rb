@@ -15,9 +15,13 @@ class Admin::TestSuitesController < InheritedResources::Base
     end
 
     params[:test_suite][:name] = params[:test_suite][:name].strip
-    super
+    create!{admin_project_test_suites_url(@project)}
   end
-  
+
+  def update
+    update!{admin_project_test_suites_url(@project)}
+  end
+
   def search_automation_script
     project = Project.find(params[:project_id])
     automation_scripts = project.automation_scripts.where("name LIKE '%#{params[:as_name]}%'")
@@ -25,7 +29,7 @@ class Admin::TestSuitesController < InheritedResources::Base
       format.js { render :json => {:automation_scripts => automation_scripts} }
     end
   end
-  
+
   protected
   def resource
     @project ||= Project.find(params[:project_id])
