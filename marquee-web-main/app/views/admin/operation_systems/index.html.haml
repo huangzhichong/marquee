@@ -18,8 +18,6 @@
           - show_url, edit_url, delete_url = nil
           - if can? :update, OperationSystem
             - edit_url = edit_admin_operation_system_path(os)
-          - if can? :delete, OperationSystem
-            - delete_url = admin_operation_system_path(os)
           = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url }
 
 - if can? :create, OperationSystem

@@ -14,6 +14,11 @@ class Admin::CiMappingsController < InheritedResources::Base
     end
 
     params[:ci_mapping][:ci_value] = params[:ci_mapping][:ci_value].strip
-    super
+    create!{admin_project_ci_mappings_url(project)}
   end
+
+  def update
+    update!{admin_project_ci_mappings_url(@project)}
+  end
+
 end

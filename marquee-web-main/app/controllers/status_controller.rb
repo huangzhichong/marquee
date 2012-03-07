@@ -7,7 +7,12 @@ class StatusController < ApplicationController
     if test_environment
       test_object = "#{ci_value} #{params[:version]}"
       CiMapping.find_all_by_ci_value(ci_value).each do |ci_mapping|
-        test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object)
+        if ci_mapping.browser.nil? or ci_mapping.operation_system.nil?
+          logger.error "A CI Mapping without Browser and Operation System found: #{ci_mapping.inspect}"
+          return
+        end
+
+        test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object, ci_mapping.browser, ci_mapping.operation_system)
         TestRoundDistributor.distribute(test_round.id)
       end
     end
