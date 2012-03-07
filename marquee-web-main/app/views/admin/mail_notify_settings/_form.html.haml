@@ -20,9 +20,9 @@
         .row
           .columns.span7
             %select.as-select#mnsgs{:multiple => 'multiple'}
-              - MailNotifyGroup.all.reject{|mng| @mail_notify_setting.mail_notify_groups.include?(mng)}.each do |group|
+              - (MailNotifyGroup.all - @mail_notify_setting.mail_notify_groups).each do |group|
                 %option{:value => group.id}= group.name
-            %a#add-all-mnsg-button
+            %a#add-all-mnsg-button{:title => 'Add All Mail Notify Groups', :href => '#'}
               %span.multi-select-item-add.ui-icon
               Choose All
           .columns.span1#drag-arrow
@@ -44,9 +44,9 @@
         .row
           .columns.span7
             %select.as-select#testtypes{:multiple => 'multiple'}
-              - TestType.all.reject{|tt| @mail_notify_setting.test_types.include?(tt)}.each do |type|
+              - (TestType.all - @mail_notify_setting.test_types).each do |type|
                 %option{:value => type.id}= type.name
-            %a#add-all-testtype-button
+            %a#add-all-testtype-button{:title => 'Add All Test Types', :href => '#'}
               %span.multi-select-item-add.ui-icon
               Choose All
           .columns.span1#drag-arrow
@@ -151,6 +151,6 @@
       } else {
         $('#testtypes-selected').validationEngine('hidePrompt');
         $('#testtypes-selected').removeClass('validate[required]');
-      }      
+      }
     });
   });
