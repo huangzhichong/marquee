@@ -34,6 +34,15 @@ namespace :dash do
     RunTask.delete_all
     Slave.delete_all
 
+    win = OperationSystem.find{|os| os.name == 'windows' and os.version == 'xp'}
+    win ||= OperationSystem.create!(:name => 'windows', :version => 'xp')
+    ie = Browser.find{|b| b.name == 'ie' and b.version == '6.0'}
+    ie ||= Browser.create!(:name => 'ie', :version => '6.0')
+    firefox = Browser.find{|b| b.name == 'firefox' and b.version == '3.5'}
+    firefox ||= Browser.create!(:name => 'firefox', :version => '3.5')
+    chrome = Browser.find{|b| b.name == 'chrome' and b.version == '17'}
+    chrome ||= Browser.create!(:name => 'chrome', :version => '17')
+
     aw = ProjectCategory.new(:name => 'ActiveWorks')
     aw.save
     other = ProjectCategory.new(:name => 'Others')
@@ -92,10 +101,10 @@ namespace :dash do
       project_role.save
       v.each do |user|
         u = User.new(
-          :email => user["email"],
-          :display_name => user["name"],
-          :password => "111111"
-        )
+                     :email => user["email"],
+                     :display_name => user["name"],
+                     :password => "111111"
+                     )
         u.projects_roles << project_role
         # u.roles << role
         u.save
@@ -132,37 +141,43 @@ namespace :dash do
     fiona = User.find_by_email("fiona.zhou@activenetwork.com")
 
     camps = Project.create(
-      :name => 'Camps',
-      :leader => smart,
-      :project_category => aw,
-      :state => 'ongoing',
-      :source_control_path => 'http://fndsvn.dev.activenetwork.com/camps',
-      :icon_image_file_name => 'camps.png',
-      :icon_image_content_type => 'image/png',
-      :icon_image_file_size => 7763
-    ).save
+                           :name => 'Camps',
+                           :leader => smart,
+                           :project_category => aw,
+                           :state => 'ongoing',
+                           :source_control_path => 'http://fndsvn.dev.activenetwork.com/camps',
+                           :icon_image_file_name => 'camps.png',
+                           :icon_image_content_type => 'image/png',
+                           :icon_image_file_size => 7763,
+                           :browsers => [ie, firefox, chrome],
+                           :operation_systems => [win]
+                           ).save
 
     endurance = Project.create(
-      :name => 'Endurance',
-      :leader => jabco,
-      :project_category => aw,
-      :state => 'ongoing',
-      :source_control_path => 'http://fndsvn.dev.activenetwork.com/endurance',
-      :icon_image_file_name => 'endurance.png',
-      :icon_image_content_type => 'image/png',
-      :icon_image_file_size => 18857
-    ).save
+                               :name => 'Endurance',
+                               :leader => jabco,
+                               :project_category => aw,
+                               :state => 'ongoing',
+                               :source_control_path => 'http://fndsvn.dev.activenetwork.com/endurance',
+                               :icon_image_file_name => 'endurance.png',
+                               :icon_image_content_type => 'image/png',
+                               :icon_image_file_size => 18857,
+                               :browsers => [ie, firefox, chrome],
+                               :operation_systems => [win]
+                               ).save
 
     sports = Project.create(
-      :name => 'Sports',
-      :leader => fiona,
-      :project_category => aw,
-      :state => 'ongoing',
-      :source_control_path => 'http://fndsvn.dev.activenetwork.com/sports',
-      :icon_image_file_name => 'sports.png',
-      :icon_image_content_type => 'image/png',
-      :icon_image_file_size => 16291
-    ).save
+                            :name => 'Sports',
+                            :leader => fiona,
+                            :project_category => aw,
+                            :state => 'ongoing',
+                            :source_control_path => 'http://fndsvn.dev.activenetwork.com/sports',
+                            :icon_image_file_name => 'sports.png',
+                            :icon_image_content_type => 'image/png',
+                            :icon_image_file_size => 16291,
+                            :browsers => [ie, firefox, chrome],
+                            :operation_systems => [win]
+                            ).save
   end
 
   desc "Delete duplicated data from dre report."
@@ -303,10 +318,10 @@ namespace :dash do
         name = user["email"].split("@").first
         display_name = "#{name.split(".").first.capitalize} #{name.split(".").last.capitalize}"
         u = User.new(
-          :email => user["email"],
-          :display_name => display_name,
-          :password => "111111"
-        )
+                     :email => user["email"],
+                     :display_name => display_name,
+                     :password => "111111"
+                     )
         u.projects_roles << project_role
         # u.roles << role
         u.save
