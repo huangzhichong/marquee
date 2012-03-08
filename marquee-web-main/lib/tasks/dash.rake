@@ -136,43 +136,6 @@ namespace :dash do
     qa_role.ability_definitions.flatten
     qa_role.save
 
-    # todo: define ability for each role
-    # %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult).each do |resource|
-    #   ad = AbilityDefinition.create
-    #   ad.role = qa_manager_role
-    #   ad.ability = :manage
-    #   ad.resource = resource
-    #   ad.save
-    # end
-
-    # ability_definition = AbilityDefinition.new do |ad|
-    #   ad.role = qa_role
-    #   ad.ability = :create
-    #   ad.resource = 'TestRound'
-    # end
-    # ability_definition.save
-
-    # ability_definition = AbilityDefinition.new do |ad|
-    #   ad.role = qa_developer_role
-    #   ad.ability = :create
-    #   ad.resource = 'TestRound'
-    # end
-    # ability_definition.save
-
-    # ability_definition = AbilityDefinition.new do |ad|
-    #   ad.role = qa_developer_role
-    #   ad.ability = :update
-    #   ad.resource = 'TestSuite'
-    # end
-    # ability_definition.save
-
-    # ability_definition = AbilityDefinition.new do |ad|
-    #   ad.role = qa_developer_role
-    #   ad.ability = :update
-    #   ad.resource = 'AutomationScriptResult'
-    # end
-    # ability_definition.save
-
     smart = User.find_by_email("smart.huang@activenetwork.com")
     jabco = User.find_by_email("jabco.shen@activenetwork.com")
     fiona = User.find_by_email("fiona.zhou@activenetwork.com")

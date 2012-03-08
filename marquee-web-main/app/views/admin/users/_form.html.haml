@@ -6,8 +6,9 @@
     %legend= title
     .clearfix
       = f.label :email
+      .required *
       .input
-        = f.text_field :email, :disabled => @user.email.empty? ? false : true, :class => "validate[required,custom[email]]"
+        = f.text_field :email, :disabled => @user.email.empty? ? false : true, :class => "validate[required, funcCall[checkOnlySpace], custom[email]]"
     .clearfix
       = f.label :display_name
       .input
@@ -15,12 +16,14 @@
     - if @user.email.empty?
       .clearfix
         = f.label :password
+        .required *
         .input
-          = f.password_field :password, :class => "validate[required, funcCall[checkPassword]]"
+          = f.password_field :password, :class => "validate[required, funcCall[checkOnlySpace], funcCall[checkPassword]]"
       .clearfix
         = f.label :confirm_password
+        .required *
         .input
-          %input{:id => "confirm_password", :type => "password", :class => "validate[required, funcCall[checkPassword], equals[user_password]]"}
+          %input{:id => "confirm_password", :type => "password", :class => "validate[required, funcCall[checkOnlySpace], funcCall[checkPassword], equals[user_password]]"}
     .clearfix
       = f.label :time_card_project_permissions
       .input
