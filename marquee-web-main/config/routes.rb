@@ -130,7 +130,8 @@ MarqueeWebMain::Application.routes.draw do
 
   root :to => 'home#index'
 
-  namespace :interface do
-    get 'time_cards/metrics'
+  namespace :widgets do
+    get 'time_cards/show'
+    get 'time_cards/members'
   end
 end
