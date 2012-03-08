@@ -9,8 +9,9 @@
     %legend= title
     .clearfix
       = f.label :name
+      .required *
       .input
-        = f.text_field :name, :readonly => %w(admin qa_manager qa_developer qa).include?(@role.name) ? true : false
+        = f.text_field :name, :readonly => %w(admin qa_manager qa_developer qa).include?(@role.name) ? true : false, :class => "validate[required, funcCall[checkOnlySpace]]"
     - if @role.name != "admin"
       .clearfix
         - val_rad = ""
@@ -51,6 +52,8 @@
 
 :javascript
   $(function(){
+    $("#new_role").validationEngine({promptPosition : "bottomRight", scroll: false});
+    $(".edit_role").validationEngine({promptPosition : "bottomRight", scroll: false});
     $('#add_rad_btn').click(function(){
       var ability = $('#rad_ability option:selected').val();
       var resource = $('#rad_resource option:selected').text();

@@ -12,10 +12,12 @@
     %legend= title
     .clearfix
       =f.label :mail
+      .required *
       .input
-        =f.text_field :mail, :class => "validate[required,custom[email]]"
+        =f.text_field :mail, :class => "validate[required, funcCall[checkOnlySpace], custom[email]]"
     .clearfix
       =f.label :mail_notify_group
+      .required *
       .input
         .row
           .columns.span7
@@ -40,6 +42,7 @@
           #mnsg-ids
     .clearfix
       =f.label :test_type
+      .required *
       .input
         .row
           .columns.span7
