@@ -29,14 +29,6 @@ class Admin::ProjectsController < InheritedResources::Base
     project_name = params[:project][:name].strip
     projects = Project.find_all_by_name(project_name)
 
-    if projects.length > 0 then
-      flash[:error] = project_name + " already exists"
-      @project = project = Project.new(:name => project_name, :leader_id => params[:project][:leader_id],
-        :test_link_plan => params[:project][:test_link_plan],
-        :source_control_path => params[:project][:source_control_path])
-      render :action => "new" and return
-    end
-
     params[:project][:name] = params[:project][:name].strip
     params[:project][:display_order] = Project.count
     browsers = []

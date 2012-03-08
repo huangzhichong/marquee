@@ -8,7 +8,7 @@ class Admin::RolesController < InheritedResources::Base
     save_role!(role, params)
 
     if (role.errors.any?)
-      flash.now[:error] = role.errors
+      @role = role
       render :new
     else 
       redirect_to admin_roles_path
@@ -20,7 +20,7 @@ class Admin::RolesController < InheritedResources::Base
     save_role!(role, params)
 
     if (role.errors.any?)
-      flash.now[:error] = role.errors
+      @role = role
       render :edit
     else 
       redirect_to admin_roles_path

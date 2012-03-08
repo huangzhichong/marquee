@@ -5,27 +5,31 @@ class Admin::UsersController < InheritedResources::Base
 
   def create
     names = []
-    if params[:user][:display_name].nil? or params[:user][:display_name] == ""
-      names = params[:user][:email].split("@").first.split(".")
+    if params[:user][:display_name].nil? or params[:user][:display_name].strip.empty?
+      if !params[:user][:email].nil? and params[:user][:email].strip.empty?
+        names = params[:user][:email].split("@").first.split(".")
+      end
     else
       names = params[:user][:display_name].strip.split(" ")
     end
-    display_name = "#{names.first.capitalize} #{names.last.capitalize}"
+
+    if names.length > 0
+      display_name = "#{names.first.capitalize} #{names.last.capitalize}"
+    end
 
     password = params[:user][:password]
     password = "111111" if password.nil? or password.strip.empty?
 
     user = User.new(:email => params[:user][:email], :display_name => display_name, :password => password)
-
-    if User.find_all_by_email(params[:user][:email].strip).length >0
-      flash[:error] = params[:user][:email].strip + " already exists"
-      @user.email = ""
-      render :action => "new" and return
-    end
-
     save_user!(user, params)
 
-    redirect_to admin_users_path
+    if user.errors.any?
+      puts user.errors.inspect
+      @user = user
+      render :new and return
+    else
+      redirect_to admin_users_path
+    end
   end
 
   def update
@@ -34,7 +38,12 @@ class Admin::UsersController < InheritedResources::Base
 
     save_user!(user, params)
 
-    redirect_to admin_user_path(user)
+    if user.errors.any?
+      @user = user
+      render :edit and return
+    else
+      redirect_to admin_users_path
+    end
   end
 
   protected
@@ -49,6 +58,10 @@ class Admin::UsersController < InheritedResources::Base
 
   private
   def save_user!(user, params)
+    # save user at first to trigger model validation
+    user.save
+    return if user.errors.any?
+
     update_oralce_projects(user, params)
 
     set_projects_roles!(user, params)

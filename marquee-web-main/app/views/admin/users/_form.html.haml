@@ -2,6 +2,12 @@
   .alert-message.error= flash[:error].html_safe 
   
 = form_for([:admin, @user]) do |f|
+  -if @user.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@user.errors.count, "error")} prohibited this user from being saved:"
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
   %fieldset
     %legend= title
     .clearfix
@@ -124,6 +130,7 @@
 :javascript
   $(function(){
     $("#new_user").validationEngine({promptPosition : "bottomRight", scroll: false});
+    $(".edit_user").validationEngine({promptPosition : "bottomRight", scroll: false});
     $('#add_uad_btn').click(function(){
       var ability = $('#uad_ability option:selected').val();
       var resource = $('#uad_resource option:selected').text();
