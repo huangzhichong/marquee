@@ -56,7 +56,7 @@
     $("#schedule_commit_button").submit(function(){
       submit = true;
       $(".chzn-container > .chzn-single > span").each(function(i){
-        if ($(this).text() == "Select an Options") {
+        if ($(this).text() == "Select an Option") {
           $(this).parent().parent().validationEngine("showPrompt", "This a custom msg", "error", "bottomRight", true);
           submit = false;
         }
