@@ -16,6 +16,7 @@ class SyncTimeCardFile
       sftp.dir.foreach(FOLDER) do |entry|
         files << entry.name unless entry.directory?
       end
+      puts files
       files_sorted= sortFiles files
       files_sorted.each do |name|
         files_to_get[name] = sftp.download!("#{FOLDER}/#{name}")
@@ -26,30 +27,30 @@ class SyncTimeCardFile
       puts "successed ::#{files_success}"
       puts "failed::#{files_failed}"
       files_success.each do |file|
-        sftp.rename!(file, "#{FOLDER}/successed/#{file}")
+        sftp.rename!("#{FOLDER}/#{file}", "#{FOLDER}/successed/#{file}")
       end
       files_failed.each do |file|
-        sftp.rename!(file, "#{FOLDER}/failed/#{file}")
+        sftp.rename!("#{FOLDER}/#{file}", "#{FOLDER}/failed/#{file}")
       end
+      
     end
   end
 
   protected
   def sortFiles files
-    fm = {} 
-    files.each do |path|
-      /report_(\d+)_(\d+)_(\d+)_to_(\d+)_(\d+)_(\d+)_(\d+)_(\d+).*/ =~ path
-      #fm[Date.new($1.to_i, $7.to_i, $8.to_i)] = path
-      fm[$7] = {} if fm[$7].nil?
-      fm[$7][$8] = path
+    fm = {}
+    result = files.sort do |a, b|
+      /report_(\d+)_(\d+)_(\d+)_to_(\d+)_(\d+)_(\d+)_(\d+)_(\d+).*/ =~ a
+      da = Date.new($1.to_i, $7.to_i, $8.to_i)
+
+      /report_(\d+)_(\d+)_(\d+)_to_(\d+)_(\d+)_(\d+)_(\d+)_(\d+).*/ =~ b
+      db = Date.new($1.to_i, $7.to_i, $8.to_i)
+
+      da <=> db
     end
 
-    puts fm.inspect
-    result = []
-    fm.each do |month, dfs|
-      result << dfs[dfs.keys.sort.last]
-    end 
-    return result
+    puts result
+    result
   end
   def import(files_to_get)
     puts "files to process:#{files_to_get.keys.inspect}"
@@ -57,18 +58,12 @@ class SyncTimeCardFile
     files_failed = []
     files_to_get.each do |path, f|
       /report_(\d+)_(\d+)_(\d+)_to_(\d+)_(\d+)_(\d+)_.*/ =~ path 
-      #puts f
-      #puts "#{$1.to_i} - #{$2.to_i}-#{$3.to_i}"
-      #start_date = Date.new($1.to_i, $2.to_i, $3.to_i)
-      #end_date = Date.new($4.to_i, $5.to_i, $6.to_i)
-
 
       time_card_for_audit = nil
       actual = 0
 
       begin
         TimeCard.transaction do
-         # CSV.foreach(File.join(Dir.getwd, f)) do |parsed|
           CSV.parse(f) do |parsed|
             unless parsed[0] == "START_DATE"
               team_member = TeamMember.find_by_name(parsed[2])
