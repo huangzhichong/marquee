@@ -50,10 +50,17 @@ class SyncTimeCardFile
           CSV.parse(f) do |parsed|
             unless parsed[0] == "START_DATE"
               team_member = TeamMember.find_by_name(parsed[2])
-              unless team_member.nil?
+              member_name = parsed[2]
+              if team_member.nil?
+                new_member = TeamMember.new
+                new_member.name = member_name
+                new_member.cc_list = 'maequee@activenetwork.com'
+                new_member.save
+                team_member = new_member
+              else
                 from = Date.parse(parsed[0].gsub('_', '/'))
                 to = Date.parse(parsed[1].gsub('_', '/'))
-                time_card = TimeCard.find_by_name_and_from_and_to(parsed[2], from, to)
+                time_card = TimeCard.find_by_name_and_from_and_to(member_name, from, to)
                 time_card = TimeCard.create if time_card.nil?
                 time_card.name = parsed[2]
                 time_card.from = from
