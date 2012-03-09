@@ -135,6 +135,9 @@ GEM
     multi_json (1.0.3)
     mysql2 (0.3.7)
     net-ftp-list (3.2.0)
+    net-sftp (2.0.5)
+      net-ssh (>= 2.0.9)
+    net-ssh (2.3.0)
     numerizer (0.1.1)
     orm_adapter (0.0.5)
     paperclip (2.3.15)
@@ -285,6 +288,7 @@ DEPENDENCIES
   meta_search!
   mysql2 (~> 0.3)
   net-ftp-list
+  net-sftp
   paperclip (= 2.3.15)
   pry
   rails (= 3.1.0)

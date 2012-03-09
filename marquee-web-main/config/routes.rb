@@ -133,4 +133,9 @@ MarqueeWebMain::Application.routes.draw do
 
   root :to => 'home#index'
 
+  namespace :widgets do
+    get 'time_cards/show'
+    get 'time_cards/members'
+  end
+  get 'sync_time_card_file/do'
 end
