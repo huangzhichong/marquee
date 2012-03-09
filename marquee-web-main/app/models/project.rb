@@ -16,6 +16,18 @@
 #
 
 class Project < ActiveRecord::Base
+
+  attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
+  after_update :reprocess_icon_image, :if => :cropping?
+
+  has_many :project_browser_configs
+  has_many :browsers, :through => :project_browser_configs
+  accepts_nested_attributes_for :project_browser_configs
+
+  has_many :project_operation_system_configs
+  has_many :operation_systems, :through => :project_operation_system_configs
+  accepts_nested_attributes_for :project_operation_system_configs
+
   belongs_to :project_category
   belongs_to :leader, :class_name => "User", :foreign_key => "leader_id"
   has_many :test_plans
@@ -25,11 +37,11 @@ class Project < ActiveRecord::Base
   has_many :ci_mappings
   has_many :mail_notify_settings
   has_many :automation_driver_configs
-  has_attached_file :icon_image, :processors => [:cropper], :styles => { :large => "320x320", :medium => "180x180>", :thumb => "100x100>" }, :path => ":rails_root/public/images/projects/:style_:basename.:extension", :url => "/images/projects/:style_:basename.:extension"
+  has_attached_file :icon_image, :default_url => "/images/projects/default_project.png", :processors => [:cropper], :styles => { :large => "320x320", :medium => "180x180>", :thumb => "100x100>" }, :path => ":rails_root/public/images/projects/:style_:basename.:extension", :url => "/images/projects/:style_:basename.:extension"
   acts_as_audited :protect => false
 
-  attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
-  after_update :reprocess_icon_image, :if => :cropping?
+  validates_presence_of :name, :browsers, :operation_systems
+  validates_uniqueness_of :name, :message => " already exists."
 
   def to_s
     self.name

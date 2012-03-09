@@ -1,14 +1,16 @@
-class Admin::DreSlideShowController < ApplicationController
+class Admin::DreSlideShowController < InheritedResources::Base
   layout 'admin'
   before_filter :authenticate_user!
 
   def configure
+    authorize! :update, :dre_slide_show
     @slides = YAML::load_file(File.join(Rails.root, 'public', 'settings', 'dre_slides_show.yml'))
     @slide_candidates = YAML::load_file(File.join(Rails.root, 'public', 'settings', 'dre_slides.yml'))
     @slide_candidates = @slide_candidates - @slides
   end
 
   def update
+    authorize! :update, :dre_slide_show
     @slide_candidates = YAML::load_file(File.join(Rails.root, 'public', 'settings', 'dre_slides.yml'))
     @slides = []
     params[:slides].each do |slide_title|

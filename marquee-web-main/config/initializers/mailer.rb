@@ -1,4 +1,5 @@
 ActionMailer::Base.smtp_settings = {
-  :address => "smtp.pod04.aw.dev.activenetwork.com",
+  :address => "localhost",
   :port => 25,
+  :openssl_verify_mode => "none"
 }

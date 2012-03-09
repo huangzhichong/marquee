@@ -1,5 +1,14 @@
 - left_titles = ['Test Objects:', 'Test Suite:', 'Test Environment:', 'Start Time:', 'End Time:', 'Duration:']
+
 - left_values = [@test_round.test_object, @test_round.test_suite.name, @test_round.test_environment.name, in_time_zone(@test_round.start_time), in_time_zone(@test_round.end_time), @test_round.duration.nil? ? "N/A" : ChronicDuration.output(@test_round.duration)]
+- if @test_round.operation_system
+  - left_titles = left_titles + ['Operation System:']
+  - left_values = left_values + [@test_round.operation_system.name_with_version]
+
 - right_titles = ['Pass Count:', 'Failed Count:', 'Warning Count:', 'Not Run Count:', 'Passrate:', 'Result:']
 - right_values = [@test_round.pass, @test_round.failed, @test_round.warning, @test_round.not_run, @test_round.pass_rate.nil? ? 'N/A' : number_to_percentage(@test_round.pass_rate, :precision => 2), @test_round.result]
+- if @test_round.browser
+  - right_titles = right_titles + ['Browser:']
+  - right_values = right_values + [@test_round.browser.name_with_version]
+
 = render :partial => "partial/brief_info", :locals => {:left_titles => left_titles, :left_values => left_values, :right_titles => right_titles, :right_values => right_values}

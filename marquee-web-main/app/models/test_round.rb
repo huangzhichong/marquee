@@ -26,6 +26,8 @@
 class TestRound < ActiveRecord::Base
   include CounterUpdatable
   belongs_to :test_environment
+  belongs_to :browser
+  belongs_to :operation_system
   belongs_to :project
   belongs_to :test_suite
   belongs_to :creator, :class_name => "User", :foreign_key => "creator_id"
@@ -69,7 +71,7 @@ class TestRound < ActiveRecord::Base
     self.save
   end
 
-  def self.create_for_new_build(test_suite, project, test_environment, user, test_object)
+  def self.create_for_new_build(test_suite, project, test_environment, user, test_object, browser, os)
     test_round = TestRound.new
     test_round.set_default_value
     test_round.test_suite = test_suite
@@ -78,6 +80,8 @@ class TestRound < ActiveRecord::Base
     test_round.test_object = test_object
     test_round.test_environment = test_environment
     test_round.init_automation_script_result
+    test_round.browser = browser
+    test_round.operation_system = os
     test_round.save
     test_round
   end

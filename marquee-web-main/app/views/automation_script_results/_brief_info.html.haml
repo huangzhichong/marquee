@@ -1,6 +1,6 @@
 - left_titles = ['Result:', 'Start Time:', 'End Time:', 'Duration:', 'Triage Result:']
 - triage = nil
-- if @automation_script_result.end? && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && @automation_script_result.result!="pass" && @automation_script_result.triage_result == "N/A"
+- if @automation_script_result.end? && @automation_script_result.result!="pass" && @automation_script_result.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => @automation_script_result.test_round.project.id})
   - triage = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error"}, @automation_script_result.triage_result), :id => @automation_script_result.id, :class => "triage-result"
 - else
   - triage = @automation_script_result.triage_result

@@ -2,7 +2,7 @@
   %h2
     Test Rounds
     %small= "#{@project.test_rounds.count} in total"
-  -if can? :create, TestRound
+  -if can? :create, TestRound, {:project_id => project.id}
     = link_to 'Schedule', new_project_test_round_path(project), :class => 'btn primary'
   = form_for search, :url => project_test_rounds_path, :remote => true do |f|
     %span.search
