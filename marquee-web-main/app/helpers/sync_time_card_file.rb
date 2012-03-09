@@ -39,14 +39,16 @@ class SyncTimeCardFile
     fm = {} 
     files.each do |path|
       /report_(\d+)_(\d+)_(\d+)_to_(\d+)_(\d+)_(\d+)_(\d+)_(\d+).*/ =~ path
-      fm[Date.new($1.to_i, $7.to_i, $8.to_i)] = path
+      #fm[Date.new($1.to_i, $7.to_i, $8.to_i)] = path
+      fm[$7] = {} if fm[$7].nil?
+      fm[$7][$8] = path
     end
 
+    puts fm.inspect
     result = []
-    fm.keys.sort.each do |item|
-      result << fm[item]
-    end
-
+    fm.each do |month, dfs|
+      result << dfs[dfs.keys.sort.last]
+    end 
     return result
   end
   def import(files_to_get)
