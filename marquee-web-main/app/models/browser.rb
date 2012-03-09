@@ -12,5 +12,13 @@
 #
 
 class Browser < ActiveRecord::Base
-  belongs_to :machine
+  has_many :project_browser_configs
+  has_many :projects, :through => :project_browser_configs
+
+  validates_presence_of :name, :version
+  validates_uniqueness_of :version, :scope => :name
+
+  def name_with_version
+    "#{name}, #{version}"
+  end
 end

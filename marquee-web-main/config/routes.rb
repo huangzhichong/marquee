@@ -5,7 +5,11 @@ MarqueeWebMain::Application.routes.draw do
       mount Resque::Server.new, :at => "/resque"
     end
 
-    resources :project_categories, :users
+    get '/', :controller => 'projects', :action => 'index'
+    resources :browsers
+    resources :operation_systems
+
+    resources :project_categories, :users, :roles
     resources :team_members
     resources :projects do
       resources :test_suites, :ci_mappings, :mail_notify_settings, :test_rounds
@@ -32,7 +36,7 @@ MarqueeWebMain::Application.routes.draw do
   post 'import_data/import_test_plan_from_xml'
   get 'import_data/refresh_testlink_data'
   post 'import_data/import_as_and_tc_status'
-  get 'import_data/refresh_testlink_data'  
+  get 'import_data/refresh_testlink_data'
 
   devise_for :users, :controllers => { :passwords => "passwords" }
   resources :passwords

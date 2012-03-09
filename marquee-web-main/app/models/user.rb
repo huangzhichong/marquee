@@ -32,19 +32,31 @@ class User < ActiveRecord::Base
   validates :email, :presence => true, :uniqueness => true
 
   has_many :projects
-  has_and_belongs_to_many :roles
   has_many :automation_scripts
   has_many :test_suites
   has_many :oracle_project_permissions
   has_many :oracle_projects, :through => :oracle_project_permissions
   has_many :user_ability_definitions
 
+  has_and_belongs_to_many :projects_roles, :class_name => "ProjectsRoles"
+  has_many :ability_definitions, :class_name => "AbilityDefinitionsUsers", :dependent => :delete_all
+
+  validates_presence_of :email
+  validates_uniqueness_of :email, :message => "already exists."
+
   def self.automator
     User.find_by_email('automator@marquee.com')
   end
 
-  def role?(role)
-    return !!self.roles.find_by_name(role)
+  def role?(role_name)
+    if (role_name)
+      roles = Role.find_all_by_name(role_name)
+      if (roles && !roles.empty?) 
+        role_ids = roles.map { |role| role.id }
+        return !!self.projects_roles.find_by_role_id(role_ids)
+      end
+    end
+    return
   end
 
   def update_role(role_id)
@@ -71,9 +83,14 @@ class User < ActiveRecord::Base
         :display_name => "#{names.first.capitalize} #{names.last.capitalize}",
         :password => "111111"
       )
-      u.roles << Role.find_by_name("qa_developer")
+      qa_developer = Role.find_by_name("qa_developer")
+      project_role = ProjectsRoles.find_by_role_id_and_project_id(qa_developer.id, nil)
+      u.projects_roles << project_role
+      # u.roles << Role.find_by_name("qa_developer")
       u.save
     end
     u
   end
+
+
 end
