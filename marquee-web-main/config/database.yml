@@ -39,10 +39,14 @@ production:
 
 fnd_jira:
   adapter: mysql2
-  host: mysql-402.pod04.aw.dev.activenetwork.com
-  username: scmrgao
-  password: @ct1v3!
-  database: jiraFND_jira
+  host: 10.109.2.114
+  username: dashboard
+  password: dashboardrocks!
+  database: jira_sub_mirror
+#   host: mysql-402.pod04.aw.dev.activenetwork.com
+#   username: scmrgao
+#   password: @ct1v3!
+#   database: jiraFND_jira
 
 local_testlink:
   adapter: mysql2
