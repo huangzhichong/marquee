@@ -10,5 +10,8 @@
 
 class ProjectCategory < ActiveRecord::Base
   
+  validates_presence_of :name
+  validates_uniqueness_of :name, :message => " already exists."
+
   acts_as_audited :protect => false
 end

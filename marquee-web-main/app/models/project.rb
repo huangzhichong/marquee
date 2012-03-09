@@ -16,6 +16,10 @@
 #
 
 class Project < ActiveRecord::Base
+
+  attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
+  after_update :reprocess_icon_image, :if => :cropping?
+
   has_many :project_browser_configs
   has_many :browsers, :through => :project_browser_configs
   accepts_nested_attributes_for :project_browser_configs
@@ -36,10 +40,8 @@ class Project < ActiveRecord::Base
   has_attached_file :icon_image, :default_url => "/images/projects/default_project.png", :processors => [:cropper], :styles => { :large => "320x320", :medium => "180x180>", :thumb => "100x100>" }, :path => ":rails_root/public/images/projects/:style_:basename.:extension", :url => "/images/projects/:style_:basename.:extension"
   acts_as_audited :protect => false
 
-  attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
-  after_update :reprocess_icon_image, :if => :cropping?
-  validates_presence_of :browsers
-  validates_presence_of :operation_systems
+  validates_presence_of :name, :browsers, :operation_systems
+  validates_uniqueness_of :name, :message => " already exists."
 
   def to_s
     self.name

@@ -6,14 +6,6 @@ class Admin::TestSuitesController < InheritedResources::Base
   load_and_authorize_resource
 
   def create
-    project = Project.find(params[:project_id])
-    test_suite_name = params[:test_suite][:name].strip
-    test_suites = project.test_suites.find_all_by_name(test_suite_name)
-    if test_suites.length > 0 then
-      flash[:error] = test_suite_name + " already exists"
-      render :action => "new" and return
-    end
-
     params[:test_suite][:name] = params[:test_suite][:name].strip
     create!{admin_project_test_suites_url(@project)}
   end

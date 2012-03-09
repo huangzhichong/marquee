@@ -1,10 +1,13 @@
+-if flash[:error]
+  .alert-message.error= flash[:error].html_safe
+
 = form_for ([:admin, @role]) do |f|
-  - unless flash[:error].nil?
-    .alert-message.error
-      .alert
-        - flash[:error].messages.each_pair do |field, msgs|
-          - msgs.each do |msg|
-            = field.to_s.capitalize + " " + msg
+  -if @role.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@role.errors.count, "error")} prohibited this role from being saved:"
+      %ul
+        - @role.errors.full_messages.each do |msg|
+          %li= msg
   %fieldset
     %legend= title
     .clearfix

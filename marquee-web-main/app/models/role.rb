@@ -11,7 +11,8 @@ class Role < ActiveRecord::Base
   has_and_belongs_to_many :ability_definitions
   has_many :projects_roles, :class_name => "ProjectsRoles", :dependent => :delete_all
 
-  validates :name, :presence => true, :uniqueness => true
+  validates_presence_of :name
+  validates_uniqueness_of :name, :message => " already exists."
 
   acts_as_audited :protect => false
 
