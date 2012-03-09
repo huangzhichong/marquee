@@ -9,26 +9,28 @@ class SyncTimeCardFile
     require 'csv'
     
     files_to_get = {}
-
-    #sftp = Net::SFTP.open(FTP_SERVER, FTP_USER, :password => FTP_PWD)
-    #sftp.dir.foreach(FOLDER) do |e|
-    #  files_to_get << entry.longname
-    #end
-
-    #files_to_get.each do |f|
-    #  ftp.getbinaryfile("#{FOLDER}/#{f}")
-    #  ftp.delete("#{FOLDER}/#{f}")
-    #end
-
-    #sftp.close
+    
     Net::SFTP.start(FTP_SERVER, FTP_USER, :password => FTP_PWD) do |sftp|
       sftp.dir.foreach(FOLDER) do |entry|
         puts entry.inspect
         path = "#{FOLDER}/#{entry.name}"
         files_to_get[path] = sftp.download!(path) unless entry.directory?
       end
-    end
+      files_success, files_failed = import files_to_get
 
+      puts "successed ::#{files_success}"
+      puts "failed::#{files_failed}"
+      files_success.each do |file|
+        sftp.rename!(file, "#{FOLDER}/successed/#{file[file.index('/')+1, file.length]}")
+      end
+      files_failed.each do |file|
+        sftp.rename!(file, "#{FOLDER}/failed/#{file[file.index('/')+1, file.length]}")
+      end
+    end
+  end
+
+  protected
+  def import(files_to_get)
     puts files_to_get.keys.inspect
     files_success = []
     files_failed = []
@@ -73,6 +75,7 @@ class SyncTimeCardFile
       rescue
         puts "file #{f} import failed, will move to directory:failded" 
         files_failed << path
+        next 
       end
 
       this_week = time_card_for_audit.nil? ? (Date.today - 2).cweek : time_card_for_audit.from.cweek
@@ -103,7 +106,6 @@ class SyncTimeCardFile
         audit_log.save
       end
     end
-    
-    #TODO move file
+    return files_success, files_failed 
   end
 end
