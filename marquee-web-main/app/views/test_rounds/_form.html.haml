@@ -37,13 +37,16 @@
 
 :javascript
   $(function(){
+    var submit = true;
 
     $("#new_test_round").validationEngine({
       promptPosition: "bottomRight", 
       scroll: false,
+      onFailure: function(){
+        submit = false;
+      }
     });
 
-    var submit = true;
     $("#new_test_round").submit(function(){
       submit = true;
       $(".chzn-container > .chzn-single > span").each(function(i){
