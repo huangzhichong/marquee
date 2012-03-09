@@ -31,7 +31,7 @@ class SyncTimeCardFile
 
   protected
   def import(files_to_get)
-    puts files_to_get.keys.inspect
+    puts "files to process:#{files_to_get.keys.inspect}"
     files_success = []
     files_failed = []
     files_to_get.each do |path, f|

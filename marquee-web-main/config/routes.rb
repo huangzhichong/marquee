@@ -134,4 +134,5 @@ MarqueeWebMain::Application.routes.draw do
     get 'time_cards/show'
     get 'time_cards/members'
   end
+  get 'sync_time_card_file/do'
 end
