@@ -43,7 +43,6 @@ class Ability
 
   def can?(action, subject, *extra_args)
 
-    puts "action: #{action} => subject: #{subject}"
     unless extra_args.nil? and extra_args.empty?
       extra_arg0 = extra_args[0]
       if extra_arg0.respond_to? :has_key? and extra_arg0.has_key?(:project_id)
