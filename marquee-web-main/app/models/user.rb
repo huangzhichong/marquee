@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
   has_many :user_ability_definitions
 
   has_and_belongs_to_many :projects_roles, :class_name => "ProjectsRoles"
-  has_many :ability_definitions, :class_name => "AbilityDefinitionsUsers", :dependent => :delete_all
+  has_many :ability_definitions, :class_name => "AbilityDefinitionsUsers", :dependent => :destroy
 
   validates_presence_of :email
   validates_uniqueness_of :email, :message => "already exists."
