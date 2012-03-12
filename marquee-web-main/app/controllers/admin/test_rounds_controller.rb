@@ -26,7 +26,7 @@ class Admin::TestRoundsController < InheritedResources::Base
 
   def collection
     @project ||= Project.find(params[:project_id])
-    @search = @project.test_rounds.order('id desc').search(params[:search])
-    @admin_test_rounds ||= @search.page(params[:page]).per(15)
+    @search = @project.test_rounds.search(params[:search])
+    @admin_test_rounds ||= @search.order('id desc').page(params[:page]).per(15)
   end
 end
