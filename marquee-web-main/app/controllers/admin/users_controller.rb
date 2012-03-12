@@ -48,8 +48,8 @@ class Admin::UsersController < InheritedResources::Base
 
   protected
   def collection
-    @search = User.order('id desc').search(params[:search])
-    @users = @search.page(params[:page]).per(15)
+    @search = User.search(params[:search])
+    @users = @search.order('id desc').page(params[:page]).per(15)
   end
 
   def resource
