@@ -5,16 +5,18 @@ class Admin::UsersController < InheritedResources::Base
 
   def create
     names = []
-    if params[:user][:display_name].nil? or params[:user][:display_name].strip.empty?
-      if !params[:user][:email].nil? and params[:user][:email].strip.empty?
+    if params[:user][:display_name] and not params[:user][:display_name].strip.empty?
+      names = params[:user][:display_name].strip.split(" ")
+    else
+      if params[:user][:email] and not params[:user][:email].strip.empty?
         names = params[:user][:email].split("@").first.split(".")
       end
-    else
-      names = params[:user][:display_name].strip.split(" ")
     end
 
-    if names.length > 0
+    if names.length == 2
       display_name = "#{names.first.capitalize} #{names.last.capitalize}"
+    else
+      display_name = (names.map {|name| name.capitalize}).join(" ")
     end
 
     password = params[:user][:password]
