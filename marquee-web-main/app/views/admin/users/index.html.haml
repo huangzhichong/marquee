@@ -8,7 +8,7 @@
     %span.search
       = f.text_field :email_or_display_name_or_oracle_projects_name_contains, {:id => 'search'}
       = f.submit '', {:class => 'btn', :id => 'searchsubmit'}
-%table
+%table.zebra-striped
   %tr
     %th Email
     %th Display Name
