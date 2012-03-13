@@ -3,10 +3,6 @@ class Admin::UsersController < InheritedResources::Base
   before_filter :authenticate_user!
   load_and_authorize_resource
 
-  def new
-    @user = User.new(:display_name => "", :password => "")
-  end
-
   def create
     names = []
     if params[:user][:display_name] and not params[:user][:display_name].strip.empty?
@@ -31,6 +27,7 @@ class Admin::UsersController < InheritedResources::Base
 
     if user.errors.any?
       puts user.errors.inspect
+      user.email = ""
       @user = user
       render :new and return
     else
