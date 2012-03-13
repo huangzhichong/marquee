@@ -34,6 +34,17 @@ class Admin::UsersController < InheritedResources::Base
     end
   end
 
+  def activate
+    user = User.find(params[:id])
+    if not user.nil?
+      puts "------------->"
+      user.active = true
+      user.save
+    end
+
+    redirect_to admin_users_path
+  end
+
   def update
     user = User.find(params[:id])
     user.display_name = params[:user][:display_name]
@@ -46,6 +57,16 @@ class Admin::UsersController < InheritedResources::Base
     else
       redirect_to admin_users_path
     end
+  end
+
+  def destroy
+    user = User.find(params[:id])
+    if not user.nil?
+      user.active = false
+      user.save
+    end
+
+    redirect_to admin_users_path
   end
 
   protected

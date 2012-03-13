@@ -27,6 +27,7 @@ MarqueeWebMain::Application.routes.draw do
     get "jira_data/issue_status_chronicle/:key", :controller => 'jira_data', :action => 'issue_status_chronicle'
     get "projects_display_order", :controller => "projects", :action => "display_order"
     post "projects_display_order_update", :controller => "projects", :action => "display_order_update"
+    get "activate_user/:id", :controller => "users", :action => "activate"
   end
 
   post 'status/update'

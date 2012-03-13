@@ -74,6 +74,12 @@ class User < ActiveRecord::Base
     save
   end
 
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    login = conditions.delete(:email)
+    where(conditions).where(["lower(email) = :value and active=1", {:value => login.strip.downcase}]).first
+  end
+
   def self.find_or_create_default_by_email(strEmail)
     u = User.find_by_email(strEmail)
     if u.nil?
@@ -91,6 +97,4 @@ class User < ActiveRecord::Base
     end
     u
   end
-
-
 end
