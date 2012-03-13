@@ -3,6 +3,10 @@ class Admin::UsersController < InheritedResources::Base
   before_filter :authenticate_user!
   load_and_authorize_resource
 
+  def new
+    @user = User.new()
+  end
+
   def create
     names = []
     if params[:user][:display_name] and not params[:user][:display_name].strip.empty?
