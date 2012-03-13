@@ -8,8 +8,8 @@ class Widgets::TimeCardsController < ApplicationController
     if !@wid
       #render to error page
     end
-    selected = MetricsMembersSelection.find_all_by_widget_id(@wid).collect{|ob| ob.team_member_id}
-    @selected_members = TeamMember.find_all_by_id selected
+    selected = MetricsMembersSelection.find_all_by_widget_id(@wid).collect{|ob| ob.team_member_id}.sort!{|t1,t2|t1 <=> t2}
+    @selected_members = TeamMember.where(:id => selected).order("name")
     logger.info @selected_members.inspect
   end
 

@@ -5,7 +5,7 @@
         = hidden_field_tag "widget_id", "#{@wid}"
         .columns.span4
           = label_tag 'Team Members'
-          = select_tag "members", options_from_collection_for_select(TeamMember.all.reject{|tm| @selected_members.include?(tm)}, "id", "name"), :multiple => true, :class => 'as-select-wg', :width => 220
+          = select_tag "members", options_from_collection_for_select(TeamMember.find(:all, :order => 'name').reject{|tm| @selected_members.include?(tm)}, "id", "name"), :multiple => true, :class => 'as-select-wg', :width => 220
           %a#add-all-button
             %span.multi-select-item-add.ui-icon
             Choose All
