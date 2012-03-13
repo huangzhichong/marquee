@@ -37,7 +37,6 @@ class Admin::UsersController < InheritedResources::Base
   def activate
     user = User.find(params[:id])
     if not user.nil?
-      puts "------------->"
       user.active = true
       user.save
     end
