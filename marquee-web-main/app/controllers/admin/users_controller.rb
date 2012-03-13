@@ -126,7 +126,7 @@ class Admin::UsersController < InheritedResources::Base
       uad_array = uads.split("||")
       uad_array.shift
       uad_array.each do |uad|
-        ad_projects_array = uad.split("in")
+        ad_projects_array = uad.split("for")
         ad = ad_projects_array[0]
         project_name = ad_projects_array[1].strip
         ad_array = ad.split(" ")
