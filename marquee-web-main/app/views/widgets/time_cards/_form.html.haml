@@ -1,60 +1,55 @@
-= form_tag('/widgets/timecards/members_select', :method => :post)
+%form{:action => '/widgets/time_cards/members_select', :method => "post"}
   %fieldset
-    %legend= title
     .clearfix
-      = label_tag 'Team Members'
-      .input
-        .row
-          .columns.span7
-            - select_tag "All", options_from_collection_for_select(TeamMember.all.reject{|tm| @selected_members.include?(tm)}, "id", "name"), :multiple => true
-            %a#add-all-button
-              %span.multi-select-item-add.ui-icon
-              Choose All
-          .columns.span1#drag-arrow
-            %a.multi-select-item-add.ui-icon#add-button
-            .clearfix
-            %a.multi-select-item-remove.ui-icon#remove-button
-          .columns.span7
-            - select_tag "Selected", options_from_collection_for_select(@selected_members, "id", "name"), :multiple => true
-            %a#clear-all-button
-              %span.multi-select-item-remove.ui-icon
-              Clear All
-          #tcpp-ids
+      .row
+        = hidden_field_tag "widget_id", "#{@wid}"
+        .columns.span4
+          = label_tag 'Team Members'
+          = select_tag "members", options_from_collection_for_select(TeamMember.all.reject{|tm| @selected_members.include?(tm)}, "id", "name"), :multiple => true, :class => 'as-select-wg', :width => 220
+          %a#add-all-button
+            %span.multi-select-item-add.ui-icon
+            Choose All
+        .columns.span1#drag-arrow
+          %a.multi-select-item-add.ui-icon#add-button
+          .clearfix
+          %a.multi-select-item-remove.ui-icon#remove-button
+        .columns.span4
+          = label_tag 'Selected'
+          = select_tag "selected", options_from_collection_for_select(@selected_members, "id", "name"), :multiple => true, :class => 'as-select-wg', :width => 220
+          %a#clear-all-button
+            %span.multi-select-item-remove.ui-icon
+            Clear All
+        = hidden_field_tag "selected_ids", ""
     .actions
-      = submit_tag 'Save', :class => 'btn primary'
-      = link_to 'Cancel', widgets_time_cards_path, :class => 'btn'
-= end
+      = button_tag 'Save', :type => 'button',:class => 'btn primary',:id => 'save-button'
 :javascript
   $(function(){
     $('#add-button').click(function(){
-      $('#tcpp-ids').empty();
-      $('#tcpps :selected').each(function(idx, elem){
-        $('#tcpps-selected').append($(elem));
-      });
-      $('#tcpps-selected').children().each(function(idx, elem){
-        $('#tcpp-ids').append($('#user_oracle_project_ids_').clone().val($(elem).attr('value')));
+      $('#members :selected').each(function(idx, elem){
+        $('#selected').append($(elem));
       });
     });
     $('#remove-button').click(function(){
-      $('#tcpp-ids').empty();
-      $('#tcpps-selected :selected').each(function(idx, elem){
-        $('#tcpps').append($(elem));
-      });
-      $('#tcpps-selected').children().each(function(idx, elem){
-        $('#tcpp-ids').append($('#user_oracle_project_ids_').clone().val($(elem).attr('value')));
+      $('#selected :selected').each(function(idx, elem){
+        $('#members').append($(elem));
       });
     });
     $('#add-all-button').click(function(){
-      $('#tcpp-ids').empty();
-      $('#tcpps option').each(function(idx, elem){
-        $('#tcpps-selected').append($(elem));
-        $('#tcpp-ids').append($('#user_oracle_project_ids_').clone().val($(elem).attr('value')));
+      $('#members option').each(function(idx, elem){
+        $('#selected').append($(elem));
       });
     });
     $('#clear-all-button').click(function(){
-      $('#tcpp-ids').empty();
-      $('#tcpps-selected option').each(function(idx, elem){
-        $('#tcpps').append($(elem));
+      $('#selected option').each(function(idx, elem){
+        $('#members').append($(elem));
       });
     });
-  })
+    $('#save-button').click(function(){
+      var ids = []
+      $('#selected option').each(function(idx, elem){
+        ids.push($(elem).attr('value'));
+      }); 
+      $('#selected_ids').val(ids);
+      $('form').submit();
+    });
+  });
