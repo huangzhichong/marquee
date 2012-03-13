@@ -18,7 +18,7 @@
     .clearfix
       = f.label :display_name
       .input
-        = f.text_field :display_name
+        = f.text_field :display_name, :maxlength => "30"
     - if @user.email.empty?
       .clearfix
         = f.label :password

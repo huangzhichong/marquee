@@ -38,7 +38,7 @@
       %li{:name => "users"}
         =link_to 'Users', admin_users_path
     - if can_update_teammember
-      %li
+      %li{:name => "team_members"}
         =link_to 'Time Card Members', admin_team_members_path, :remote => true
     - if can_update_dre_slide_show
       %li{:name => "dre_slide_show"}
