@@ -4,7 +4,7 @@ class Admin::UsersController < InheritedResources::Base
   load_and_authorize_resource
 
   def new
-    @user = User.new()
+    @user = User.new(:display_name => "", :password => "")
   end
 
   def create
