@@ -3,6 +3,12 @@ class Admin::UsersController < InheritedResources::Base
   before_filter :authenticate_user!
   load_and_authorize_resource
 
+  def index
+    session[:user_page] = params[:page]
+    session[:user_search] = params[:search]
+    super
+  end
+
   def create
     names = []
     if params[:user][:display_name] and not params[:user][:display_name].strip.empty?
@@ -26,7 +32,9 @@ class Admin::UsersController < InheritedResources::Base
     save_user!(user, params)
 
     if user.errors.any?
-      puts user.errors.inspect
+      if not user.errors.[](:email).nil?
+        user.errors.[](:email).delete("has already been taken")
+      end
       user.email = ""
       @user = user
       render :new and return
@@ -42,7 +50,7 @@ class Admin::UsersController < InheritedResources::Base
       user.save
     end
 
-    redirect_to admin_users_path
+    redirect_to :action => :index, :search => session[:user_search], :page => session[:user_page]
   end
 
   def update
@@ -55,24 +63,33 @@ class Admin::UsersController < InheritedResources::Base
       @user = user
       render :edit and return
     else
-      redirect_to admin_users_path
+      redirect_to :action => :index, :search => session[:user_search], :page => session[:user_page]
     end
   end
 
   def destroy
+    if not current_user.nil?
+      if(current_user.id == params[:id].to_i)
+        flash[:error] = "Cannot inactive current login user"
+        redirect_to :action => "index", :flash => flash, :search => session[:user_search], :page => session[:user_page]
+        return
+      end
+    end
+
     user = User.find(params[:id])
     if not user.nil?
       user.active = false
       user.save
     end
 
-    redirect_to admin_users_path
+    redirect_to :action => :index, :search => session[:user_search], :page => session[:user_page]
   end
 
   protected
   def collection
     @search = User.search(params[:search])
-    @users = @search.order('id desc').page(params[:page]).per(15)
+    @total_user = @search.count
+    @users = @search.order('id desc').page(params[:page]).per(4)
   end
 
   def resource

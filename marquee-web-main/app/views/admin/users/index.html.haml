@@ -1,7 +1,9 @@
+-if flash[:error]
+  .alert-message.error= flash[:error].html_safe 
 .page-header
   %h2
     Users
-    %smal= "#{User.count} in total"
+    %smal= "#{@total_user} in total"
   - if can? :create, User
     = link_to 'New User', new_admin_user_path, :class => 'btn primary'
   = form_for @search, :url => admin_users_path, :html => {:method => :get} do |f|
