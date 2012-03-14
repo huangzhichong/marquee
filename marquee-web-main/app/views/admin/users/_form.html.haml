@@ -21,10 +21,11 @@
         = f.text_field :display_name, :maxlength => "30"
     - if @user.email.empty?
       .clearfix
+        %type{:type => "hidden"}
         = f.label :password
         .required *
         .input
-          = f.password_field :password, :class => "validate[required, funcCall[checkOnlySpace], funcCall[checkPassword]]"
+          = f.password_field :password, :autocomplete => "off", :class => "validate[required, funcCall[checkOnlySpace], funcCall[checkPassword]]"
       .clearfix
         = f.label :confirm_password
         .required *
