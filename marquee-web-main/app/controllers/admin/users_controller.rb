@@ -89,7 +89,7 @@ class Admin::UsersController < InheritedResources::Base
   def collection
     @search = User.search(params[:search])
     @total_user = @search.count
-    @users = @search.order('id desc').page(params[:page]).per(4)
+    @users = @search.order('id desc').page(params[:page]).per(15)
   end
 
   def resource
