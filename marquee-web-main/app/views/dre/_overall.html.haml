@@ -12,46 +12,74 @@
         %td Sev2
       %tr
         %td.market Endurance
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@endurance.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @endurance.sev1_bugs
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@endurance.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @endurance.sev2_bugs
       %tr
         %td.market Camps
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@camps.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @camps.sev1_bugs
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@camps.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @camps.sev2_bugs
       %tr
         %td.market Team Sports
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@team_sports.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @team_sports.sev1_bugs
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@team_sports.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @team_sports.sev2_bugs
       %tr
         %td.market Swimming
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@swimming.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @swimming.sev1_bugs
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@swimming.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @swimming.sev2_bugs
       %tr
         %td.market Membership
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@membership.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @membership.sev1_bugs
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@membership.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @membership.sev2_bugs
       %tr
         %td.market Platform
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@platform.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @platform.sev1_bugs
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@platform.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @platform.sev2_bugs
       %tr
         %td.market Framework
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@framework.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @framework.sev1_bugs
+        %td{:align => "center", :style => "text-align: -webkit-center;"}
+          %div{:style => "background-color:#{@framework.sev1_bugs_color}; width:12px; height:12px"}
+        %td.count
+          = @framework.sev2_bugs
 
         %table#defect-removal-efficiency
           %thead

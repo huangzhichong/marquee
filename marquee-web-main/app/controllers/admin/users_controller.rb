@@ -70,7 +70,7 @@ class Admin::UsersController < InheritedResources::Base
   def destroy
     if not current_user.nil?
       if(current_user.id == params[:id].to_i)
-        flash[:error] = "Cannot inactive current login user"
+        flash[:error] = "Current user cannot be deactivated"
         redirect_to :action => "index", :flash => flash, :search => session[:user_search], :page => session[:user_page]
         return
       end

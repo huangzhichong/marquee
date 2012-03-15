@@ -10,6 +10,7 @@ class DreController < ApplicationController
 
   def overall
     load_dre_data
+    load_severity_bugs
     if params[:slide]
       render :layout => 'slideshow'
     end
@@ -431,4 +432,33 @@ private
     Rails.cache.write('ext_bugs_all', p.external_bugs_by_day_alls)
   end
 
+  def load_severity_bugs
+      bug_sev1_num = JiraIssue.endurance.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.endurance.bugs.production.open.external.by_severity('Sev2').count
+      @endurance = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.camps.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.camps.bugs.production.open.external.by_severity('Sev2').count
+      @camps = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.team_sports.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.team_sports.bugs.production.open.external.by_severity('Sev2').count
+      @team_sports = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.swimming.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.swimming.bugs.production.open.external.by_severity('Sev2').count
+      @swimming = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.membership.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.membership.bugs.production.open.external.by_severity('Sev2').count
+      @membership = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.platform.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.platform.bugs.production.open.external.by_severity('Sev2').count
+      @platform = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.framework.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.framework.bugs.production.open.external.by_severity('Sev2').count
+      @framework = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+  end
 end
