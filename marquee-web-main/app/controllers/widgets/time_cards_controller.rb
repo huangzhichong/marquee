@@ -39,7 +39,7 @@ class Widgets::TimeCardsController < ApplicationController
     if(mms.empty?)
       #render to members_list to 
       #redirect_to :action => 'members', :widget_id => wid
-      render :text => "Please click 'Edit' to add team members!"
+      render :text => "<div style='background-color: #3E83C9;border-bottom: 1px solid #95BCE2;border-right: 1px solid #FFFFFF;color: #FFFFFF;font-weight: bold;line-height: 120%;padding: 2px 0;font-family:Verdana,Arial,sans-serif;font-size: 11px;text-align: center;'>Please click 'Edit' to add team members!</div>"
     end
     selected = MetricsMembersSelection.find_all_by_widget_id(wid).collect{|mms| mms.team_member_id}
     members = TeamMember.where(:id => selected).collect{|tm| tm.name}
