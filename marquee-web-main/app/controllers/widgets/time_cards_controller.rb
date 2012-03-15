@@ -38,7 +38,8 @@ class Widgets::TimeCardsController < ApplicationController
     logger.info("mms with #{wid} are: #{mms}")
     if(mms.empty?)
       #render to members_list to 
-      redirect_to :action => 'members', :widget_id => wid
+      #redirect_to :action => 'members', :widget_id => wid
+      render :text => "Please click 'Edit' to add team members!"
     end
     selected = MetricsMembersSelection.find_all_by_widget_id(wid).collect{|mms| mms.team_member_id}
     members = TeamMember.where(:id => selected).collect{|tm| tm.name}
