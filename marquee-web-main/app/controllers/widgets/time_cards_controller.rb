@@ -3,23 +3,33 @@ class Widgets::TimeCardsController < ApplicationController
   layout 'no_frame'
 
   def members
-    wid = params[:widget_id]
-    logger.info "widget_id:#{wid}"
-    if !wid
+    @wid = params[:widget_id]
+    logger.info "widget_id:#{@wid}"
+    if !@wid
       #render to error page
     end
-    selected = MetricsMembersSelection.find_all_by_widget_id(wid)
-    @selected_members = TeamMember.find_all_by_id selected
+    selected = MetricsMembersSelection.find_all_by_widget_id(@wid).collect{|ob| ob.team_member_id}.sort!{|t1,t2|t1 <=> t2}
+    @selected_members = TeamMember.where(:id => selected).order("name")
+    logger.info @selected_members.inspect
   end
 
   def members_select
-    selected = params[:selected]
+    selected = params[:selected_ids]
     wid = params[:widget_id]
-    selection = MetricsMembersSelection.new
-    selection.widget_id = wid
-    selection.team_members = TeamMember.where(:id => selected)
-    selection.save
-  # render to time_cards
+    logger.info "selected:#{selected}"
+    if selected
+      MetricsMembersSelection.transaction do
+        MetricsMembersSelection.delete_all(["widget_id = ?", wid])
+        selected.split(',').each do |mid|
+          selection = MetricsMembersSelection.new
+          selection.widget_id = wid
+          selection.team_member_id = mid 
+          selection.save
+        end
+      end
+    end
+   # redirect_to :action => :show, :widget_id => wid
+    redirect_to :action => :members, :widget_id => wid
   end
 
   def show 
@@ -28,7 +38,8 @@ class Widgets::TimeCardsController < ApplicationController
     logger.info("mms with #{wid} are: #{mms}")
     if(mms.empty?)
       #render to members_list to 
-      redirect_to :action => 'members', :widget_id => wid
+      #redirect_to :action => 'members', :widget_id => wid
+      render :text => "Please click 'Edit' to add team members!"
     end
     selected = MetricsMembersSelection.find_all_by_widget_id(wid).collect{|mms| mms.team_member_id}
     members = TeamMember.where(:id => selected).collect{|tm| tm.name}

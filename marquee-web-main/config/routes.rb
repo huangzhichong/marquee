@@ -140,6 +140,7 @@ MarqueeWebMain::Application.routes.draw do
   namespace :widgets do
     get 'time_cards/show'
     get 'time_cards/members'
+    post 'time_cards/members_select'
   end
   get 'sync_time_card_file/do'
 end
