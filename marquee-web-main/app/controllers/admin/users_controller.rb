@@ -32,9 +32,6 @@ class Admin::UsersController < InheritedResources::Base
     save_user!(user, params)
 
     if user.errors.any?
-      if not user.errors.[](:email).nil?
-        user.errors.[](:email).delete("has already been taken")
-      end
       user.email = ""
       @user = user
       render :new and return
