@@ -37,6 +37,7 @@ class Project < ActiveRecord::Base
   has_many :ci_mappings
   has_many :mail_notify_settings
   has_many :automation_driver_configs
+  has_many :projects_roles, :class_name => "ProjectsRoles", :dependent => :destroy
   has_attached_file :icon_image, :default_url => "/images/projects/default_project.png", :processors => [:cropper], :styles => { :large => "320x320", :medium => "180x180>", :thumb => "100x100>" }, :path => ":rails_root/public/images/projects/:style_:basename.:extension", :url => "/images/projects/:style_:basename.:extension"
   acts_as_audited :protect => false
 

@@ -30,7 +30,7 @@ class Admin::TestSuitesController < InheritedResources::Base
 
   def collection
     @project ||= Project.find(params[:project_id])
-    @search = @project.test_suites.order('id desc').search(params[:search])
-    @admin_test_suites ||= @search.page(params[:page]).per(15)
+    @search = @project.test_suites.search(params[:search])
+    @admin_test_suites ||= @search.order('id desc').page(params[:page]).per(15)
   end
 end
