@@ -29,7 +29,6 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :display_name, :oracle_project_ids
-  validates :email, :presence => true, :uniqueness => true
 
   has_many :projects
   has_many :automation_scripts
@@ -40,9 +39,6 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :projects_roles, :class_name => "ProjectsRoles"
   has_many :ability_definitions, :class_name => "AbilityDefinitionsUsers", :dependent => :destroy
-
-  validates_presence_of :email
-  validates_uniqueness_of :email, :message => "already exists."
 
   def self.automator
     User.find_by_email('automator@marquee.com')
@@ -97,4 +93,6 @@ class User < ActiveRecord::Base
     end
     u
   end
+
+
 end
