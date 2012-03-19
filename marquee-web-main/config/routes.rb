@@ -8,8 +8,10 @@ MarqueeWebMain::Application.routes.draw do
     get '/', :controller => 'projects', :action => 'index'
     resources :browsers
     resources :operation_systems
-
-    resources :project_categories, :users, :roles
+    resources :automation_drivers
+    resources :project_categories
+    resources :users
+    resources :roles
     resources :team_members
     resources :projects do
       resources :test_suites, :ci_mappings, :mail_notify_settings, :test_rounds
