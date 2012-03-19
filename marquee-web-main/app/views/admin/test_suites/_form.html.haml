@@ -41,7 +41,7 @@
             .clearfix
             %a.multi-select-item-remove.ui-icon#remove-button
           .columns.span7
-            %select.as-select#automationscripts-selected{:multiple => 'multiple', :class => "validate[funcCall[checkOptionItems]]"}
+            %select.as-select#automationscripts-selected{:multiple => 'multiple', :class => "validate[funcCall[checkOptionSelected]]"}
               - @test_suite.automation_scripts.each do |as|
                 %option{:value => as.id, :title => as.name}= as.name
             %a#clear-all-button

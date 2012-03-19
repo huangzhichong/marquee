@@ -19,6 +19,6 @@ function checkOptionSelected(field, rules, i, options) {
 		}
 	}
 	if(!result) {
-		return "* One item need be selected at least"
+		return "* You must select one item"
 	}
 }
