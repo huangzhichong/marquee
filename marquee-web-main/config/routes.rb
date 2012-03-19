@@ -8,8 +8,10 @@ MarqueeWebMain::Application.routes.draw do
     get '/', :controller => 'projects', :action => 'index'
     resources :browsers
     resources :operation_systems
-
-    resources :project_categories, :users, :roles
+    resources :automation_drivers
+    resources :project_categories
+    resources :users
+    resources :roles
     resources :team_members
     resources :projects do
       resources :test_suites, :ci_mappings, :mail_notify_settings, :test_rounds
@@ -27,6 +29,7 @@ MarqueeWebMain::Application.routes.draw do
     get "jira_data/issue_status_chronicle/:key", :controller => 'jira_data', :action => 'issue_status_chronicle'
     get "projects_display_order", :controller => "projects", :action => "display_order"
     post "projects_display_order_update", :controller => "projects", :action => "display_order_update"
+    get "activate_user/:id", :controller => "users", :action => "activate"
   end
 
   post 'status/update'
@@ -140,6 +143,7 @@ MarqueeWebMain::Application.routes.draw do
   namespace :widgets do
     get 'time_cards/show'
     get 'time_cards/members'
+    post 'time_cards/members_select'
   end
   get 'sync_time_card_file/do'
 end

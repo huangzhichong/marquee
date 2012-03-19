@@ -6,6 +6,7 @@
 - can_update_dre_slide_show = can? :update, :dre_slide_show
 - can_update_browser = can? :update, Browser
 - can_update_os = can? :update, OperationSystem
+- can_update_automation_driver = can? :update, AutomationDriver
 
 - menu_item_count = 0
 - menu_item_count += can_read_project_category ? 1 : 0
@@ -16,32 +17,44 @@
 - menu_item_count += can_update_dre_slide_show ? 1 : 0
 - menu_item_count += can_update_browser ? 1 : 0
 - menu_item_count += can_update_os ? 1 : 0
+- menu_item_count += can_update_automation_driver ? 1 : 0
 
 - if menu_item_count > 1
   %ul.menu
     - if can_read_project_category
-      %li
+      %li{:name => "project_categories"}
         =link_to 'Project Categories', admin_project_categories_path
     - if can_read_project
-      %li
+      %li{:name => "projects"}
         =link_to 'Projects', admin_projects_path
     - if can_read_role
-      %li
+      %li{:name => "roles"}
         =link_to 'Roles', admin_roles_path
     - if can_update_os
-      %li
+      %li{:name => "operation_systems"}
         =link_to 'Operation Systems', admin_operation_systems_path
     - if can_update_browser
-      %li
+      %li{:name => "browsers"}
         =link_to 'Browsers', admin_browsers_path
+    - if can_update_automation_driver
+      %li{:name => "automation_drivers"}
+        =link_to 'Automation Drivers', admin_automation_drivers_path
     - if can_read_user
-      %li
+      %li{:name => "users"}
         =link_to 'Users', admin_users_path
     - if can_update_teammember
-      %li
+      %li{:name => "team_members"}
         =link_to 'Time Card Members', admin_team_members_path, :remote => true
     - if can_update_dre_slide_show
-      %li
-        =link_to 'DRE slide show', admin_dre_slide_show_configure_path
+      %li{:name => "dre_slide_show"}
+        =link_to 'DRE Slide Show', admin_dre_slide_show_configure_path
 
   .clearfix
+
+:javascript
+  $(function(){
+    //var current_tab = location.pathname.split("/")[2].replace(/_/g," ").replace("dre","DRE");
+    var current_tab = location.pathname.split("/")[2];
+
+    $("ul.menu > li[name*='"+current_tab+"']").addClass("activate");
+  })

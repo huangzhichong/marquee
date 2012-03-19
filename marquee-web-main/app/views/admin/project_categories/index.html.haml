@@ -1,7 +1,7 @@
 .page-header
   %h2 Project Categories
 
-%table
+%table.zebra-striped
   %tr
     %th Name
     %th Created At
@@ -22,8 +22,9 @@
         - if can? :update, ProjectCategory
           - edit_url = edit_admin_project_category_path(project_category)        
         - if can? :delete, ProjectCategory
-          - delete_url = admin_project_category_path(project_category)        
-        = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url}
+          - delete_url = admin_project_category_path(project_category)  
+          - warning_msg = "This project category cannot be removed because some projects are assigned to it." if project_category.has_associated_projects?
+        = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url, :warning_msg => warning_msg}
 %br
 
 - if can? :create, ProjectCategory

@@ -14,7 +14,7 @@
       =f.label :mail
       .required *
       .input
-        =f.text_field :mail, :class => "validate[required, funcCall[checkOnlySpace], custom[email]]"
+        =f.text_field :mail
     .clearfix
       =f.label :mail_notify_group
       .required *
@@ -141,17 +141,22 @@
       });
     });
     $('#save').click(function(){
+      if($("#mail_notify_setting_mail").val()) {
+        $('#mail_notify_setting_mail').addClass('validate[custom[email]]');
+      } else {
+        $('#mail_notify_setting_mail').addClass('validate[required]');
+      }
       if ($('#mnsg-ids #mail_notify_setting_mail_notify_group_ids_').length == 0) {
-        $('#mnsgs-selected').addClass('validate[required]');
+        $('#mnsgs-selected').addClass('validate[funcCall[checkOptionSelected]]');
       } else {
         $('#mnsgs-selected').validationEngine('hidePrompt');
-        $('#mnsgs-selected').removeClass('validate[required]');
+        $('#mnsgs-selected').removeClass('validate[funcCall[checkOptionSelected]]');
       }
       if ($('#testtype-ids #mail_notify_setting_test_type_ids_').length == 0) {
-        $('#testtypes-selected').addClass('validate[required]');
+        $('#testtypes-selected').addClass('validate[funcCall[checkOptionSelected]]');
       } else {
         $('#testtypes-selected').validationEngine('hidePrompt');
-        $('#testtypes-selected').removeClass('validate[required]');
+        $('#testtypes-selected').removeClass('validate[funcCall[checkOptionSelected]]');
       }
     });
   });

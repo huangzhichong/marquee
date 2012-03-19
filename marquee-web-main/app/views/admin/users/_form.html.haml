@@ -14,17 +14,18 @@
       = f.label :email
       .required *
       .input
-        = f.text_field :email, :disabled => @user.email.empty? ? false : true, :class => "validate[required, funcCall[checkOnlySpace], custom[email]]"
+        = f.text_field :email, :disabled => @user.email.empty? ? false : true, :class => ""
     .clearfix
       = f.label :display_name
       .input
-        = f.text_field :display_name
+        = f.text_field :display_name, :maxlength => "30"
     - if @user.email.empty?
       .clearfix
+        %type{:type => "hidden"}
         = f.label :password
         .required *
         .input
-          = f.password_field :password, :class => "validate[required, funcCall[checkOnlySpace], funcCall[checkPassword]]"
+          = f.password_field :password, :autocomplete => "off", :class => "validate[required, funcCall[checkOnlySpace], funcCall[checkPassword]]"
       .clearfix
         = f.label :confirm_password
         .required *
@@ -58,7 +59,7 @@
       - val_uad = ""
       - if not(@user.ability_definitions.nil?) and not(@user.ability_definitions.empty?)
         - @user.ability_definitions.each do |uad|
-          - val_uad += "||Can #{uad.ability_definition.ability} #{uad.ability_definition.resource} in #{uad.project.nil? ? "All" : "#{uad.project.name}"}"
+          - val_uad += "||Can #{uad.ability_definition.ability} #{uad.ability_definition.resource} for #{uad.project.nil? ? "All" : "#{uad.project.name}"}"
       = f.text_area :ability_definitions, {:value => val_uad}
       - val_upr = ""
       - if not(@user.projects_roles.nil?) and not (@user.projects_roles.empty?)
@@ -101,7 +102,7 @@
       %label User ability definitions
       .input
         = select_tag "uad abilities", options_for_select({"Manage" => "manage", "Create" => "create", "Update" => "update"}), :include_blank => true, :id => "uad_ability", :class => "ability chzn-select"
-        = select_tag "uad resources", options_for_select({"TestRound" => "TestRound", "TestPlan" => "TestPlan", "TestSuite" => "TestSuite", "AutomationScript" => "AutomationScript", "AutomationCase" => "AutomationCase", "TestCase" => "TestCase", "AutomationScriptResult" => "AutomationScriptResult", "AutomationCaseResult" => "AutomationCaseResult", "Project" => "Project", "ProjectCategory" => "ProjectCategory"}), :include_blank => true, :id => "uad_resource", :class => "user-ability-definitions chzn-select"
+        = select_tag "uad resources", options_for_select({"TestRound" => "TestRound", "TestPlan" => "TestPlan", "TestSuite" => "TestSuite", "AutomationScript" => "AutomationScript", "AutomationCase" => "AutomationCase", "TestCase" => "TestCase", "AutomationScriptResult" => "AutomationScriptResult", "AutomationCaseResult" => "AutomationCaseResult", "Project" => "Project"}), :include_blank => true, :id => "uad_resource", :class => "user-ability-definitions chzn-select"
         = select_tag "uad projects", options_from_collection_for_select(Project.all, :id, :name), :id => "uad_project", :class => "ability chzn-select", :prompt => "All"
         %span#add_uad_btn{:class => 'btn user-ability-definitions'} Add
         %table.abilities
@@ -120,11 +121,11 @@
           - else
             - @user.ability_definitions.each do |uad|
               %tr.data-list
-                %td= "Can #{uad.ability_definition.ability} #{uad.ability_definition.resource} in #{uad.project.nil? ? "All" : "#{uad.project.name}"}"
+                %td= "Can #{uad.ability_definition.ability} #{uad.ability_definition.resource} for #{uad.project.nil? ? "All" : "#{uad.project.name}"}"
                 %td
                   %img{:class => "delete_uad", :src => asset_path("cross-hover.png")}
     .actions
-      = f.submit 'Save', :class => 'btn primary'
+      = f.submit 'Save', :class => 'btn primary', :id => 'save'
       = link_to 'Cancel', admin_users_path, :class => 'btn'
 
 :javascript
@@ -135,7 +136,7 @@
       var ability = $('#uad_ability option:selected').val();
       var resource = $('#uad_resource option:selected').text();
       var project = $('#uad_project option:selected').text();
-      var text = "Can " + ability + " " + resource + " in " + project;
+      var text = "Can " + ability + " " + resource + " for " + project;
       var uads_current_value = $("#user_ability_definitions").val();
       if ($.trim(ability) == "" || $.trim(resource) == ""){
         alert("Please select an ability and an object!");
@@ -245,6 +246,13 @@
       $('#tcpps-selected option').each(function(idx, elem){
         $('#tcpps').append($(elem));
       });
+    });
+    $('#save').click(function() {
+      if($("#user_email").val()) {
+        $('#user_email').addClass('validate[custom[email]]');
+      } else {
+        $('#user_email').addClass('validate[required]');
+      }
     });
   });
   function checkPassword(field, rules, i, options){

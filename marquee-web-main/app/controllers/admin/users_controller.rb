@@ -3,18 +3,26 @@ class Admin::UsersController < InheritedResources::Base
   before_filter :authenticate_user!
   load_and_authorize_resource
 
+  def index
+    session[:user_page] = params[:page]
+    session[:user_search] = params[:search]
+    super
+  end
+
   def create
     names = []
-    if params[:user][:display_name].nil? or params[:user][:display_name].strip.empty?
-      if !params[:user][:email].nil? and params[:user][:email].strip.empty?
+    if params[:user][:display_name] and not params[:user][:display_name].strip.empty?
+      names = params[:user][:display_name].strip.split(" ")
+    else
+      if params[:user][:email] and not params[:user][:email].strip.empty?
         names = params[:user][:email].split("@").first.split(".")
       end
-    else
-      names = params[:user][:display_name].strip.split(" ")
     end
 
-    if names.length > 0
+    if names.length == 2
       display_name = "#{names.first.capitalize} #{names.last.capitalize}"
+    else
+      display_name = (names.map {|name| name.capitalize}).join(" ")
     end
 
     password = params[:user][:password]
@@ -24,12 +32,22 @@ class Admin::UsersController < InheritedResources::Base
     save_user!(user, params)
 
     if user.errors.any?
-      puts user.errors.inspect
+      user.email = ""
       @user = user
       render :new and return
     else
       redirect_to admin_users_path
     end
+  end
+
+  def activate
+    user = User.find(params[:id])
+    if not user.nil?
+      user.active = true
+      user.save
+    end
+
+    redirect_to :action => :index, :search => session[:user_search], :page => session[:user_page]
   end
 
   def update
@@ -42,14 +60,33 @@ class Admin::UsersController < InheritedResources::Base
       @user = user
       render :edit and return
     else
-      redirect_to admin_users_path
+      redirect_to :action => :index, :search => session[:user_search], :page => session[:user_page]
     end
+  end
+
+  def destroy
+    if not current_user.nil?
+      if(current_user.id == params[:id].to_i)
+        flash[:error] = "Current user cannot be deactivated"
+        redirect_to :action => "index", :flash => flash, :search => session[:user_search], :page => session[:user_page]
+        return
+      end
+    end
+
+    user = User.find(params[:id])
+    if not user.nil?
+      user.active = false
+      user.save
+    end
+
+    redirect_to :action => :index, :search => session[:user_search], :page => session[:user_page]
   end
 
   protected
   def collection
-    @search = User.order('id desc').search(params[:search])
-    @users = @search.page(params[:page]).per(15)
+    @search = User.search(params[:search])
+    @total_user = @search.count
+    @users = @search.order('id desc').page(params[:page]).per(15)
   end
 
   def resource
@@ -103,7 +140,7 @@ class Admin::UsersController < InheritedResources::Base
       uad_array = uads.split("||")
       uad_array.shift
       uad_array.each do |uad|
-        ad_projects_array = uad.split("in")
+        ad_projects_array = uad.split("for")
         ad = ad_projects_array[0]
         project_name = ad_projects_array[1].strip
         ad_array = ad.split(" ")

@@ -57,7 +57,7 @@ class AutomationScriptResultsController < InheritedResources::Base
 
   def collection
     @test_round ||= TestRound.find(params[:test_round_id])
-    @search = @test_round.automation_script_results.order('id desc').search(params[:search])
-    @automation_script_results ||= @search.page(params[:page]).per(15)
+    @search = @test_round.automation_script_results.search(params[:search])
+    @automation_script_results ||= @search.order('id desc').page(params[:page]).per(15)
   end
 end

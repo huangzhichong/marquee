@@ -1,57 +1,85 @@
 #overall-dre-table
-  %table#product-bugs
+  %table#product-bugs{:cellspacing => "4"}
     %thead
       %tr
         %th{:colspan => 5} Current Customer Impacting Production Bugs
     %tbody
-      %tr
+      %tr{:style => "height: 22px"}
         %td
         %td
         %td Sev1
         %td
         %td Sev2
-      %tr
+      %tr{:style => "height: 22px"}
         %td.market Endurance
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-      %tr
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@endurance.sev1_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @endurance.sev1_bugs
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@endurance.sev2_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @endurance.sev2_bugs
+      %tr{:style => "height: 22px"}
         %td.market Camps
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-      %tr
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@camps.sev1_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @camps.sev1_bugs
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@camps.sev2_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @camps.sev2_bugs
+      %tr{:style => "height: 22px"}
         %td.market Team Sports
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-      %tr
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@team_sports.sev1_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @team_sports.sev1_bugs
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@team_sports.sev2_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @team_sports.sev2_bugs
+      %tr{:style => "height: 22px"}
         %td.market Swimming
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-      %tr
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@swimming.sev1_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @swimming.sev1_bugs
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@swimming.sev2_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @swimming.sev2_bugs
+      %tr{:style => "height: 22px"}
         %td.market Membership
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-      %tr
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@membership.sev1_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @membership.sev1_bugs
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@membership.sev2_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @membership.sev2_bugs
+      %tr{:style => "height: 22px"}
         %td.market Platform
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-      %tr
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@platform.sev1_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @platform.sev1_bugs
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@platform.sev2_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @platform.sev2_bugs
+      %tr{:style => "height: 22px"}
         %td.market Framework
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
-        %td= image_tag(asset_path('green-light.png'))
-        %td.count 0
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@framework.sev1_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @framework.sev1_bugs
+        %td
+          %div{:style => "margin: 0pt auto; background-color:#{@framework.sev2_bugs_color}; width:11px; height:11px"}
+        %td.count
+          = @framework.sev2_bugs
 
         %table#defect-removal-efficiency
           %thead
