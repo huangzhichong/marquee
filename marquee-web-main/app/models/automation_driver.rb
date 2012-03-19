@@ -11,6 +11,9 @@
 class AutomationDriver < ActiveRecord::Base
   has_many :automation_driver_configs
 
+  validates_presence_of :name, :version
+  validates_uniqueness_of :version, :scope => :name
+
   def to_s
     self.name
   end
