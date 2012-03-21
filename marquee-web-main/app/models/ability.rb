@@ -28,7 +28,7 @@ class Ability
 
     @user = user ||= User.new # guest user
 
-    can :read, [TestRound, TestPlan, TestSuite, AutomationScript, AutomationCase, TestCase, AutomationScriptResult, AutomationCaseResult, Project]
+    can :read, [TestRound, TestPlan, TestSuite, AutomationScript, AutomationCase, TestCase, AutomationScriptResult, AutomationCaseResult, AutomationDriverConfig, Project]
     alias_action :search_automation_script, :to => :read
 
     if extra_args.nil? or extra_args.empty?
