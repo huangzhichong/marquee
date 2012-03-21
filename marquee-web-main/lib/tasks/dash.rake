@@ -111,7 +111,7 @@ namespace :dash do
       end
     end
 
-    resources = %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult)
+    resources = %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult AutomationDriverConfig)
     abilities = %w(manage create update)
     abilities.each do |ability|
       resources.each do |resource|
