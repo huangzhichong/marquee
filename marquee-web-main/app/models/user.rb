@@ -29,7 +29,6 @@ class User < ActiveRecord::Base
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :display_name, :oracle_project_ids
-  validates :email, :presence => true, :uniqueness => true
 
   has_many :projects
   has_many :automation_scripts
@@ -39,10 +38,7 @@ class User < ActiveRecord::Base
   has_many :user_ability_definitions
 
   has_and_belongs_to_many :projects_roles, :class_name => "ProjectsRoles"
-  has_many :ability_definitions, :class_name => "AbilityDefinitionsUsers", :dependent => :delete_all
-
-  validates_presence_of :email
-  validates_uniqueness_of :email, :message => "already exists."
+  has_many :ability_definitions, :class_name => "AbilityDefinitionsUsers", :dependent => :destroy
 
   def self.automator
     User.find_by_email('automator@marquee.com')
@@ -72,6 +68,12 @@ class User < ActiveRecord::Base
       self.oracle_projects << oracle_project if oracle_project
     end
     save
+  end
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    login = conditions.delete(:email)
+    where(conditions).where(["lower(email) = :value and active=1", {:value => login.strip.downcase}]).first
   end
 
   def self.find_or_create_default_by_email(strEmail)

@@ -27,7 +27,7 @@
   %tbody
     - if time_cards.nil? or time_cards.count == 0
       %tr.timecard
-        %td{:colspan => "6"}
+        %td{:colspan => "5"}
           %h4 No data
     - else
       - time_cards.each do |name, time_card|
