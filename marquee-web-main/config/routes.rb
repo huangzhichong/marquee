@@ -14,7 +14,7 @@ MarqueeWebMain::Application.routes.draw do
     resources :roles
     resources :team_members
     resources :projects do
-      resources :test_suites, :ci_mappings, :mail_notify_settings, :test_rounds
+      resources :test_suites, :ci_mappings, :mail_notify_settings, :test_rounds, :automation_driver_configs
       get "search_automation_script", :controller => 'test_suites', :action => 'search_automation_script'
     end
     get 'time_cards/overall', :controller => 'time_cards', :action => 'overall'
