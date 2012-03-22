@@ -35,6 +35,7 @@
         = f.text_field :sc_password, :class => "validate[funcCall[checkOnlySpace]]"
     .clearfix
       = f.label :source_paths
+      .required *
       .input
         %table.source_path
           %tr
