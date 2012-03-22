@@ -25,10 +25,10 @@
         %td= slave.status
         - show_url, edit_url, delete_url = nil
         - if can? :update, Slave
-          - edit_url = edit_admin_slafe_path(slave)
+          - edit_url = edit_admin_slave_path(slave)
         - if can? :delete, Slave
-          - delete_url = admin_slafe_path(slave)
+          - delete_url = admin_slave_path(slave)
         = render :partial => 'partial/table_actions', :locals => {:show_url => show_url, :edit_url => edit_url, :delete_url => delete_url }
 
 - if can? :create, Slave
-  = link_to 'New Slave', new_admin_slafe_path, :class => 'btn primary'
+  = link_to 'New Slave', new_admin_slave_path, :class => 'btn primary'
