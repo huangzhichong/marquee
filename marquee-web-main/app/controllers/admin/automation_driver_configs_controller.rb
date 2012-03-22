@@ -31,7 +31,6 @@ class Admin::AutomationDriverConfigsController < InheritedResources::Base
 
     params["automation_driver_config"]["source_paths"] = params["source_path"] ? JSON.generate(params["source_path"].values) : nil
 
-    p params
     update!{admin_project_automation_driver_configs_url(@project)}
   end
 

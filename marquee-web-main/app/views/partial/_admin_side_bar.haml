@@ -7,6 +7,7 @@
 - can_update_browser = can? :update, Browser
 - can_update_os = can? :update, OperationSystem
 - can_update_automation_driver = can? :update, AutomationDriver
+- can_update_slave = can? :update, Slave
 
 - menu_item_count = 0
 - menu_item_count += can_read_project_category ? 1 : 0
@@ -18,6 +19,7 @@
 - menu_item_count += can_update_browser ? 1 : 0
 - menu_item_count += can_update_os ? 1 : 0
 - menu_item_count += can_update_automation_driver ? 1 : 0
+- menu_item_count += can_update_slave ? 1 : 0
 
 - if menu_item_count > 1
   %ul.menu
@@ -39,6 +41,9 @@
     - if can_update_automation_driver
       %li{:name => "automation_drivers"}
         =link_to 'Automation Drivers', admin_automation_drivers_path
+    - if can_update_slave
+      %li{:name => "slaves"}
+        =link_to 'Slaves', admin_slaves_path
     - if can_read_user
       %li{:name => "users"}
         =link_to 'Users', admin_users_path
