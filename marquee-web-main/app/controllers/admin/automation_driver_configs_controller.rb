@@ -35,4 +35,14 @@ class Admin::AutomationDriverConfigsController < InheritedResources::Base
     update!{admin_project_automation_driver_configs_url(@project)}
   end
 
+  def destroy
+
+    AutomationScript.find_all_by_automation_driver_config_id(params[:id]).each do |as|
+      as.automation_driver_config = nil
+      as.save
+    end
+
+    destroy!{admin_project_automation_driver_configs_url}
+  end
+
 end
