@@ -14,7 +14,7 @@
       = f.label :email
       .required *
       .input
-        = f.text_field :email, :disabled => @user.email.empty? ? false : true, :class => "validate[required, funcCall[checkOnlySpace], custom[email]]"
+        = f.text_field :email, :disabled => @user.email.empty? ? false : true, :class => ""
     .clearfix
       = f.label :display_name
       .input
@@ -102,7 +102,7 @@
       %label User ability definitions
       .input
         = select_tag "uad abilities", options_for_select({"Manage" => "manage", "Create" => "create", "Update" => "update"}), :include_blank => true, :id => "uad_ability", :class => "ability chzn-select"
-        = select_tag "uad resources", options_for_select({"TestRound" => "TestRound", "TestPlan" => "TestPlan", "TestSuite" => "TestSuite", "AutomationScript" => "AutomationScript", "AutomationCase" => "AutomationCase", "TestCase" => "TestCase", "AutomationScriptResult" => "AutomationScriptResult", "AutomationCaseResult" => "AutomationCaseResult", "Project" => "Project"}), :include_blank => true, :id => "uad_resource", :class => "user-ability-definitions chzn-select"
+        = select_tag "uad resources", options_for_select({"TestRound" => "TestRound", "TestPlan" => "TestPlan", "TestSuite" => "TestSuite", "AutomationScript" => "AutomationScript", "AutomationCase" => "AutomationCase", "TestCase" => "TestCase", "AutomationScriptResult" => "AutomationScriptResult", "AutomationCaseResult" => "AutomationCaseResult", "AutomationDriverConfig" => "AutomationDriverConfig", "Project" => "Project"}), :include_blank => true, :id => "uad_resource", :class => "user-ability-definitions chzn-select"
         = select_tag "uad projects", options_from_collection_for_select(Project.all, :id, :name), :id => "uad_project", :class => "ability chzn-select", :prompt => "All"
         %span#add_uad_btn{:class => 'btn user-ability-definitions'} Add
         %table.abilities
@@ -125,7 +125,7 @@
                 %td
                   %img{:class => "delete_uad", :src => asset_path("cross-hover.png")}
     .actions
-      = f.submit 'Save', :class => 'btn primary'
+      = f.submit 'Save', :class => 'btn primary', :id => 'save'
       = link_to 'Cancel', admin_users_path, :class => 'btn'
 
 :javascript
@@ -246,6 +246,13 @@
       $('#tcpps-selected option').each(function(idx, elem){
         $('#tcpps').append($(elem));
       });
+    });
+    $('#save').click(function() {
+      if($("#user_email").val()) {
+        $('#user_email').addClass('validate[custom[email]]');
+      } else {
+        $('#user_email').addClass('validate[required]');
+      }
     });
   });
   function checkPassword(field, rules, i, options){
