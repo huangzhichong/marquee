@@ -27,5 +27,10 @@
       =link_to "Test Rounds", admin_project_test_rounds_path(@project)
     %td= @project.test_rounds.count
     %td
+  %tr
+    %td
+      =link_to "Automation Driver Configs", admin_project_automation_driver_configs_path(@project)
+    %td= @project.automation_driver_configs.count
+    %td
 
 = link_to 'Back', admin_projects_path, :class => 'btn'
