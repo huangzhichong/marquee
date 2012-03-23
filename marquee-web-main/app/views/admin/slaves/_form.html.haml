@@ -36,10 +36,10 @@
       .input
         = f.text_field :priority, :class => "validate[required, funcCall[checkOnlySpace], funcCall[checkPositiveInteger]]"
     .clearfix
-      = f.label :status
+      = f.label :active, "Status"
       .required *
       .input
-        = f.select :status, options_for_select({"Active" => "Active", "Inactive" => "Inactive"}, @slave.status), :class => "chzn-select, validate[required]"
+        = f.select :active, options_for_select({"Active" => :true, "Inactive" => :false}, @slave.active), :class => "chzn-select, validate[required]"
     .actions
       = f.submit 'Save', :class => 'btn primary'
       = link_to 'Back', admin_slaves_path, :class => 'btn'

@@ -22,7 +22,7 @@
         %td= slave.project_name
         %td= slave.test_type
         %td= slave.priority
-        %td= slave.status
+        %td= slave.active ? "Active" : "Inactive"
         - show_url, edit_url, delete_url = nil
         - if can? :update, Slave
           - edit_url = edit_admin_slave_path(slave)
