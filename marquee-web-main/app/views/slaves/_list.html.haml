@@ -22,7 +22,7 @@
   - else
     - slaves.each do |slave|
       %tr
-        %td= link_to "#{slave.name}", slafe_slave_assignments_path(slave)
+        %td= link_to "#{slave.name}", slave_slave_assignments_path(slave)
         %td= slave.ip_address
         %td= slave.project_name
         %td= slave.status

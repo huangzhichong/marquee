@@ -9,6 +9,7 @@ MarqueeWebMain::Application.routes.draw do
     resources :browsers
     resources :operation_systems
     resources :automation_drivers
+    resources :slaves
     resources :project_categories
     resources :users
     resources :roles

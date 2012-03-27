@@ -1,0 +1,52 @@
+-if flash[:error]
+  .alert-message.error= flash[:error].html_safe
+
+= form_for([:admin, @slave]) do |f|
+  -if @slave.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@slave.errors.count, "error")} prohibited this slave from being saved:"
+      %ul
+        - @slave.errors.full_messages.each do |msg|
+          %li= msg
+  %fieldset
+    %legend= title
+    .clearfix
+      = f.label :name
+      .required *
+      .input
+        = f.text_field :name, :class => "validate[required, funcCall[checkOnlySpace]]"
+    .clearfix
+      = f.label :ip_address, "IP Address"
+      .required *
+      .input
+        = f.text_field :ip_address, :class => "validate[required, funcCall[checkOnlySpace], custom[ipv4]]"
+    .clearfix
+      = f.label :project_name, "Project(s)"
+      .required *
+      .input
+        = f.text_field :project_name, :class => "validate[required, funcCall[checkOnlySpace]]"
+    .clearfix
+      = f.label :test_type, "Test Type"
+      .required *
+      .input
+        = f.text_field :test_type, :class => "validate[required, funcCall[checkOnlySpace]]"
+    .clearfix
+      = f.label :priority
+      .required *
+      .input
+        = f.text_field :priority, :class => "validate[required, funcCall[checkOnlySpace], funcCall[checkPositiveInteger]]"
+    .clearfix
+      = f.label :active, "Status"
+      .required *
+      .input
+        = f.select :active, options_for_select({"Active" => :true, "Inactive" => :false}, @slave.active), :class => "chzn-select, validate[required]"
+    .actions
+      = f.submit 'Save', :class => 'btn primary'
+      = link_to 'Back', admin_slaves_path, :class => 'btn'
+
+:javascript
+  $(function(){
+    $("#new_slave").validationEngine({promptPosition: "bottomRight", scroll: false});
+    $(".edit_slave").validationEngine({promptPosition: "bottomRight", scroll: false});
+  })
+  
