@@ -123,6 +123,7 @@ namespace :dash do
     # qa_manager get all manage abilities
     qa_manager_role.ability_definitions << AbilityDefinition.find_all_by_ability(:manage)
     qa_manager_role.ability_definitions << AbilityDefinition.find_or_create_by_ability_and_resource(:update, :Project)
+    qa_manager_role.ability_definitions << AbilityDefinition.find_or_create_by_ability_and_resource(:manage, :Slave)
     qa_manager_role.ability_definitions.flatten
     qa_manager_role.save
     # qa_developer abilities
