@@ -29,7 +29,6 @@ class Ability
     @user = user ||= User.new # guest user
 
     can :read, [TestRound, TestPlan, TestSuite, AutomationScript, AutomationCase, TestCase, AutomationScriptResult, AutomationCaseResult, AutomationDriverConfig, Project]
-    alias_action :search_automation_script, :to => :read
 
     if extra_args.nil? or extra_args.empty?
       set_role_ability_definitions(user.projects_roles)
@@ -39,6 +38,7 @@ class Ability
       set_user_ability_definitions(user.ability_definitions.select {|ad| ad.project_id.nil? || ad.project_id == extra_args[0]})
     end
 
+    set_special_ability_definitions
   end
 
   def can?(action, subject, *extra_args)
@@ -85,6 +85,12 @@ class Ability
     ability_definitions_users.each do |uad|
       can uad.ability_definition.ability.to_sym, uad.ability_definition.resource.constantize
     end
+  end
+
+  def set_special_ability_definitions
+    
+    alias_action :search_automation_script, :to => :read
+    cannot :update_display_order, Project
   end
 
 end
