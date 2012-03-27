@@ -7,7 +7,7 @@ function checkOnlySpace(field, rules, i, options){
 function checkPositiveInteger(field, rules, i, options) {
   var pattern = /^[0-9]+$/
   if (!pattern.test(field.val())) {
-      return "* Only zero or a positive integer are permitted";
+      return "* Only zero or positive integer is permitted";
   }  
 }
 function checkOptionItems(field, rules, i, options){
