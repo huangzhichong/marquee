@@ -30,6 +30,7 @@ class Ability
 
     can :read, [TestRound, TestPlan, TestSuite, AutomationScript, AutomationCase, TestCase, AutomationScriptResult, AutomationCaseResult, AutomationDriverConfig, Project]
 
+
     if extra_args.nil? or extra_args.empty?
       set_role_ability_definitions(user.projects_roles)
       set_user_ability_definitions(user.ability_definitions)
@@ -90,7 +91,7 @@ class Ability
   def set_special_ability_definitions
     
     alias_action :search_automation_script, :to => :read
-    cannot :update_display_order, Project
+    cannot :update_display_order, Project if !@user.role? :admin
   end
 
 end
