@@ -17,7 +17,7 @@ class Slave < ActiveRecord::Base
   has_many :slave_assignments
   has_many :automation_script_results, :through => :slave_assignments
 
-  validates_presence_of :name, :ip_address, :project_name, :test_type, :priority, :status
+  validates_presence_of :name, :ip_address, :project_name, :test_type, :priority, :active
   validates_uniqueness_of :name, :ip_address, :message => " already exists."
 
   def free!
