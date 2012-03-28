@@ -25,7 +25,7 @@
         %td= link_to "#{slave.name}", slave_slave_assignments_path(slave)
         %td= slave.ip_address
         %td= slave.project_name
-        %td= slave.status
+        %td= slave.status_with_active
         %td= in_time_zone(slave.updated_at)
     
 = paginate slaves

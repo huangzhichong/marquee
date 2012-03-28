@@ -3,7 +3,7 @@ class SlavesController < InheritedResources::Base
   respond_to :js
 
   def collection
-    @search = Slave.scoped.search(params[:search])
+    @search = Slave.scoped.where("active <> :active or (active = :active and lower(status) = :status)", :active => false, :status => "busy").search(params[:search])
     @slaves = @search.page(params[:page]).order('status').per(15)
   end
 

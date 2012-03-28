@@ -29,4 +29,8 @@ class Slave < ActiveRecord::Base
     self.status = "offline"
     save
   end
+
+  def status_with_active
+    self.status + (self.active ? "" : " / Inactive")
+  end
 end
