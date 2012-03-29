@@ -20,6 +20,9 @@ class Slave < ActiveRecord::Base
   validates_presence_of :name, :project_name, :test_type, :priority
   validates_uniqueness_of :name, :case_sensitive => false, :message => " already exists."
 
+  after_save :notify_updates
+  after_destroy :notify_updates
+
   def free!
     self.status = "free"
     save
@@ -32,5 +35,9 @@ class Slave < ActiveRecord::Base
 
   def status_with_active
     self.status + (self.active ? "" : " / Inactive")
+  end
+
+  def notify_updates
+    SlavesHelper.send_slave_to_update_list(self.id)
   end
 end
