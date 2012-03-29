@@ -34,7 +34,7 @@ class Slave < ActiveRecord::Base
   end
 
   def status_with_active
-    self.status + (self.active ? "" : " / Inactive")
+    (self.status ? self.status : "") + (self.active ? "" : " / Inactive")
   end
 
   def notify_updates

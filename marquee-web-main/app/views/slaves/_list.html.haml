@@ -1,7 +1,7 @@
 .page-header
   %h2
     Slaves
-    %small= "#{Slave.count} in total"
+    %small= "#{slave_count} in total"
   = form_for search, :url => slaves_path, :remote => true do |f|
     %span.search
       = f.text_field :name_or_ip_address_or_project_name_or_status_contains, {:id => 'search'}
