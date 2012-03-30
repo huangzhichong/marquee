@@ -111,7 +111,7 @@ namespace :dash do
       end
     end
 
-    resources = %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult)
+    resources = %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult AutomationDriverConfig)
     abilities = %w(manage create update)
     abilities.each do |ability|
       resources.each do |resource|
@@ -122,13 +122,14 @@ namespace :dash do
 
     # qa_manager get all manage abilities
     qa_manager_role.ability_definitions << AbilityDefinition.find_all_by_ability(:manage)
-    qa_manager_role.ability_definitions << AbilityDefinition.find_by_ability_and_resource(:update, :Project)
+    qa_manager_role.ability_definitions << AbilityDefinition.find_or_create_by_ability_and_resource(:update, :Project)
+    qa_manager_role.ability_definitions << AbilityDefinition.find_or_create_by_ability_and_resource(:manage, :Slave)
     qa_manager_role.ability_definitions.flatten
     qa_manager_role.save
     # qa_developer abilities
-    create_tr = AbilityDefinition.find_by_ability_and_resource(:create, :TestRound)
-    manage_ts = AbilityDefinition.find_by_ability_and_resource(:manage, :TestSuite)
-    update_asr = AbilityDefinition.find_by_ability_and_resource(:update, :AutomationScriptResult)
+    create_tr = AbilityDefinition.find_or_create_by_ability_and_resource(:create, :TestRound)
+    manage_ts = AbilityDefinition.find_or_create_by_ability_and_resource(:manage, :TestSuite)
+    update_asr = AbilityDefinition.find_or_create_by_ability_and_resource(:update, :AutomationScriptResult)
     qa_developer_role.ability_definitions << [create_tr, manage_ts, update_asr]
     qa_developer_role.ability_definitions.flatten
     qa_developer_role.save
@@ -151,7 +152,8 @@ namespace :dash do
                            :icon_image_content_type => 'image/png',
                            :icon_image_file_size => 7763,
                            :browsers => [ie, firefox, chrome],
-                           :operation_systems => [win]
+                           :operation_systems => [win],
+                           :display_order => 0
                            ).save
 
     endurance = Project.create(
@@ -164,7 +166,8 @@ namespace :dash do
                                :icon_image_content_type => 'image/png',
                                :icon_image_file_size => 18857,
                                :browsers => [ie, firefox, chrome],
-                               :operation_systems => [win]
+                               :operation_systems => [win],
+                               :display_order => 1
                                ).save
 
     sports = Project.create(
@@ -177,7 +180,8 @@ namespace :dash do
                             :icon_image_content_type => 'image/png',
                             :icon_image_file_size => 16291,
                             :browsers => [ie, firefox, chrome],
-                            :operation_systems => [win]
+                            :operation_systems => [win],
+                            :display_order => 2
                             ).save
   end
 

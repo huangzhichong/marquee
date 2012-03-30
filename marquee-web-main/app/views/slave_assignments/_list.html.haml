@@ -2,7 +2,7 @@
   %h3
     Slave Assignments
     %small= "#{@slave.slave_assignments.count} in total"
-  = form_for search, :url => slafe_slave_assignments_path(@slave), :remote => true do |f|
+  = form_for search, :url => slave_slave_assignments_path(@slave), :remote => true do |f|
     %span.search
       = f.text_field :status_contains, {:id => 'search'}
       = f.submit '', {:class => 'btn', :id => 'searchsubmit'}

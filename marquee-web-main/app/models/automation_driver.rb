@@ -18,6 +18,10 @@ class AutomationDriver < ActiveRecord::Base
     self.name
   end
 
+  def name_with_version
+    self.name + " / " + self.version
+  end
+
   def as_json(options={})
     {
       name: self.name,

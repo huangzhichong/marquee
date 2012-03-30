@@ -1,7 +1,7 @@
 -if flash[:error]
   .alert-message.error= flash[:error].html_safe
 
-= form_for ([:admin, @project, @mail_notify_setting]) do |f|
+= form_for ([:admin, @project, @mail_notify_setting]), :remote => true do |f|
   -if @mail_notify_setting.errors.any?
     #error_explanation
       %h2= "#{pluralize(@mail_notify_setting.errors.count, "error")} prohibited this mail_notify_setting from being saved:"
@@ -71,6 +71,7 @@
 
 :javascript
   $(function(){
+
     $("#new_mail_notify_setting").validationEngine({promptPosition : "bottomRight", scroll: false});
     $(".edit_mail_notify_setting").validationEngine({promptPosition : "bottomRight", scroll: false});
     $('#mnsgs-selected').children().each(function(idx, elem){
@@ -158,5 +159,15 @@
         $('#testtypes-selected').validationEngine('hidePrompt');
         $('#testtypes-selected').removeClass('validate[funcCall[checkOptionSelected]]');
       }
+
     });
+    $("#new_mail_notify_setting").bind('ajax:complete', 
+      function(data, status, xhr) {
+        if (JSON.parse(status.responseText).result == "success") {
+          location.href = $("#new_mail_notify_setting").attr("action");
+        }else {
+          alert("A same record in your settings already exists in the database. Please modify your settings.");
+        }
+      }
+    );
   });

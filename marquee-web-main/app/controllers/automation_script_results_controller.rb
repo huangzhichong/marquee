@@ -53,6 +53,7 @@ class AutomationScriptResultsController < InheritedResources::Base
     @automation_script_result ||= AutomationScriptResult.find(params[:id])
     @search = @automation_script_result.automation_case_results.search(params[:search])
     @automation_case_results = @search.page(params[:page]).per(15)
+    @automation_case_results.sort!{|acr1, acr2| acr1.case_id <=> acr2.case_id}
   end
 
   def collection
