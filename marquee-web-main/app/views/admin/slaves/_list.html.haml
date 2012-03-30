@@ -2,8 +2,8 @@
   %h2
     Slaves
     %small= "#{Slave.count} in total"
-    - if can? :create, Slave
-      = link_to 'New Slave', new_admin_slave_path, :class => 'btn primary'
+  - if can? :create, Slave
+    = link_to 'New Slave', new_admin_slave_path, :class => 'btn primary'
   = form_for search, :url => admin_slaves_path, :remote => true do |f|
     %span.search
       = f.text_field :name_or_ip_address_or_project_name_or_test_type_contains, {:id => 'search'}
