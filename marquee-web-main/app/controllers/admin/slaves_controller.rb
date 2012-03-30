@@ -16,7 +16,21 @@ class Admin::SlavesController < InheritedResources::Base
     set_project_name(params)
     set_test_type(params)
 
-    create!{admin_slaves_url}
+    slave = Slave.new
+    slave.name = params[:slave][:name]
+    slave.project_name = params[:slave][:project_name]
+    slave.test_type = params[:slave][:test_type]
+    slave.priority = params[:slave][:priority]
+    slave.active = params[:slave][:active]
+    slave.save
+
+    if slave.errors.any?
+      @slave = slave
+      render :new and return
+    else
+      redirect_to admin_slaves_url
+    end
+    # create!{admin_slaves_url}
   end
 
   def update
