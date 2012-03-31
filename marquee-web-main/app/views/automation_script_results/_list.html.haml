@@ -36,7 +36,7 @@
         %td
           -sa = asr.slave_assignments.last
           -if sa && sa.slave
-            = link_to "#{sa.slave.name}", slafe_path(sa.slave)
+            = link_to "#{sa.slave.name}", slave_path(sa.slave)
           -else
             No slave yet
         %td= asr.automation_script.owner.display_name

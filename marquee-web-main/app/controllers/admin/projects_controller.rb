@@ -55,6 +55,9 @@ class Admin::ProjectsController < InheritedResources::Base
   end
 
   def display_order_update
+
+    raise CanCan::AccessDenied if cannot? :update_display_order, Project
+
     display_order = 0
     params[:slides].each do |project_name|
       unless project_name.blank?
