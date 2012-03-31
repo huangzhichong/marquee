@@ -39,12 +39,12 @@
       = f.label 'operation_systems'
       .required *
       .input
-        = select_tag 'project[operation_systems][]', options_from_collection_for_select(OperationSystem.all, :id, :name_with_version, @project.operation_systems.collect{|os|os.id}), {:multiple => true, :class => "validate[funcCall[checkOptionSelected]]"}
+        = select_tag 'project[operation_systems][]', options_from_collection_for_select(OperationSystem.all, :id, :name_with_version, @project.operation_systems.collect{|os|os.id}), {:multiple => true, :class => "validate[required]"}
     .clearfix
       = f.label :browsers
       .required *
       .input
-        = select_tag 'project[browsers][]', options_from_collection_for_select(Browser.all, :id, :name_with_version, @project.browsers.collect{|b|b.id}), {:multiple => true, :class => "validate[funcCall[checkOptionSelected]]"}
+        = select_tag 'project[browsers][]', options_from_collection_for_select(Browser.all, :id, :name_with_version, @project.browsers.collect{|b|b.id}), {:multiple => true, :class => "validate[required]"}
     .actions
       = f.submit 'Save', :class => 'btn primary'
       = link_to 'Cancel', admin_projects_path, :class => 'btn'

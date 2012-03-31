@@ -10,6 +10,11 @@ function checkPositiveInteger(field, rules, i, options) {
       return "* Only zero or positive integer is permitted";
   }  
 }
+function checkNullSelectBox(field, rules, i, options) {
+  if(!field[0].options || field[0].options.length == 0) {
+    return "* Please add at least one item";
+  }
+}
 function checkOptionItems(field, rules, i, options){
   if(field[0].options && field[0].options.length == 0) {
     return "* This field is required";
