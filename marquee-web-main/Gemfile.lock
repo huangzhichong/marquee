@@ -15,16 +15,6 @@ GIT
       polyamorous (~> 0.5.0)
 
 GIT
-  remote: git://github.com/plataformatec/devise.git
-  revision: 9f99ccdca305ceba7d4ea4d00895ca61e200c062
-  specs:
-    devise (2.1.0.rc)
-      bcrypt-ruby (~> 3.0)
-      orm_adapter (~> 0.0.7)
-      railties (~> 3.1)
-      warden (~> 1.1.1)
-
-GIT
   remote: git://github.com/tyraeltong/acts_as_audited.git
   revision: 401e1f910e34efecb83f3b02e5c07cf5b9805090
   specs:
@@ -105,6 +95,11 @@ GEM
     coffee-script-source (1.1.2)
     daemons (1.1.4)
     database_cleaner (0.7.2)
+    devise (2.1.0.rc)
+      bcrypt-ruby (~> 3.0)
+      orm_adapter (~> 0.0.3)
+      railties (~> 3.1)
+      warden (~> 1.1.1)
     devise_ldap_authenticatable (0.6.0)
       devise (>= 2.0.0)
       net-ldap (~> 0.2.2)
@@ -309,7 +304,7 @@ DEPENDENCIES
   coffee-rails (~> 3.1.0)
   database_cleaner
   delayed_job!
-  devise!
+  devise (= 2.1.0.rc)
   devise_ldap_authenticatable (= 0.6.0)
   eventmachine (= 0.12.10)
   factory_girl (= 2.0.1)
