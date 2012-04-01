@@ -20,7 +20,7 @@ authorizations: &AUTHORIZATIONS
 development:
   host: ldap.active.local
   port: 389
-  attribute: samaccountname
+  attribute: mail
   base: DC=active,DC=local
   admin_user: CN=svc marquee,OU=Users,OU=CN-Chengdu,OU=_Sites,DC=active,DC=local
   admin_password: @ctive111
@@ -30,7 +30,7 @@ development:
 test:
   host: ldap.active.local
   port: 389
-  attribute: samaccountname
+  attribute: mail
   base: DC=active,DC=local
   admin_user: CN=svc marquee,OU=Users,OU=CN-Chengdu,OU=_Sites,DC=active,DC=local
   admin_password: @ctive111
@@ -40,7 +40,7 @@ test:
 production:
   host: ldap.active.local
   port: 389
-  attribute: samaccountname
+  attribute: mail
   base: DC=active,DC=local
   admin_user: CN=svc marquee,OU=Users,OU=CN-Chengdu,OU=_Sites,DC=active,DC=local
   admin_password: @ctive111

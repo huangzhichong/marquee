@@ -19,16 +19,15 @@
 
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
-  # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :ldap_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+  # :registerable, :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
+  devise $authenticate_method, :rememberable, :trackable, :validatable
 
   # remove the :only because there's an issue with devise combined using :only. see https://github.com/collectiveidea/acts_as_audited/issues/55
   # acts_as_audited :except => [:password, :password_confirmation], :protect => false, :only => [:create, :destroy]
   acts_as_audited :except => [:password, :password_confirmation], :protect => false
 
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :display_name, :oracle_project_ids, :username
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :display_name, :oracle_project_ids
 
   has_many :projects
   has_many :automation_scripts
@@ -96,10 +95,7 @@ class User < ActiveRecord::Base
 
   def ldap_before_save
     if self.email.nil? or self.display_name.nil?
-      ldap_entry = Devise::LdapAdapter.get_ldap_entry(self.username)
-        
-      self.email = get_attr_from_ldap_entry(ldap_entry, "mail")
-      self.email = "marquee." + self.username + "@activenetwork.com"
+      ldap_entry = Devise::LdapAdapter.get_ldap_entry(self.email)
       self.display_name = get_attr_from_ldap_entry(ldap_entry, "cn")
     end
   end
