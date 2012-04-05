@@ -18,8 +18,8 @@
     .clearfix
       = f.label :display_name
       .input
-        = f.text_field :display_name, :maxlength => "30"
-    - if @user.email.empty?
+        = f.text_field :display_name, :maxlength => "30" 
+    - if @user.email.empty? and $authenticate_method == :database_authenticatable
       .clearfix
         %type{:type => "hidden"}
         = f.label :password
