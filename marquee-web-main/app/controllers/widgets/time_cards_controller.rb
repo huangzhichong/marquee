@@ -34,7 +34,6 @@ class Widgets::TimeCardsController < ApplicationController
 
   def show 
     @widget_id = params[:widget_id]
-    month = params[:month]
     mms = MetricsMembersSelection.find_all_by_widget_id @widget_id
     logger.info("mms with #{@widget_id} are: #{mms}")
     if(mms.empty?)
@@ -46,10 +45,12 @@ class Widgets::TimeCardsController < ApplicationController
     members = TeamMember.where(:id => selected).collect{|tm| tm.name}
     logger.info members
     current_date = Date.today
-    if(month)
-      logger.info "date::#{current_date.year}-#{month}-#{current_date.day}"
-      current_date = Date.new current_date.year, month.to_i, current_date.day
+    
+    date = params[:date]
+    if(date)
+      current_date = Date.parse date
     end
+
     @start_date = current_date.end_of_month.end_of_week - 27
 
     logger.info @start_date
