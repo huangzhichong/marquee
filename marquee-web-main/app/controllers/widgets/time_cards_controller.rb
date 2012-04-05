@@ -33,18 +33,24 @@ class Widgets::TimeCardsController < ApplicationController
   end
 
   def show 
-    wid = params[:widget_id]
-    mms = MetricsMembersSelection.find_all_by_widget_id wid
-    logger.info("mms with #{wid} are: #{mms}")
+    @widget_id = params[:widget_id]
+    month = params[:month]
+    mms = MetricsMembersSelection.find_all_by_widget_id @widget_id
+    logger.info("mms with #{@widget_id} are: #{mms}")
     if(mms.empty?)
       #render to members_list to 
       #redirect_to :action => 'members', :widget_id => wid
       render :text => "<div style='background-color: #3E83C9;border-bottom: 1px solid #95BCE2;border-right: 1px solid #FFFFFF;color: #FFFFFF;font-weight: bold;line-height: 120%;padding: 2px 0;font-family:Verdana,Arial,sans-serif;font-size: 11px;text-align: center;'>Please click 'Edit' to add team members!</div>"
     end
-    selected = MetricsMembersSelection.find_all_by_widget_id(wid).collect{|mms| mms.team_member_id}
+    selected = MetricsMembersSelection.find_all_by_widget_id(@widget_id).collect{|mms| mms.team_member_id}
     members = TeamMember.where(:id => selected).collect{|tm| tm.name}
     logger.info members
-    @start_date = Date.today.end_of_month.end_of_week - 27
+    current_date = Date.today
+    if(month)
+      logger.info "date::#{current_date.year}-#{month}-#{current_date.day}"
+      current_date = Date.new current_date.year, month.to_i, current_date.day
+    end
+    @start_date = current_date.end_of_month.end_of_week - 27
 
     logger.info @start_date
     @time_cards = get_monthly_time_cards members 
