@@ -100,6 +100,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def valid_ldap_authentication?(password)
+    return self.active if super
+  end
+
   private
   def get_attr_from_ldap_entry(ldap_entry, attribute)
     attr_value = nil
