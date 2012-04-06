@@ -4,10 +4,11 @@ class SyncTimeCardFile
   FTP_PWD = "@ctive123"
   FOLDER = "upload"
 
-  def get_files
+  @queue = :marquee_data_sync
+
+  def self.perform
     require 'net/sftp'
     require 'csv'
-    
     
     Net::SFTP.start(FTP_SERVER, FTP_USER, :password => FTP_PWD) do |sftp|
       files_to_get = {}
@@ -36,8 +37,8 @@ class SyncTimeCardFile
     end
   end
 
-  protected
-  def sortFiles files
+  private
+  def self.sortFiles files
     fm = {}
     result = files.sort do |a, b|
       /report_(\d+)_(\d+)_(\d+)_to_(\d+)_(\d+)_(\d+)_(\d+)_(\d+).*/ =~ a
@@ -52,7 +53,7 @@ class SyncTimeCardFile
     puts result
     result
   end
-  def import(files_to_get)
+  def self.import(files_to_get)
     puts "files to process:#{files_to_get.keys.inspect}"
     files_success = []
     files_failed = []
