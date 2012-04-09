@@ -146,5 +146,6 @@ MarqueeWebMain::Application.routes.draw do
     get 'time_cards/members'
     post 'time_cards/members_select'
   end
-  get 'sync_time_card_file/do'
+  get 'data_sync/fnd_jira'
+  get 'data_sync/time_card'
 end

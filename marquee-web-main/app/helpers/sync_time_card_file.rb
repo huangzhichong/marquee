@@ -37,6 +37,10 @@ class SyncTimeCardFile
     end
   end
 
+  def self.createJob
+    Resque.enqueue(SyncTimeCardFile)
+  end
+
   private
   def self.sortFiles files
     fm = {}
