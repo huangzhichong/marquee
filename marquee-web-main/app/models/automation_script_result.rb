@@ -102,6 +102,7 @@ class AutomationScriptResult < ActiveRecord::Base
         self.result = self.failed > 0 ? 'failed' : 'pass'
       end
     else
+      self.end_time = Time.now
       self.result = 'failed'
     end
     save
