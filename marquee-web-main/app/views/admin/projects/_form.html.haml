@@ -18,7 +18,7 @@
     .clearfix
       = f.label :leader
       .input
-        = f.select :leader_id, options_from_collection_for_select(User.all, :id, :display_name, @project.leader_id), {}, {:class => "chzn-select"}
+        = f.select :leader_id, options_from_collection_for_select(User.where('active != false'), :id, :display_name, @project.leader_id), {}, {:class => "chzn-select"}
     .clearfix
       = f.label :project_category
       .input
