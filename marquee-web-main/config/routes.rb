@@ -148,4 +148,5 @@ MarqueeWebMain::Application.routes.draw do
   end
   get 'data_sync/fnd_jira'
   get 'data_sync/time_card'
+  get "data_sync/regenerate_dre"
 end

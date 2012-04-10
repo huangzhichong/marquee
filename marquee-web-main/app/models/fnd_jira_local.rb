@@ -1,3 +1,4 @@
-class FndJiraLocal < ActiveRecord::Base
-  establish_connection :jira_sub
+require 'secondbase/model'
+
+class FndJiraLocal < SecondBase::Base
 end
