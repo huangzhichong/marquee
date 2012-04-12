@@ -42,6 +42,7 @@ gem 'pry', :group => 'development'
 gem 'redis', ">= 2.2.2"
 gem 'resque', :require => "resque/server"
 gem 'resque_mailer'
+gem 'secondbase', '0.5.0'
 
 
 group :test, :development do
