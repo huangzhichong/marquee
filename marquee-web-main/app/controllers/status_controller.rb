@@ -22,6 +22,7 @@ class StatusController < ApplicationController
     protocol = params[:protocol]
     what = protocol[:what]
     test_round_id = protocol[:round_id]
+    logger.info "#{protocol}"
     test_round = TestRound.find(test_round_id)
 
     automation_script_result = test_round.find_automation_script_result_by_script_name(protocol[:data]['script_name'])
@@ -41,19 +42,22 @@ class StatusController < ApplicationController
     if test_round.state != "completed"
       state = data['state'].downcase
       automation_script_result = test_round.find_automation_script_result_by_script_name(data['script_name'])
-      if (state == 'start' && data['service'])
+      if ( (state == 'done' || state == 'failed') && data['service'])
         automation_script_result.target_services.delete_all
         TargetService.create_services_for_automation_script_result(data['service'], automation_script_result)
       end
       automation_script_result.update_state!(state)
       test_round.update_state!
-      if automation_script_result.end?
-        automation_script_result.slave_assignments.each do |sa|
-          sa.end!
-          SlaveAssignmentsHelper.send_slave_assignment_to_list sa, "complete"
-          sa.slave.free! unless sa.slave.nil?
-        end
-      end
+
+      # now we handle this in farm server
+      # if automation_script_result.end?
+      #   automation_script_result.slave_assignments.each do |sa|
+      #     sa.end!
+      #     SlaveAssignmentsHelper.send_slave_assignment_to_list sa, "complete"
+      #     sa.slave.free! unless sa.slave.nil?
+      #   end
+      # end
+
       if test_round.end?
         TestRoundMailer.finish_mail(test_round.id).deliver
       end
