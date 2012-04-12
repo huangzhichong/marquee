@@ -75,7 +75,7 @@ class AutomationScriptResult < ActiveRecord::Base
   end
 
   def end?
-    self.state == 'end' or self.state == 'killed' or self.state == 'not implemented' or self.state == 'network issue'
+    self.state == 'done' or self.state == 'killed' or self.state == 'failed' or self.state == 'timeout'
   end
 
   def not_run_cases
