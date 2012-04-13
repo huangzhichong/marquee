@@ -26,7 +26,8 @@ class StatusController < ApplicationController
     test_round = TestRound.find(test_round_id)
 
     automation_script_result = test_round.find_automation_script_result_by_script_name(protocol[:data]['script_name'])
-    if automation_script_result and not automation_script_result.end?
+    #if automation_script_result and not automation_script_result.end?
+    if automation_script_result
       case what
       when 'Script'
         update_automation_script(test_round, protocol[:data])
