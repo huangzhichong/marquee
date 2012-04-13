@@ -44,29 +44,20 @@ class StatusController < ApplicationController
 
   protected
   def update_automation_script(test_round, data)
-    if test_round.state != "completed"
-      state = data['state'].downcase
-      automation_script_result = test_round.find_automation_script_result_by_script_name(data['script_name'])
-      if ( (state == 'done' || state == 'failed') && data['service'])
-        automation_script_result.target_services.delete_all
-        TargetService.create_services_for_automation_script_result(data['service'], automation_script_result)
-      end
-      automation_script_result.update_state!(state)
-      test_round.update_state!
-
-      # now we handle this in farm server
-      # if automation_script_result.end?
-      #   automation_script_result.slave_assignments.each do |sa|
-      #     sa.end!
-      #     SlaveAssignmentsHelper.send_slave_assignment_to_list sa, "complete"
-      #     sa.slave.free! unless sa.slave.nil?
-      #   end
-      # end
-
-      if test_round.end?
-        TestRoundMailer.finish_mail(test_round.id).deliver
-      end
+#    if test_round.state != "completed"
+    state = data['state'].downcase
+    automation_script_result = test_round.find_automation_script_result_by_script_name(data['script_name'])
+    if ( (state == 'done' || state == 'failed') && data['service'])
+      automation_script_result.target_services.delete_all
+      TargetService.create_services_for_automation_script_result(data['service'], automation_script_result)
     end
+    automation_script_result.update_state!(state)
+    test_round.update_state!
+
+    if test_round.end?
+      TestRoundMailer.finish_mail(test_round.id).deliver
+    end
+#    end
   end
 
   def update_automation_case(test_round, data)
