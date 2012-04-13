@@ -19,23 +19,27 @@ class StatusController < ApplicationController
   end
 
   def update
-    protocol = params[:protocol]
-    what = protocol[:what]
-    test_round_id = protocol[:round_id]
-    logger.info "#{protocol}"
-    test_round = TestRound.find(test_round_id)
+    if request.remote_ip != '127.0.0.1'
+      render :text => "Not allowed to call this interface from outside server."
+    else
+      protocol = params[:protocol]
+      what = protocol[:what]
+      test_round_id = protocol[:round_id]
+      logger.info "#{protocol}"
+      test_round = TestRound.find(test_round_id)
 
-    automation_script_result = test_round.find_automation_script_result_by_script_name(protocol[:data]['script_name'])
-    #if automation_script_result and not automation_script_result.end?
-    if automation_script_result
-      case what
-      when 'Script'
-        update_automation_script(test_round, protocol[:data])
-      when 'Case'
-        update_automation_case(test_round, protocol[:data])
+      automation_script_result = test_round.find_automation_script_result_by_script_name(protocol[:data]['script_name'])
+      #if automation_script_result and not automation_script_result.end?
+      if automation_script_result
+        case what
+        when 'Script'
+          update_automation_script(test_round, protocol[:data])
+        when 'Case'
+          update_automation_case(test_round, protocol[:data])
+        end
       end
+      render :nothing => true
     end
-    render :nothing => true
   end
 
   protected
