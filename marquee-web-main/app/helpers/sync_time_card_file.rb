@@ -17,7 +17,7 @@ class SyncTimeCardFile
       sftp.dir.foreach(FOLDER) do |entry|
         files << entry.name unless entry.directory?
       end
-      puts files
+      # puts files
       files_sorted= sortFiles files
       files_sorted.each do |name|
         files_to_get[name] = sftp.download!("#{FOLDER}/#{name}")
@@ -25,8 +25,8 @@ class SyncTimeCardFile
 
       files_success, files_failed = import files_to_get
 
-      puts "successed ::#{files_success}"
-      puts "failed::#{files_failed}"
+      # puts "successed ::#{files_success}"
+      # puts "failed::#{files_failed}"
       files_success.each do |file|
         sftp.rename!("#{FOLDER}/#{file}", "#{FOLDER}/successed/#{file}")
       end
@@ -54,11 +54,11 @@ class SyncTimeCardFile
       da <=> db
     end
 
-    puts result
+    # puts result
     result
   end
   def self.import(files_to_get)
-    puts "files to process:#{files_to_get.keys.inspect}"
+    # puts "files to process:#{files_to_get.keys.inspect}"
     files_success = []
     files_failed = []
     files_to_get.each do |path, f|
@@ -99,10 +99,10 @@ class SyncTimeCardFile
             end
           end
         end
-        puts "file #{path} import successed, will be moved to directory:successed"
+        # puts "file #{path} import successed, will be moved to directory:successed"
         files_success << path
       rescue
-        puts "file #{f} import failed, will move to directory:failded" 
+        # puts "file #{f} import failed, will move to directory:failded" 
         files_failed << path
         next 
       end

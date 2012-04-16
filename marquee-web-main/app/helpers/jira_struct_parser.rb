@@ -76,7 +76,7 @@ class JiraStructParser
 
   def generate_query_condition_eq(query_basic, condition, limit)
     query = query_basic
-    puts "condition: #{condition}"
+    # puts "condition: #{condition}"
     if !condition.nil?
       query << " where "
       idx = 0
