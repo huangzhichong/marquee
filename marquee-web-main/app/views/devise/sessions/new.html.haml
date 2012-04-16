@@ -1,5 +1,8 @@
--if flash[:alert]
-  .alert-message.error= flash[:alert]
+- notice_message = "Notice: We're using domain account verification now. Please make sure to login with your domain account/password. Or your domain account may be locked."
+- if flash[:alert]
+  - notice_message = flash[:alert] + "<br/>" + notice_message
+
+.alert-message.error!= notice_message
 
 = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
   %fieldset
