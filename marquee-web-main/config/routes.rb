@@ -9,6 +9,7 @@ MarqueeWebMain::Application.routes.draw do
     resources :browsers
     resources :operation_systems
     resources :automation_drivers
+    resources :slaves
     resources :project_categories
     resources :users
     resources :roles
@@ -41,7 +42,7 @@ MarqueeWebMain::Application.routes.draw do
   post 'import_data/import_as_and_tc_status'
   get 'import_data/refresh_testlink_data'
 
-  devise_for :users, :controllers => { :passwords => "passwords" }
+  devise_for :users, :controllers => { :passwords => "passwords" }, :skip => :registrations
   resources :passwords
   # get "users/:id/password/edit", :controller => "passwords", :action => "edit"
 
@@ -145,5 +146,7 @@ MarqueeWebMain::Application.routes.draw do
     get 'time_cards/members'
     post 'time_cards/members_select'
   end
-  get 'sync_time_card_file/do'
+  get 'data_sync/fnd_jira'
+  get 'data_sync/time_card'
+  get "data_sync/regenerate_dre"
 end

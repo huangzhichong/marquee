@@ -1,7 +1,7 @@
 -if flash[:error]
   .alert-message.error= flash[:error].html_safe
 
-= form_for ([:admin, @project, @mail_notify_setting]) do |f|
+= form_for ([:admin, @project, @mail_notify_setting]), :remote => true do |f|
   -if @mail_notify_setting.errors.any?
     #error_explanation
       %h2= "#{pluralize(@mail_notify_setting.errors.count, "error")} prohibited this mail_notify_setting from being saved:"
@@ -14,7 +14,7 @@
       =f.label :mail
       .required *
       .input
-        =f.text_field :mail
+        =f.text_field :mail, :class => "validate[required, custom[email]]"
     .clearfix
       =f.label :mail_notify_group
       .required *
@@ -32,7 +32,7 @@
             .clearfix
             %a.multi-select-item-remove.ui-icon#remove-mnsg-button
           .columns.span7
-            %select.as-select#mnsgs-selected{:multiple => 'multiple'}
+            %select.as-select#mnsgs-selected{:multiple => 'multiple', :class => "validate[funcCall[checkNullSelectBox]]"}
               - @mail_notify_setting.mail_notify_groups.each do |group|
                 %option{:value => group.id}= group.name
             %a#clear-all-mnsg-button
@@ -57,7 +57,7 @@
             .clearfix
             %a.multi-select-item-remove.ui-icon#remove-testtype-button
           .columns.span7
-            %select.as-select#testtypes-selected{:multiple => 'multiple'}
+            %select.as-select#testtypes-selected{:multiple => 'multiple', :class => "validate[funcCall[checkNullSelectBox]]"}
               - @mail_notify_setting.test_types.each do |type|
                 %option{:value => type.id}= type.name
             %a#clear-all-testtype-button
@@ -140,23 +140,13 @@
         $('#testtypes').append($(elem));
       });
     });
-    $('#save').click(function(){
-      if($("#mail_notify_setting_mail").val()) {
-        $('#mail_notify_setting_mail').addClass('validate[custom[email]]');
-      } else {
-        $('#mail_notify_setting_mail').addClass('validate[required]');
+    $("#new_mail_notify_setting").bind('ajax:complete', 
+      function(data, status, xhr) {
+        if (JSON.parse(status.responseText).result == "success") {
+          location.href = $("#new_mail_notify_setting").attr("action");
+        } else {
+          alert("A same record in your settings already exists in the database. Please modify your settings.");
+        }
       }
-      if ($('#mnsg-ids #mail_notify_setting_mail_notify_group_ids_').length == 0) {
-        $('#mnsgs-selected').addClass('validate[funcCall[checkOptionSelected]]');
-      } else {
-        $('#mnsgs-selected').validationEngine('hidePrompt');
-        $('#mnsgs-selected').removeClass('validate[funcCall[checkOptionSelected]]');
-      }
-      if ($('#testtype-ids #mail_notify_setting_test_type_ids_').length == 0) {
-        $('#testtypes-selected').addClass('validate[funcCall[checkOptionSelected]]');
-      } else {
-        $('#testtypes-selected').validationEngine('hidePrompt');
-        $('#testtypes-selected').removeClass('validate[funcCall[checkOptionSelected]]');
-      }
-    });
+    );
   });

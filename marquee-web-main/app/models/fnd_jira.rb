@@ -1,3 +1,3 @@
 class FndJira < ActiveRecord::Base
-  establish_connection Rails.configuration.database_configuration['fnd_jira']
+  establish_connection :fnd_jira
 end

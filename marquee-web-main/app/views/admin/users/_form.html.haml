@@ -18,8 +18,8 @@
     .clearfix
       = f.label :display_name
       .input
-        = f.text_field :display_name, :maxlength => "30"
-    - if @user.email.empty?
+        = f.text_field :display_name, :maxlength => "30" 
+    - if @user.email.empty? and $authenticate_method == :database_authenticatable
       .clearfix
         %type{:type => "hidden"}
         = f.label :password
@@ -69,9 +69,9 @@
     .clearfix
       %label Select roles
       .input
-        = select_tag "upr roles", options_from_collection_for_select(Role.all, :id, :name), :id => "upr_role", :class => "roles chzn-select"
-        = select_tag "upr projects", options_from_collection_for_select(Project.all, :id, :name), :id => "upr_project", :class => "roles chzn-select", :prompt => "All"
-        %span#add_upr_btn{:class => 'btn user-projects-roles'} Add
+        = select_tag "upr roles", options_from_collection_for_select(Role.all, :id, :name), :id => "upr_role", :class => "roles chzn-select left"
+        = select_tag "upr projects", options_from_collection_for_select(Project.all, :id, :name), :id => "upr_project", :class => "roles chzn-select left", :prompt => "All"
+        %span#add_upr_btn{:class => 'btn user-projects-roles left'} Add
         %table.project_role
           %tr
             %th Roles In Projects
