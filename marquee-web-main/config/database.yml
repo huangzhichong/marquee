@@ -61,7 +61,7 @@ secondbase:
       adapter: mysql2
       encoding: utf8
       reconnect: false
-      host: localhost
+      host: localhost 
       pool: 5
       database: jira_sub_mirror
       username: root
@@ -70,8 +70,8 @@ secondbase:
       adapter: mysql2
       encoding: utf8
       reconnect: false
-      host: localhost
+      host: 10.109.2.114
       pool: 5
       database: jira_sub_mirror
       username: root
-      password: 
+      password: AutomationRocks!
