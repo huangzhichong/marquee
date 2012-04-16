@@ -19,7 +19,7 @@
 
   - if automation_script_results.nil? or automation_script_results.count == 0
     %tr
-      %td{:colspan => "7"}
+      %td{:colspan => "9"}
         %h4 No data
   - else
     -automation_script_results.each do |asr|
@@ -36,7 +36,7 @@
         %td
           -sa = asr.slave_assignments.last
           -if sa && sa.slave
-            = link_to "#{sa.slave.name}", slafe_path(sa.slave)
+            = link_to "#{sa.slave.name}", slave_path(sa.slave)
           -else
             No slave yet
         %td= asr.automation_script.owner.display_name
@@ -44,30 +44,29 @@
         %td= in_time_zone(asr.start_time)
         %td= in_time_zone(asr.end_time)
         %td
-          - if asr.end? && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && asr.result!="pass" && asr.triage_result == "N/A"
+          - if asr.end? && asr.result!="pass" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
             = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error"}, asr.triage_result), :id => asr.id, :class => "triage-result"
           - else
             = asr.triage_result
         %td
-          - if asr.result != "pass" && asr.result != "pending" && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && asr.triage_result == "N/A"
+          - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
             %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun"}
-          - if asr.result == "pending" && current_user && (current_user.role?(:qa_developer) || current_user.role?(:qa_manager) || current_user.role?(:admin)) && asr.slave_assignments.last && asr.slave_assignments.last.slave
-            - stop_class = "btn primary rerun_btn"
-            - value = "Stop"
+          - if asr.result == "pending" && can?(:update, AutomationScriptResult, {:project_id => project.id}) && asr.slave_assignments.last && asr.slave_assignments.last.slave
             - if asr.state == "stopping"
-              - stop_class = "btn primary rerun_btn disabled" 
-              - value = "Stopping"
-            %input{:type => "button", :value => value, "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => stop_class}
+              %input{:type => "button", :value => "Stopping", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn disabled", :disabled => "disabled"}
+            - else
+              %input{:type => "button", :value => "Stop", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn"}
 
 = paginate automation_script_results
 
 :javascript
   $(function(){
-    $(".rerun_btn").click(function(){
+    $(".rerun_btn:not(:disabled)").click(function(){
       $(this).addClass("disabled");
+      $(this).attr("disabled", "disabled");
     });
     
-    $("input.rerun_btn").click(function(){
+    $("input.rerun_btn:not(:disabled)").click(function(){
       $.ajax({url: $(this).attr("remote-data")}).success(function(data) {
         location.reload();
       })

@@ -1,7 +1,7 @@
 -if flash[:error]
   .alert-message.error= flash[:error].html_safe
 
-= form_for ([:admin, @project, @mail_notify_setting]) do |f|
+= form_for ([:admin, @project, @mail_notify_setting]), :remote => true do |f|
   -if @mail_notify_setting.errors.any?
     #error_explanation
       %h2= "#{pluralize(@mail_notify_setting.errors.count, "error")} prohibited this mail_notify_setting from being saved:"
@@ -12,17 +12,19 @@
     %legend= title
     .clearfix
       =f.label :mail
+      .required *
       .input
-        =f.text_field :mail, :class => "validate[required,custom[email]]"
+        =f.text_field :mail, :class => "validate[required, custom[email]]"
     .clearfix
       =f.label :mail_notify_group
+      .required *
       .input
         .row
           .columns.span7
             %select.as-select#mnsgs{:multiple => 'multiple'}
-              - MailNotifyGroup.all.reject{|mng| @mail_notify_setting.mail_notify_groups.include?(mng)}.each do |group|
+              - (MailNotifyGroup.all - @mail_notify_setting.mail_notify_groups).each do |group|
                 %option{:value => group.id}= group.name
-            %a#add-all-mnsg-button
+            %a#add-all-mnsg-button{:title => 'Add All Mail Notify Groups', :href => '#'}
               %span.multi-select-item-add.ui-icon
               Choose All
           .columns.span1#drag-arrow
@@ -30,7 +32,7 @@
             .clearfix
             %a.multi-select-item-remove.ui-icon#remove-mnsg-button
           .columns.span7
-            %select.as-select#mnsgs-selected{:multiple => 'multiple'}
+            %select.as-select#mnsgs-selected{:multiple => 'multiple', :class => "validate[funcCall[checkNullSelectBox]]"}
               - @mail_notify_setting.mail_notify_groups.each do |group|
                 %option{:value => group.id}= group.name
             %a#clear-all-mnsg-button
@@ -40,13 +42,14 @@
           #mnsg-ids
     .clearfix
       =f.label :test_type
+      .required *
       .input
         .row
           .columns.span7
             %select.as-select#testtypes{:multiple => 'multiple'}
-              - TestType.all.reject{|tt| @mail_notify_setting.test_types.include?(tt)}.each do |type|
+              - (TestType.all - @mail_notify_setting.test_types).each do |type|
                 %option{:value => type.id}= type.name
-            %a#add-all-testtype-button
+            %a#add-all-testtype-button{:title => 'Add All Test Types', :href => '#'}
               %span.multi-select-item-add.ui-icon
               Choose All
           .columns.span1#drag-arrow
@@ -54,7 +57,7 @@
             .clearfix
             %a.multi-select-item-remove.ui-icon#remove-testtype-button
           .columns.span7
-            %select.as-select#testtypes-selected{:multiple => 'multiple'}
+            %select.as-select#testtypes-selected{:multiple => 'multiple', :class => "validate[funcCall[checkNullSelectBox]]"}
               - @mail_notify_setting.test_types.each do |type|
                 %option{:value => type.id}= type.name
             %a#clear-all-testtype-button
@@ -63,7 +66,7 @@
             = hidden_field_tag "mail_notify_setting[test_type_ids][]", ""
           #testtype-ids
     .actions
-      = f.submit 'Save', :class => 'btn primary'
+      = f.submit 'Save', :class => 'btn primary', :id => 'save'
       = link_to 'Back', admin_project_mail_notify_settings_path(@project), :class => 'btn'
 
 :javascript
@@ -95,7 +98,6 @@
       });
     });
     $('#add-all-mnsg-button').click(function(){
-      $('#mnsg-ids').empty();
       $('#mnsgs option').each(function(idx, elem){
         $('#mnsgs-selected').append($(elem));
         $('#mnsg-ids').append($('#mail_notify_setting_mail_notify_group_ids_').clone().val($(elem).attr('value')));
@@ -127,7 +129,6 @@
       });
     });
     $('#add-all-testtype-button').click(function(){
-      $('#testtype-ids').empty();
       $('#testtypes option').each(function(idx, elem){
         $('#testtypes-selected').append($(elem));
         $('#testtype-ids').append($('#mail_notify_setting_test_type_ids_').clone().val($(elem).attr('value')));
@@ -139,4 +140,13 @@
         $('#testtypes').append($(elem));
       });
     });
+    $("#new_mail_notify_setting").bind('ajax:complete', 
+      function(data, status, xhr) {
+        if (JSON.parse(status.responseText).result == "success") {
+          location.href = $("#new_mail_notify_setting").attr("action");
+        } else {
+          alert("A same record in your settings already exists in the database. Please modify your settings.");
+        }
+      }
+    );
   });

@@ -56,7 +56,7 @@
 
       - if @test_round.automation_script_results.nil? or @test_round.automation_script_results.empty?
         %tr
-          %td{:colspan => "4"}
+          %td{:colspan => "5"}
             %h4 No data
       - else
         - @test_round.automation_script_results.each do |asr|

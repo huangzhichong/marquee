@@ -7,7 +7,8 @@ gem 'rails', '3.1.0'
 
 gem 'sqlite3', '1.3.4'
 gem 'sqlite3-ruby'
-gem 'devise', :git => 'git://github.com/plataformatec/devise.git'
+gem 'devise', '2.1.0.rc'
+gem "devise_ldap_authenticatable", '0.6.0'
 gem 'haml', '3.1.2'
 gem 'haml-rails', '0.3.4'
 gem 'rails3-generators', '0.17.4'
@@ -32,6 +33,7 @@ gem "meta_search", :git => "git://github.com/ernie/meta_search.git"
 gem "acts_as_audited", :git => "git://github.com/tyraeltong/acts_as_audited.git"
 
 gem "net-ftp-list"
+gem "net-sftp"
 gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git', :group => "development"
 gem 'mongoid', "~> 2.2"
 gem 'bson_ext', "~> 1.3"
@@ -40,6 +42,8 @@ gem 'pry', :group => 'development'
 gem 'redis', ">= 2.2.2"
 gem 'resque', :require => "resque/server"
 gem 'resque_mailer'
+gem 'secondbase', '0.5.0'
+
 
 group :test, :development do
   gem 'test-unit', '2.3.0'
@@ -48,6 +52,9 @@ group :test, :development do
   gem 'factory_girl_rails', '1.1.0'
   gem 'ruby-prof', '0.10.8'
   gem 'spork', '~> 1.0rc'
+  gem 'database_cleaner'
+  gem 'capybara'
+  gem 'launchy'
 end
 
 # Gems used only for assets and not required

@@ -15,6 +15,9 @@ class MailNotifySetting < ActiveRecord::Base
   has_and_belongs_to_many :test_types
   has_and_belongs_to_many :mail_notify_groups
 
+  validates_presence_of :mail, :test_types, :mail_notify_groups
+  # validates_uniqueness_of :mail, :scope => [:project_id, :test_types, :mail_notify_groups], :message => "already exists for the test_type and mail_notify_group."
+
   def groups
     mail_notify_groups.collect{|mng| mng.name}.join(', ')
   end

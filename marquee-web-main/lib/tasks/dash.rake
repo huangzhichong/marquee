@@ -3,7 +3,9 @@ namespace :dash do
   desc "Init some user and project data"
   task :init_data => :environment do
     AbilityDefinition.delete_all
-    User.delete_all
+    ProjectsRolesUsers.delete_all
+    ProjectsRoles.delete_all
+    RolesUsers.delete_all
     Role.delete_all
     RolesUsers.delete_all
     AutomationCaseResult.delete_all
@@ -18,6 +20,7 @@ namespace :dash do
     TargetService.delete_all
     Project.delete_all
     ProjectCategory.delete_all
+    User.delete_all
     TestType.delete_all
     TestEnvironment.delete_all
     AutomationDriver.delete_all
@@ -31,6 +34,15 @@ namespace :dash do
     RunTask.delete_all
     Slave.delete_all
 
+    win = OperationSystem.find{|os| os.name == 'windows' and os.version == 'xp'}
+    win ||= OperationSystem.create!(:name => 'windows', :version => 'xp')
+    ie = Browser.find{|b| b.name == 'ie' and b.version == '6.0'}
+    ie ||= Browser.create!(:name => 'ie', :version => '6.0')
+    firefox = Browser.find{|b| b.name == 'firefox' and b.version == '3.5'}
+    firefox ||= Browser.create!(:name => 'firefox', :version => '3.5')
+    chrome = Browser.find{|b| b.name == 'chrome' and b.version == '17'}
+    chrome ||= Browser.create!(:name => 'chrome', :version => '17')
+
     aw = ProjectCategory.new(:name => 'ActiveWorks')
     aw.save
     other = ProjectCategory.new(:name => 'Others')
@@ -42,7 +54,7 @@ namespace :dash do
     TestEnvironment.create(:name => 'INT Latest', :value => 'INT').save
     TestEnvironment.create(:name => 'INT Released', :value => 'INTR').save
     TestEnvironment.create(:name => 'QA Latest', :value => 'QA').save
-    TestEnvironment.create(:name => 'QA Released', :value => 'QAR').save
+    TestEnvironment.create(:name => 'QA Regression', :value => 'QAR').save
     TestEnvironment.create(:name => 'QA Staging', :value => 'QAS').save
     TestEnvironment.create(:name => 'Platform INT', :value => 'PINT').save
     TestEnvironment.create(:name => 'Platform QA', :value => 'PQA').save
@@ -61,6 +73,7 @@ namespace :dash do
     admins << tyrael = { "email" => 'tyrael.tong@activenetwork.com', "name" => 'Tyrael Tong' }
     admins << chris = { "email" => 'chris.zhang@activenetwork.com', "name" => 'Chris Zhang' }
     admins << eric = { "email" => 'eric.yang@activenetwork.com', "name" => 'Eric Yang' }
+    admins << leo = {"email" => 'leo.yin@active.com', "name" => 'Leo Yin'}
 
     qa_managers << smart = { "email" => 'smart.huang@activenetwork.com', "name" => 'Smart Huang' }
     qa_managers << jabco = { "email" => 'jabco.shen@activenetwork.com', "name" => 'Jabco Shen' }
@@ -84,121 +97,123 @@ namespace :dash do
 
     role_hashes.each do |k,v|
       role = Role.find_by_name(k)
+      project_role = ProjectsRoles.new(:role_id => role.id, :project_id => nil)
+      project_role.save
       v.each do |user|
         u = User.new(
-          :email => user["email"],
-          :display_name => user["name"],
-          :password => "111111"
-        )
-        u.roles << role
+                     :email => user["email"],
+                     :display_name => user["name"],
+                     :password => "111111"
+                     )
+        u.projects_roles << project_role
+        # u.roles << role
         u.save
       end
     end
 
-    # todo: define ability for each role
-    %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult).each do |resource|
-      ad = AbilityDefinition.create
-      ad.role = qa_manager_role
-      ad.ability = :manage
-      ad.resource = resource
-      ad.save
+    resources = %w(CiMapping MailNotifySetting TestRound TestSuite TestPlan AutomationScript AutomationScriptResult AutomationCase AutomationCaseResult AutomationDriverConfig)
+    abilities = %w(manage create update)
+    abilities.each do |ability|
+      resources.each do |resource|
+        ability_definition = AbilityDefinition.new(:ability => ability, :resource => resource)
+        ability_definition.save
+      end
     end
 
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_role
-      ad.ability = :create
-      ad.resource = 'TestRound'
-    end 
-    ability_definition.save
-
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_developer_role
-      ad.ability = :create
-      ad.resource = 'TestRound'
-    end 
-    ability_definition.save    
-
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_developer_role
-      ad.ability = :update
-      ad.resource = 'TestSuite'
-    end
-    ability_definition.save
-
-    ability_definition = AbilityDefinition.new do |ad|
-      ad.role = qa_developer_role
-      ad.ability = :update
-      ad.resource = 'AutomationScriptResult'
-    end
-    ability_definition.save
+    # qa_manager get all manage abilities
+    qa_manager_role.ability_definitions << AbilityDefinition.find_all_by_ability(:manage)
+    qa_manager_role.ability_definitions << AbilityDefinition.find_or_create_by_ability_and_resource(:update, :Project)
+    qa_manager_role.ability_definitions << AbilityDefinition.find_or_create_by_ability_and_resource(:manage, :Slave)
+    qa_manager_role.ability_definitions.flatten
+    qa_manager_role.save
+    # qa_developer abilities
+    create_tr = AbilityDefinition.find_or_create_by_ability_and_resource(:create, :TestRound)
+    manage_ts = AbilityDefinition.find_or_create_by_ability_and_resource(:manage, :TestSuite)
+    update_asr = AbilityDefinition.find_or_create_by_ability_and_resource(:update, :AutomationScriptResult)
+    qa_developer_role.ability_definitions << [create_tr, manage_ts, update_asr]
+    qa_developer_role.ability_definitions.flatten
+    qa_developer_role.save
+    # qa abilities
+    qa_role.ability_definitions << create_tr
+    qa_role.ability_definitions.flatten
+    qa_role.save
 
     smart = User.find_by_email("smart.huang@activenetwork.com")
     jabco = User.find_by_email("jabco.shen@activenetwork.com")
     fiona = User.find_by_email("fiona.zhou@activenetwork.com")
 
     camps = Project.create(
-      :name => 'Camps',
-      :leader => smart,
-      :project_category => aw,
-      :state => 'ongoing',
-      :source_control_path => 'http://fndsvn.dev.activenetwork.com/camps',
-      :icon_image_file_name => 'camps.png',
-      :icon_image_content_type => 'image/png',
-      :icon_image_file_size => 7763
-    ).save
+                           :name => 'Camps',
+                           :leader => smart,
+                           :project_category => aw,
+                           :state => 'ongoing',
+                           :source_control_path => 'http://fndsvn.dev.activenetwork.com/camps',
+                           :icon_image_file_name => 'camps.png',
+                           :icon_image_content_type => 'image/png',
+                           :icon_image_file_size => 7763,
+                           :browsers => [ie, firefox, chrome],
+                           :operation_systems => [win],
+                           :display_order => 0
+                           ).save
 
     endurance = Project.create(
-      :name => 'Endurance',
-      :leader => jabco,
-      :project_category => aw,
-      :state => 'ongoing',
-      :source_control_path => 'http://fndsvn.dev.activenetwork.com/endurance',
-      :icon_image_file_name => 'endurance.png',
-      :icon_image_content_type => 'image/png',
-      :icon_image_file_size => 18857
-    ).save
+                               :name => 'Endurance',
+                               :leader => jabco,
+                               :project_category => aw,
+                               :state => 'ongoing',
+                               :source_control_path => 'http://fndsvn.dev.activenetwork.com/endurance',
+                               :icon_image_file_name => 'endurance.png',
+                               :icon_image_content_type => 'image/png',
+                               :icon_image_file_size => 18857,
+                               :browsers => [ie, firefox, chrome],
+                               :operation_systems => [win],
+                               :display_order => 1
+                               ).save
 
     sports = Project.create(
-      :name => 'Sports',
-      :leader => fiona,
-      :project_category => aw,
-      :state => 'ongoing',
-      :source_control_path => 'http://fndsvn.dev.activenetwork.com/sports',
-      :icon_image_file_name => 'sports.png',
-      :icon_image_content_type => 'image/png',
-      :icon_image_file_size => 16291
-    ).save
+                            :name => 'Sports',
+                            :leader => fiona,
+                            :project_category => aw,
+                            :state => 'ongoing',
+                            :source_control_path => 'http://fndsvn.dev.activenetwork.com/sports',
+                            :icon_image_file_name => 'sports.png',
+                            :icon_image_content_type => 'image/png',
+                            :icon_image_file_size => 16291,
+                            :browsers => [ie, firefox, chrome],
+                            :operation_systems => [win],
+                            :display_order => 2
+                            ).save
   end
-  
+
   desc "Delete duplicated data from dre report."
   task :delete_duplicated_data => :environment do
     Report::Project.all.each do |p|
       p.dres.each do |d|
         d.destroy unless p.dres.where(date: d.date).count == 1
       end
-      
+
       p.bugs_by_severities.each do |bbs|
         bbs.destroy unless p.bugs_by_severities.where(date: bbs.date).count == 1
       end
-      
+
       p.bugs_by_who_founds.each do |bbw|
         bbw.destroy unless p.bugs_by_who_founds.where(date: bbw.date).count == 1
       end
-      
+
       p.technical_debts.each do |td|
         td.destroy unless p.technical_debts.where(date: td.date).count == 1
       end
-      
+
       p.external_bugs_by_day_alls.each do |ebbda|
         ebbda.destroy unless p.external_bugs_by_day_alls.where(date: ebbda.date).count == 1
       end
-      
+
       p.external_bugs_found_by_days.each do |ebbd|
         ebbd.destroy unless p.external_bugs_found_by_days.where(date: ebbd.date).count == 1
       end
     end
   end
-  
+
   task :reset_specified_data , [:date] => :environment do |t, args|
     specified_date = args[:date]
     markets = ["Endurance","Camps","Sports","Swimming","Membership","Platform","Framework"]
@@ -214,9 +229,9 @@ namespace :dash do
         current.save
       end
     end
-    
+
   end
-  
+
   task :delete_specified_data => :environment do
     specified_date = "2011-11-06"
     dres = []
@@ -229,48 +244,48 @@ namespace :dash do
       p.dres.each do |d|
         dres << d if d.date.to_s == specified_date
       end
-      
+
       p.bugs_by_severities.each do |bbs|
         bugs_by_severities << bbs if bbs.date.to_s == specified_date
       end
-      
+
       p.bugs_by_who_founds.each do |bbw|
         bugs_by_who_founds << bbw if bbw.date.to_s == specified_date
       end
-      
+
       p.technical_debts.each do |td|
         technical_debts << td if td.date.to_s == specified_date
       end
-      
+
       p.external_bugs_by_day_alls.each do |ebbda|
         external_bugs_by_day_alls << ebbda if ebbda.date.to_s == specified_date
       end
-      
+
       p.external_bugs_found_by_days.each do |ebbd|
         external_bugs_found_by_days << ebbd if ebbd.date.to_s == specified_date
       end
     end
-    
+
     dres.each do |d|
       d.destroy
     end
-    
+
     bugs_by_severities.each do |d|
       d.destroy
     end
-    
+
     bugs_by_who_founds.each do |d|
       d.destroy
     end
-    
+
     technical_debts.each do |d|
       d.destroy
     end
-    
+
     external_bugs_by_day_alls.each do |d|
       d.destroy
     end
-    
+
     external_bugs_found_by_days.each do |d|
       d.destroy
     end
@@ -292,7 +307,7 @@ namespace :dash do
     qa_managers << karen = { "email" => 'Karen.Bishop@activenetwork.com'}
     qa_managers << adan = { "email" => 'adam.english@activenetwork.com'}
     qa_managers << huiping = { "email" => 'Huiping.Zheng@activenetwork.com'}
-      
+
     qa_developers << rob = { "email" => 'Rob.Wallace@activenetwork.com'}
     qa_developers << michael = { "email" => 'Michael.Begley@activenetwork.com'}
     qa_developers << ophelia = { "email" => 'Ophelia.Chan@activenetwork.com'}
@@ -303,15 +318,17 @@ namespace :dash do
 
     role_hashes.each do |k,v|
       role = Role.find_by_name(k)
+      project_role = ProjectsRoles.find_by_role_id(role.id)
       v.each do |user|
         name = user["email"].split("@").first
         display_name = "#{name.split(".").first.capitalize} #{name.split(".").last.capitalize}"
         u = User.new(
-          :email => user["email"],       
-          :display_name => display_name,
-          :password => "111111"
-        )
-        u.roles << role
+                     :email => user["email"],
+                     :display_name => display_name,
+                     :password => "111111"
+                     )
+        u.projects_roles << project_role
+        # u.roles << role
         u.save
       end
     end

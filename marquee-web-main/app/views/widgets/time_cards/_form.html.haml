@@ -1,0 +1,65 @@
+%form{:action => '/widgets/time_cards/members_select', :method => "post"}
+  %fieldset
+    .clearfix
+      .row
+        = hidden_field_tag "widget_id", "#{@wid}"
+        .columns.span4
+          = label_tag 'Team Members'
+          = select_tag "members", options_from_collection_for_select(TeamMember.find(:all, :order => 'name').reject{|tm| @selected_members.include?(tm)}, "id", "name"), :multiple => true, :class => 'as-select-wg', :width => 220
+          %a#add-all-button
+            %span.multi-select-item-add.ui-icon
+            Choose All
+        .columns.span1#drag-arrow
+          %a.multi-select-item-add.ui-icon#add-button
+          .clearfix
+          %a.multi-select-item-remove.ui-icon#remove-button
+        .columns.span4
+          = label_tag 'Selected'
+          = select_tag "selected", options_from_collection_for_select(@selected_members, "id", "name"), :multiple => true, :class => 'as-select-wg', :width => 220
+          %a#clear-all-button
+            %span.multi-select-item-remove.ui-icon
+            Clear All
+        = hidden_field_tag "selected_ids", ""
+    .actions-left
+      = button_tag 'Save team list', :type => 'button',:class => 'btn primary',:id => 'save-button'
+:javascript
+  $(function(){
+    $('#add-button').click(function(){
+      $('#members :selected').each(function(idx, elem){
+        $('#selected').append($(elem));
+      });
+    });
+    $('#remove-button').click(function(){
+      $('#selected :selected').each(function(idx, elem){
+        $('#members').append($(elem));
+      });
+    });
+    $('#add-all-button').click(function(){
+      $('#members option').each(function(idx, elem){
+        $('#selected').append($(elem));
+      });
+    });
+    $('#clear-all-button').click(function(){
+      $('#selected option').each(function(idx, elem){
+        $('#members').append($(elem));
+      });
+    });
+    $('#save-button').click(function(){
+      var ids = []
+      $('#selected option').each(function(idx, elem){
+        ids.push($(elem).attr('value'));
+      }); 
+      $('#selected_ids').val(ids);
+      $('form').submit();
+    });
+  });
+
+:css
+  .actions-left {
+    background: none repeat scroll 0 0 #F5F5F5;
+    border-radius: 0 0 3px 3px;
+    border-top: 1px solid #DDDDDD;
+    margin-bottom: 18px;
+    margin-top: 18px;
+    padding: 17px 20px 18px 20px;
+  }

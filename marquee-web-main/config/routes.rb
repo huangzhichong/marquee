@@ -5,10 +5,17 @@ MarqueeWebMain::Application.routes.draw do
       mount Resque::Server.new, :at => "/resque"
     end
 
-    resources :project_categories, :users
+    get '/', :controller => 'projects', :action => 'index'
+    resources :browsers
+    resources :operation_systems
+    resources :automation_drivers
+    resources :slaves
+    resources :project_categories
+    resources :users
+    resources :roles
     resources :team_members
     resources :projects do
-      resources :test_suites, :ci_mappings, :mail_notify_settings, :test_rounds
+      resources :test_suites, :ci_mappings, :mail_notify_settings, :test_rounds, :automation_driver_configs
       get "search_automation_script", :controller => 'test_suites', :action => 'search_automation_script'
     end
     get 'time_cards/overall', :controller => 'time_cards', :action => 'overall'
@@ -23,6 +30,7 @@ MarqueeWebMain::Application.routes.draw do
     get "jira_data/issue_status_chronicle/:key", :controller => 'jira_data', :action => 'issue_status_chronicle'
     get "projects_display_order", :controller => "projects", :action => "display_order"
     post "projects_display_order_update", :controller => "projects", :action => "display_order_update"
+    get "activate_user/:id", :controller => "users", :action => "activate"
   end
 
   post 'status/update'
@@ -32,9 +40,9 @@ MarqueeWebMain::Application.routes.draw do
   post 'import_data/import_test_plan_from_xml'
   get 'import_data/refresh_testlink_data'
   post 'import_data/import_as_and_tc_status'
-  get 'import_data/refresh_testlink_data'  
+  get 'import_data/refresh_testlink_data'
 
-  devise_for :users, :controllers => { :passwords => "passwords" }
+  devise_for :users, :controllers => { :passwords => "passwords" }, :skip => :registrations
   resources :passwords
   # get "users/:id/password/edit", :controller => "passwords", :action => "edit"
 
@@ -133,4 +141,12 @@ MarqueeWebMain::Application.routes.draw do
 
   root :to => 'home#index'
 
+  namespace :widgets do
+    get 'time_cards/show'
+    get 'time_cards/members'
+    post 'time_cards/members_select'
+  end
+  get 'data_sync/fnd_jira'
+  get 'data_sync/time_card'
+  get "data_sync/regenerate_dre"
 end

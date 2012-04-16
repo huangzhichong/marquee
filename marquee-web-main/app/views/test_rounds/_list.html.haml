@@ -2,7 +2,7 @@
   %h2
     Test Rounds
     %small= "#{@project.test_rounds.count} in total"
-  -if can? :create, TestRound
+  -if can? :create, TestRound, {:project_id => project.id}
     = link_to 'Schedule', new_project_test_round_path(project), :class => 'btn primary'
   = form_for search, :url => project_test_rounds_path, :remote => true do |f|
     %span.search
@@ -12,9 +12,9 @@
 %table.zebra-striped
   %tr
     %th=sort_link search, :id, "NO.", {}, {:remote => true}
-    %th=sort_link search, :pass_count, "Pass", {}, {:remote => true}
-    %th=sort_link search, :failed_count, "Failed", {}, {:remote => true}
-    %th=sort_link search, :not_run_count, "Not Run", {}, {:remote => true}
+    %th=sort_link search, :pass, "Pass", {}, {:remote => true}
+    %th=sort_link search, :failed, "Failed", {}, {:remote => true}
+    %th=sort_link search, :not_run, "Not Run", {}, {:remote => true}
     %th=sort_link search, :creator_email, "Creator", {}, {:remote => true}
     %th=sort_link search, :test_object, "Test Description", {}, {:remote => true}
     %th=sort_link search, :test_environment_name, "Test environment", {}, {:remote => true}

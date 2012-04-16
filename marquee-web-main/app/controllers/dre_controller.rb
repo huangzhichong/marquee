@@ -10,6 +10,7 @@ class DreController < ApplicationController
 
   def overall
     load_dre_data
+    load_severity_bugs
     if params[:slide]
       render :layout => 'slideshow'
     end
@@ -163,24 +164,24 @@ class DreController < ApplicationController
 
 private
   def load_history_overall_data
-    @overall_data = Rails.cache.fetch('overall_dre_history'){Report::Project.where(name: 'Overall').first.dres}
+    @overall_data = Rails.cache.fetch('overall_dre_history'){Report::Project.where(name: 'Overall').first.dres.order_by([:date,:desc]).limit(90).reverse}
 
-    @membership_data = Rails.cache.fetch('membership_dre_history'){Report::Project.where(name: 'Membership').first.dres}
+    @membership_data = Rails.cache.fetch('membership_dre_history'){Report::Project.where(name: 'Membership').first.dres.order_by([:date,:desc]).limit(90).reverse}
 
-    @framework_data = Rails.cache.fetch('framework_dre_history'){Report::Project.where(name: 'Framework').first.dres}
+    @framework_data = Rails.cache.fetch('framework_dre_history'){Report::Project.where(name: 'Framework').first.dres.order_by([:date,:desc]).limit(90).reverse}
 
-    @platform_data = Rails.cache.fetch('platform_dre_history'){Report::Project.where(name: 'Platform').first.dres}
+    @platform_data = Rails.cache.fetch('platform_dre_history'){Report::Project.where(name: 'Platform').first.dres.order_by([:date,:desc]).limit(90).reverse}
   end
 
   def load_history_markets_data
     load_dre_data
-    @endurance_data = Rails.cache.fetch('endurance_dre_history'){Report::Project.where(name: 'Endurance').first.dres}
+    @endurance_data = Rails.cache.fetch('endurance_dre_history'){Report::Project.where(name: 'Endurance').first.dres.order_by([:date,:desc]).limit(90).reverse}
 
-    @camps_data = Rails.cache.fetch('camps_dre_history'){Report::Project.where(name: 'Camps').first.dres}
+    @camps_data = Rails.cache.fetch('camps_dre_history'){Report::Project.where(name: 'Camps').first.dres.order_by([:date,:desc]).limit(90).reverse}
 
-    @sports_data = Rails.cache.fetch('sports_dre_history'){Report::Project.where(name: 'Sports').first.dres}
+    @sports_data = Rails.cache.fetch('sports_dre_history'){Report::Project.where(name: 'Sports').first.dres.order_by([:date,:desc]).limit(90).reverse}
 
-    @swimming_data = Rails.cache.fetch('swimming_dre_history'){Report::Project.where(name: 'Swimming').first.dres}
+    @swimming_data = Rails.cache.fetch('swimming_dre_history'){Report::Project.where(name: 'Swimming').first.dres.order_by([:date,:desc]).limit(90).reverse}
   end
 
   def load_dre_data
@@ -214,35 +215,35 @@ private
   end
 
   def load_customer_impact_markets_data
-    @endurance_sev_bugs = Rails.cache.fetch('endurance_bugs_by_severity'){Report::Project.where(name: 'Endurance').first.bugs_by_severities}
+    @endurance_sev_bugs = Rails.cache.fetch('endurance_bugs_by_severity'){Report::Project.where(name: 'Endurance').first.bugs_by_severities.order_by([:date,:desc]).limit(90).reverse}
 
-    @camps_sev_bugs = Rails.cache.fetch('camps_bugs_by_severity'){Report::Project.where(name: 'Camps').first.bugs_by_severities}
+    @camps_sev_bugs = Rails.cache.fetch('camps_bugs_by_severity'){Report::Project.where(name: 'Camps').first.bugs_by_severities.order_by([:date,:desc]).limit(90).reverse}
 
-    @sports_sev_bugs = Rails.cache.fetch('sports_bugs_by_severity'){Report::Project.where(name: 'Sports').first.bugs_by_severities}
+    @sports_sev_bugs = Rails.cache.fetch('sports_bugs_by_severity'){Report::Project.where(name: 'Sports').first.bugs_by_severities.order_by([:date,:desc]).limit(90).reverse}
 
-    @swimming_sev_bugs = Rails.cache.fetch('swimming_bugs_by_severity'){Report::Project.where(name: 'Swimming').first.bugs_by_severities}
+    @swimming_sev_bugs = Rails.cache.fetch('swimming_bugs_by_severity'){Report::Project.where(name: 'Swimming').first.bugs_by_severities.order_by([:date,:desc]).limit(90).reverse}
   end
 
   def load_customer_impact_other_data
-    @membership_sev_bugs = Rails.cache.fetch('membership_bugs_by_severity'){Report::Project.where(name: 'Membership').first.bugs_by_severities}
+    @membership_sev_bugs = Rails.cache.fetch('membership_bugs_by_severity'){Report::Project.where(name: 'Membership').first.bugs_by_severities.order_by([:date,:desc]).limit(90).reverse}
 
-    @framework_sev_bugs = Rails.cache.fetch('framework_bugs_by_severity'){Report::Project.where(name: 'Framework').first.bugs_by_severities}
+    @framework_sev_bugs = Rails.cache.fetch('framework_bugs_by_severity'){Report::Project.where(name: 'Framework').first.bugs_by_severities.order_by([:date,:desc]).limit(90).reverse}
 
-    @platform_sev_bugs = Rails.cache.fetch('platform_bugs_by_severity'){Report::Project.where(name: 'Platform').first.bugs_by_severities}
+    @platform_sev_bugs = Rails.cache.fetch('platform_bugs_by_severity'){Report::Project.where(name: 'Platform').first.bugs_by_severities.order_by([:date,:desc]).limit(90).reverse}
   end
 
   def load_project_data
-    @bugs_by_who_found = Rails.cache.fetch("#{@project_name.downcase}_bugs_by_who_found"){Report::Project.where(name: @project_name.capitalize).first.bugs_by_who_founds};
+    @bugs_by_who_found = Rails.cache.fetch("#{@project_name.downcase}_bugs_by_who_found"){Report::Project.where(name: @project_name.capitalize).first.bugs_by_who_founds.order_by([:date,:desc]).limit(90).reverse};
 
-    @bugs_by_severity = Rails.cache.fetch("#{@project_name.downcase}_bugs_by_severity"){Report::Project.where(name: @project_name.capitalize).first.bugs_by_severities};
+    @bugs_by_severity = Rails.cache.fetch("#{@project_name.downcase}_bugs_by_severity"){Report::Project.where(name: @project_name.capitalize).first.bugs_by_severities.order_by([:date,:desc]).limit(90).reverse};
 
-    @technical_debt = Rails.cache.fetch("#{@project_name.downcase}_tech_debt"){Report::Project.where(name: @project_name.capitalize).first.technical_debts}
+    @technical_debt = Rails.cache.fetch("#{@project_name.downcase}_tech_debt"){Report::Project.where(name: @project_name.capitalize).first.technical_debts.order_by([:date,:desc]).limit(90).reverse}
   end
 
   def load_ext_bug_data
-    @ext_found_bugs = Rails.cache.fetch('ext_found_bugs'){Report::Project.where(name: 'Overall').first.external_bugs_found_by_days}
+    @ext_found_bugs = Rails.cache.fetch('ext_found_bugs'){Report::Project.where(name: 'Overall').first.external_bugs_found_by_days.order_by([:date,:desc]).limit(90).reverse}
 
-    ext_found_bugs_all_raw = Rails.cache.fetch('ext_bugs_all'){Report::Project.where(name: 'Overall').first.external_bugs_by_day_alls}
+    ext_found_bugs_all_raw = Rails.cache.fetch('ext_bugs_all'){Report::Project.where(name: 'Overall').first.external_bugs_by_day_alls.order_by([:date,:desc]).limit(90).reverse}
     # we only combine the data required by the client
     @ext_found_bugs_all = []
     ext_found_bugs_all_raw.each do |raw_data|
@@ -323,19 +324,19 @@ private
   def import_data_from_jira
     JiraIssue.delete_all
 
-    result = FndJira.connection.execute(all_projects_bugs_query_string)
+    result = FndJiraLocal.connection.execute(all_projects_bugs_query_string)
     puts "first query: #{result.count} items."
     import_jira_query_result_into_db(result)
 
-    result2 = FndJira.connection.execute(all_closed_requirements_query_string)
+    result2 = FndJiraLocal.connection.execute(all_closed_requirements_query_string)
     puts "second query: #{result2.count} items."
     import_jira_query_result_into_db(result2)
 
-    result3 = FndJira.connection.execute(framework_bugs_with_specified_components_query_string)
+    result3 = FndJiraLocal.connection.execute(framework_bugs_with_specified_components_query_string)
     puts "third query: #{result3.count} items."
     import_jira_query_result_into_db(result3)
 
-    result4 = FndJira.connection.execute(team_sports_bugs_with_specified_components_query_string)
+    result4 = FndJiraLocal.connection.execute(team_sports_bugs_with_specified_components_query_string)
     puts "fourth query: #{result4.count} items."
     import_jira_query_result_into_db(result4)
 
@@ -354,7 +355,7 @@ private
       dre.save
 
       Rails.cache.write(project.downcase + '_dre', dre.value)
-      Rails.cache.write(project.downcase + '_dre_history', p.dres)
+      Rails.cache.write(project.downcase + '_dre_history', p.dres.order_by([:date,:desc]).limit(90).reverse)
     end
 
     # drills down dre for platform components
@@ -379,7 +380,7 @@ private
       bugs.severity_nyd = (JiraIssue.send project.downcase).bugs.production.not_closed.by_severity('Sev-NYD').count.to_s
       bugs.save
 
-      Rails.cache.write(project.downcase + '_bugs_by_severity', p.bugs_by_severities)
+      Rails.cache.write(project.downcase + '_bugs_by_severity', p.bugs_by_severities.order_by([:date,:desc]).limit(90).reverse)
     end
 
     %w(Endurance Camps Sports Swimming Membership Platform Framework).each do |project|
@@ -391,7 +392,7 @@ private
       bugs.closed_requirements = (JiraIssue.send project.downcase).requirement.closed.count.to_s
       bugs.save
 
-      Rails.cache.write(project.downcase + '_bugs_by_who_found', p.bugs_by_who_founds)
+      Rails.cache.write(project.downcase + '_bugs_by_who_found', p.bugs_by_who_founds.order_by([:date,:desc]).limit(90).reverse)
     end
 
     %w(Endurance Camps Sports Swimming Membership Platform Framework).each do |project|
@@ -405,7 +406,7 @@ private
       debt.priority_4 = JiraIssue.send(project.downcase + '_technical_debt_by_priority', 'P4').to_s
       debt.save
 
-      Rails.cache.write(project.downcase + '_tech_debt', p.technical_debts)
+      Rails.cache.write(project.downcase + '_tech_debt', p.technical_debts.order_by([:date,:desc]).limit(90).reverse)
     end
 
     p = Report::Project.where(name: 'Overall').first
@@ -415,7 +416,7 @@ private
     bugs.severity_2 = JiraIssue.bugs.production.found_today.external.by_severity('Sev2').count.to_s
     bugs.save
 
-    Rails.cache.write('ext_found_bugs', p.external_bugs_found_by_days)
+    Rails.cache.write('ext_found_bugs', p.external_bugs_found_by_days.order_by([:date,:desc]).limit(90).reverse)
 
     bugs = p.external_bugs_by_day_alls.where(date: Date.today).first.nil? ? p.external_bugs_by_day_alls.build() : p.external_bugs_by_day_alls.where(date: Date.today).first
     bugs.date = Date.today
@@ -428,7 +429,36 @@ private
     bugs.framework = JiraIssue.framework.bugs.production.external.found_today.count.to_s
     bugs.save
 
-    Rails.cache.write('ext_bugs_all', p.external_bugs_by_day_alls)
+    Rails.cache.write('ext_bugs_all', p.external_bugs_by_day_alls.order_by([:date,:desc]).limit(90).reverse)
   end
 
+  def load_severity_bugs
+      bug_sev1_num = JiraIssue.endurance.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.endurance.bugs.production.open.external.by_severity('Sev2').count
+      @endurance = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.camps.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.camps.bugs.production.open.external.by_severity('Sev2').count
+      @camps = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.team_sports.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.team_sports.bugs.production.open.external.by_severity('Sev2').count
+      @team_sports = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.swimming.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.swimming.bugs.production.open.external.by_severity('Sev2').count
+      @swimming = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.membership.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.membership.bugs.production.open.external.by_severity('Sev2').count
+      @membership = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.platform.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.platform.bugs.production.open.external.by_severity('Sev2').count
+      @platform = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+
+      bug_sev1_num = JiraIssue.framework.bugs.production.open.external.by_severity('Sev1').count
+      bug_sev2_num = JiraIssue.framework.bugs.production.open.external.by_severity('Sev2').count
+      @framework = Report::ProjectSeverityBugs.new(bug_sev1_num, bug_sev2_num)
+  end
 end

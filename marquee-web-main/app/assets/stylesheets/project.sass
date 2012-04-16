@@ -143,6 +143,10 @@ ul.menu
     cursor: pointer
     a
       margin-left: 25px
+  li:hover
+    background: #666666
+    a
+      color: #cccccc
   li.has-sub
     background-image: url(arrow.png)
     background-repeat: no-repeat
@@ -155,10 +159,10 @@ ul.menu
     background-image: url(arrow.png)
     background-repeat: no-repeat
     background-position: 0 -48px
-  li.hover
-    background-image: url(arrow.png)
-    background-repeat: no-repeat
-    background-position: 0 -22px
+  li.activate
+    background: #2a2a2a
+    a
+      color: white
   ul.sublist
     display: none
     margin: 0 0
@@ -171,7 +175,7 @@ ul.menu
   display: block
   h2
     display: block
-    margin-left: 50px
+    margin-left: 55px
     padding: 5px 3px
   .project-icon
     height: 42px
@@ -254,11 +258,9 @@ ul.menu
     margin: 10px
     padding: 10px
     border: 1px solid #CCC
-.user-ability-definitions
-  margin-left:  30px
-#hidden
+.hidden
   display: none
-#user_user_ability_definitions
+#hidden
   display: none
 .chart-box
   height: 30%
@@ -300,4 +302,24 @@ table.test-steps
   width: 546px
 ul.value
   li.long-name:hover
-    background-color: #eeeef9
+    background-color: #eeeef9  
+.alert
+  margin-left: 15px
+.required
+  padding-top: 6px
+  font-family: tahoma
+  font-size: 13px
+  line-height: 18px
+  float: left
+  width: 15px
+  text-align: right
+  color: #ff0000
+.readonly
+  background: #f5f5f5
+
+.admin-content
+  .edit_user
+    .input
+      .chzn-container
+        float: left
+        margin-left: 5px

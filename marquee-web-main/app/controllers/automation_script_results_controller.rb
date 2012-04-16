@@ -36,10 +36,13 @@ class AutomationScriptResultsController < InheritedResources::Base
 
   def stop
     asr = AutomationScriptResult.find(params[:id])
-    asr.state = "stopping"
-    asr.save
-    sa = asr.slave_assignments.last if asr
-    SlaveAssignmentsHelper.send_slave_assignment_to_list sa, "stop" if sa
+    if not asr.end?
+      asr.state = "stopping"
+      asr.save
+      sa = asr.slave_assignments.last if asr
+      SlaveAssignmentsHelper.send_slave_assignment_to_list sa, "stop" if sa
+    end
+
     render :nothing => true
   end
 
@@ -50,11 +53,12 @@ class AutomationScriptResultsController < InheritedResources::Base
     @automation_script_result ||= AutomationScriptResult.find(params[:id])
     @search = @automation_script_result.automation_case_results.search(params[:search])
     @automation_case_results = @search.page(params[:page]).per(15)
+    @automation_case_results.sort!{|acr1, acr2| acr1.case_id <=> acr2.case_id}
   end
 
   def collection
     @test_round ||= TestRound.find(params[:test_round_id])
-    @search = @test_round.automation_script_results.order('id desc').search(params[:search])
-    @automation_script_results ||= @search.page(params[:page]).per(15)
+    @search = @test_round.automation_script_results.search(params[:search])
+    @automation_script_results ||= @search.order('id desc').page(params[:page]).per(15)
   end
 end

@@ -21,6 +21,9 @@ class TestSuite < ActiveRecord::Base
   has_many :test_rounds
   has_many :ci_mappings
 
+  validates_presence_of :name, :automation_scripts
+  validates_uniqueness_of :name, :scope => :project_id, :message => " already exists."
+
   acts_as_audited :protect => false
   # acts_as_audited :protect => false, :only => [:create, :destroy]
 

@@ -57,7 +57,7 @@ class AutomationScriptResult < ActiveRecord::Base
 
     asr
   end
-  
+
   def clear
     self.automation_case_results.each do |acr|
       acr.clear
@@ -75,22 +75,22 @@ class AutomationScriptResult < ActiveRecord::Base
   end
 
   def end?
-    self.state == 'end' or self.state == 'killed' or self.state == 'not implemented' or self.state == 'network issue'
+    self.state == 'done' or self.state == 'killed' or self.state == 'failed' or self.state == 'timeout'
   end
 
   def not_run_cases
     self.automation_case_results.where(:result => "not-run")
   end
-  
+
   def failed_cases
     self.automation_case_results.where(:result => "failed")
   end
 
   def update_state!(state)
     self.state = state
-    if state == "start"
-      # self.start_time = Time.now
-    elsif state == "end"
+    if state == "running"
+      self.start_time = Time.now if self.start_time.blank?
+    elsif state == "done"
       self.end_time = Time.now
       self.not_run_cases.each do |automation_case_result|
         automation_case_result.result = 'not-run'
@@ -102,11 +102,12 @@ class AutomationScriptResult < ActiveRecord::Base
         self.result = self.failed > 0 ? 'failed' : 'pass'
       end
     else
+      self.end_time = Time.now
       self.result = 'failed'
     end
     save
   end
-  
+
   def update_triage!(triage_result)
     self.triage_result = triage_result
     self.result = "failed" if triage_result == "Product Error"
