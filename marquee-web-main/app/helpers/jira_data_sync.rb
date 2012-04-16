@@ -8,16 +8,16 @@ class JiraDataSync
     @jira_parser = JiraStructParser.new File.expand_path('../../../config/jira_table_struct.yml', __FILE__)
     queries_basic = @jira_parser.parse
     skip_tables = @jira_parser.table_relation.values
-    puts "skip_tables:#{queries_basic}"
+    # puts "skip_tables:#{queries_basic}"
     queries_basic.each do |table, query_basic|
       next if skip_tables.include? table
       max_id = get_max_id table
-      puts "#{table}:#{query_basic} and max_id:#{max_id}"
+      # puts "#{table}:#{query_basic} and max_id:#{max_id}"
       query = query_basic
       if @jira_parser.table_columns[table].include? 'id'
         query = @jira_parser.generate_query_condition query_basic, max_id, nil, 200 
       end
-      puts "query sql:#{query}"
+      # puts "query sql:#{query}"
       result = FndJira.connection.execute query
       save_to_mirror table, result
       process_relation result, table
@@ -32,12 +32,12 @@ class JiraDataSync
   def self.process_relation(parent_result, table_name)
     queries = @jira_parser.table_queries
     relation_table = @jira_parser.table_relation[table_name]
-    puts "have relation table:#{relation_table}"
+    # puts "have relation table:#{relation_table}"
     query = queries[relation_table]
 #    case relation_table
 #      when "changegroup": process_changegroup parent_result, relation_table, query
 #      when "nodeassociation": process_nodeassociation parent_result, relation_table, query
-#      else puts("no item matched")
+#      else # puts("no item matched")
 #    end
     if relation_table.eql? "changegroup"
       process_changegroup parent_result, relation_table, query
@@ -47,7 +47,7 @@ class JiraDataSync
   end
 
   def self.process_changegroup(change_item_result, table_name, query_basic)
-    puts "process changegroup"
+    # puts "process changegroup"
     ChangeGroup.transaction do
       change_item_result.each do |r|
         #r[6] = groupid in change_item
@@ -63,7 +63,7 @@ class JiraDataSync
   end
   
   def self.process_nodeassociation(change_group_result, table_name, query_basic)
-    puts "process nodeassociation"
+    # puts "process nodeassociation"
     NodeAssociation.transaction do
       change_group_result.each do |r|
         #r[3] = issue id
@@ -74,7 +74,7 @@ class JiraDataSync
           at = rs[1]
           skni = rs[2]
           node = NodeAssociation.where(:source_node_id => sni, :association_type => at, :sink_node_id => skni)
-          puts node.inspect
+          # puts node.inspect
           if node.empty?
             na = NodeAssociation.new
             na.source_node_id = sni
@@ -97,7 +97,7 @@ class JiraDataSync
     model_name =  @jira_parser.table_model[table_name] 
     columns = @jira_parser.table_columns[table_name]
     result.each do |t|
-      puts "save to db with : #{t}"
+      # puts "save to db with : #{t}"
       idx = 0
       if columns.include? "id"
         begin
