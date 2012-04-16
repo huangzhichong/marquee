@@ -324,19 +324,19 @@ private
   def import_data_from_jira
     JiraIssue.delete_all
 
-    result = FndJira.connection.execute(all_projects_bugs_query_string)
+    result = FndJiraLocal.connection.execute(all_projects_bugs_query_string)
     puts "first query: #{result.count} items."
     import_jira_query_result_into_db(result)
 
-    result2 = FndJira.connection.execute(all_closed_requirements_query_string)
+    result2 = FndJiraLocal.connection.execute(all_closed_requirements_query_string)
     puts "second query: #{result2.count} items."
     import_jira_query_result_into_db(result2)
 
-    result3 = FndJira.connection.execute(framework_bugs_with_specified_components_query_string)
+    result3 = FndJiraLocal.connection.execute(framework_bugs_with_specified_components_query_string)
     puts "third query: #{result3.count} items."
     import_jira_query_result_into_db(result3)
 
-    result4 = FndJira.connection.execute(team_sports_bugs_with_specified_components_query_string)
+    result4 = FndJiraLocal.connection.execute(team_sports_bugs_with_specified_components_query_string)
     puts "fourth query: #{result4.count} items."
     import_jira_query_result_into_db(result4)
 
