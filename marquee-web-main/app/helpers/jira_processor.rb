@@ -3,12 +3,12 @@ module JiraProcessor
  def process_relation(parent_result, table_name)
     queries = @jira_parser.table_queries
     relation_table = @jira_parser.table_relation[table_name]
-    puts "have relation table:#{relation_table}"
+    # puts "have relation table:#{relation_table}"
     query = queries[relation_table]
 #    case relation_table
 #      when "changegroup": process_changegroup parent_result, relation_table, query
 #      when "nodeassociation": process_nodeassociation parent_result, relation_table, query
-#      else puts("no item matched")
+#      else # puts("no item matched")
 #    end
     if relation_table.eql? "changegroup"
       process_changegroup parent_result, relation_table, query
@@ -18,7 +18,7 @@ module JiraProcessor
   end
 
   def process_changegroup(change_item_result, table_name, query_basic)
-    puts "process changegroup"
+    # puts "process changegroup"
     ChangeGroup.transaction do
       change_item_result.each do |r|
         #r[6] = groupid in change_item
@@ -34,7 +34,7 @@ module JiraProcessor
   end
   
   def process_nodeassociation(change_group_result, table_name, query_basic)
-    puts "process nodeassociation"
+    # puts "process nodeassociation"
     NodeAssociation.transaction do
       change_group_result.each do |r|
         #r[3] = issue id
@@ -45,7 +45,7 @@ module JiraProcessor
           at = rs[1]
           skni = rs[2]
           node = NodeAssociation.where(:source_node_id => sni, :association_type => at, :sink_node_id => skni)
-          puts node.inspect
+          # puts node.inspect
           if node.empty?
             na = NodeAssociation.new
             na.source_node_id = sni
@@ -68,7 +68,7 @@ module JiraProcessor
     model_name =  @jira_parser.table_model[table_name] 
     columns = @jira_parser.table_columns[table_name]
     result.each do |t|
-      puts "save to db with : #{t}"
+      # puts "save to db with : #{t}"
       idx = 0
       if columns.include? "id"
         begin
