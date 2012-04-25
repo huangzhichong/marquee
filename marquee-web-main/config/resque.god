@@ -2,22 +2,22 @@
 # 
 # This is the actual config file used to keep marquee resque job running.
 
-rails_env   = ENV['RAILS_ENV']  || "production"
-rails_root  = ENV['RAILS_ROOT'] || "/home/activeworks/marquee/marquee-web-main"
+RAILS_ENV   = ENV['RAILS_ENV']  || "production"
+RAILS_ROOT  = ENV['RAILS_ROOT'] || "/home/activeworks/marquee/marquee-web-main"
 
 ["marquee_farm","marquee_mailer","marquee_data_sync"].each do |name|
   God.watch do |w|
-    w.dir      = "#{rails_root}"
+    w.dir      = "#{RAILS_ROOT}"
     w.name     = "resque-#{name}-watcher"
     w.group    = 'resque'
     w.interval = 60.seconds
-    w.env      = {"QUEUE"=>name, 'PIDFILE' => "#{rails_root}/tmp/pids/#{name}.pid"}
-    w.start    = "cd #{rails_root}/ && rake environment resque:work QUEUE=#{name}"
+    w.env      = {"QUEUE"=>name, 'PIDFILE' => "#{RAILS_ROOT}/tmp/pids/#{name}.pid"}
+    w.start    = "cd #{RAILS_ROOT}/ && rake environment resque:work QUEUE=#{name}"
     w.start_grace   = 60.seconds
-    w.log      = "#{rails_root}/log/god-resque-#{name}.log"
+    w.log      = "#{RAILS_ROOT}/log/god-resque-#{name}.log"
 
-    # w.uid = 'activeworks'
-    # w.gid = 'activeworks'
+    w.uid = 'activeworks'
+    w.gid = 'activeworks'
 
     God::Contacts::Email.defaults do |d|
       d.from_email = 'marquee@active.com'
@@ -115,6 +115,7 @@ rails_root  = ENV['RAILS_ROOT'] || "/home/activeworks/marquee/marquee-web-main"
     w.transition(:up, :start) do |on|
       on.condition(:process_running) do |c|
         c.running = false
+        c.notify = {:contacts => ['Marquee Team'], :priority => 'Urgent', :category => 'production'}
       end
     end
   end

@@ -1,16 +1,16 @@
 # run with: god -c /path/to/xxxx.god -D
 # 
 # This is the actual config file used to keep marquee farm server running.
-
+RAILS_ENV = "production"
 FARM_SERVER_ROOT = "/home/activeworks/farm_server"
 
 God.watch do |w|
   w.name = "farm-server-watcher"
   w.log = "#{FARM_SERVER_ROOT}/log/god-farm-server.log"
   w.interval = 30.seconds # default
-  w.start = "cd #{FARM_SERVER_ROOT}; ruby server_control.rb start"
-  w.stop = "cd #{FARM_SERVER_ROOT}; ruby server_control.rb stop"
-  w.restart = "cd #{FARM_SERVER_ROOT}; ruby server_control.rb restart"
+  w.start = "cd #{FARM_SERVER_ROOT}; RAILS_ENV=#{RAILS_ENV} ruby server_control.rb start"
+  w.stop = "cd #{FARM_SERVER_ROOT}; RAILS_ENV=#{RAILS_ENV} ruby server_control.rb stop"
+  w.restart = "cd #{FARM_SERVER_ROOT}; RAILS_ENV=#{RAILS_ENV} ruby server_control.rb restart"
   w.start_grace = 30.seconds
   w.restart_grace = 30.seconds
   w.pid_file = "#{FARM_SERVER_ROOT}/server.rb.pid"
