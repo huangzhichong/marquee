@@ -30,7 +30,7 @@ class StatusController < ApplicationController
 
       automation_script_result = test_round.find_automation_script_result_by_script_name(protocol[:data]['script_name'])
       #if automation_script_result and not automation_script_result.end?
-      if automation_script_result
+      if automation_script_result and (automation_script_result.state == "running" or automation_script_result == "scheduling")
         case what
         when 'Script'
           update_automation_script(test_round, protocol[:data])
