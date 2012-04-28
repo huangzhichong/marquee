@@ -12,7 +12,7 @@ RAILS_ROOT  = ENV['RAILS_ROOT'] || "/home/activeworks/marquee/marquee-web-main"
     w.group    = 'resque'
     w.interval = 60.seconds
     w.env      = {"QUEUE"=>name, 'PIDFILE' => "#{RAILS_ROOT}/tmp/pids/#{name}.pid"}
-    w.start    = "cd #{RAILS_ROOT}/ && rake environment resque:work QUEUE=#{name}"
+    w.start    = "cd #{RAILS_ROOT}/ && RAILS_ENV=#{RAILS_ENV} rake environment resque:work QUEUE=#{name}"
     w.start_grace   = 60.seconds
     w.log      = "#{RAILS_ROOT}/log/god-resque-#{name}.log"
 
