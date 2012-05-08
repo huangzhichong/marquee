@@ -52,11 +52,11 @@ class Admin::MailNotifySettingsController < InheritedResources::Base
     mns = MailNotifySetting.find(id)
     respond_to do |format|
       if mns
+        mns.mail = mail
+        mns.mail_notify_groups.delete_all
+        mns.test_types.delete_all
+        
         if existing_mail_notify_settings_list && existing_mail_notify_settings_list.empty?
-          mns.mail = mail
-          mns.mail_notify_groups.delete_all
-          mns.test_types.delete_all
-
           mail_notify_group_ids.each do |mng_id|
             m = nil
             m = MailNotifyGroup.find(mng_id) unless mng_id == ""
