@@ -33,7 +33,7 @@ class StatusController < ApplicationController
       if automation_script_result
         case what
         when 'Script'
-          if automation_script_result.state == "running" or automation_script_result.state == "scheduling"
+          if automation_script_result.state == "running" or automation_script_result.state == "scheduling" or (automation_script_result.state == "stopping" and protocol[:data]['state'] and protocol[:data]['state'].downcase == "killed")
             update_automation_script(test_round, protocol[:data])
           end
         when 'Case'
