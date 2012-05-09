@@ -51,23 +51,20 @@
         %td
           - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
             %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun"}
-          - if asr.result == "pending" && can?(:update, AutomationScriptResult, {:project_id => project.id}) && asr.slave_assignments.last && asr.slave_assignments.last.slave
-            - stop_class = "btn primary rerun_btn"
-            - value = "Stop"
+          - if asr.result == "pending" && asr.state != "scheduling" && can?(:update, AutomationScriptResult, {:project_id => project.id})
             - if asr.state == "stopping"
-              - stop_class = "btn primary rerun_btn disabled" 
-              - value = "Stopping"
-            %input{:type => "button", :value => value, "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => stop_class}
+              %input{:type => "button", :value => "Stopping", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn disabled", :disabled => "disabled"}
+            - else
+              %input{:type => "button", :value => "Stop", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn"}
 
 = paginate automation_script_results
 
 :javascript
   $(function(){
-    $(".rerun_btn").click(function(){
-      $(this).addClass("disabled");
-    });
     
-    $("input.rerun_btn").click(function(){
+    $("input.rerun_btn:not(:disabled)").click(function(){
+      $(this).addClass("disabled");
+      $(this).disabled = true;
       $.ajax({url: $(this).attr("remote-data")}).success(function(data) {
         location.reload();
       })

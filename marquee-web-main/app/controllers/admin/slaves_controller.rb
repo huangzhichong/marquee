@@ -6,42 +6,33 @@ class Admin::SlavesController < InheritedResources::Base
   before_filter :authenticate_user!
   load_and_authorize_resource
 
+  def create
+    set_project_name_and_test_type
+    create!{admin_slaves_url}
+  end
+
+  def update
+    set_project_name_and_test_type
+    update!{admin_slaves_url}
+  end
+
   def collection
     @search = Slave.scoped.search(params[:search])
     @slaves = @search.page(params[:page]).order('name').per(15)
   end
 
-  def create
-
-    set_project_name(params)
-    set_test_type(params)
-
-    slave = Slave.new
-    slave.name = params[:slave][:name]
-    slave.project_name = params[:slave][:project_name]
-    slave.test_type = params[:slave][:test_type]
-    slave.priority = params[:slave][:priority]
-    slave.active = params[:slave][:active]
-    slave.save
-
-    if slave.errors.any?
-      @slave = slave
-      render :new and return
-    else
-      redirect_to admin_slaves_url
-    end
-    # create!{admin_slaves_url}
+  def build_resource
+    set_project_name_and_test_type if params[:action] == "create"
+    super    
   end
 
-  def update
-
-    set_project_name(params)
-    set_test_type(params)
-
-    update!{admin_slaves_url}
-  end
 
   private
+
+  def set_project_name_and_test_type
+    set_project_name params
+    set_test_type params
+  end
 
   def set_project_name(params)
     if params[:slave_projects] and !params[:slave_projects].empty?

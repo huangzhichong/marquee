@@ -4,10 +4,11 @@ class SyncTimeCardFile
   FTP_PWD = "@ctive123"
   FOLDER = "upload"
 
-  def get_files
+  @queue = :marquee_data_sync
+
+  def self.perform
     require 'net/sftp'
     require 'csv'
-    
     
     Net::SFTP.start(FTP_SERVER, FTP_USER, :password => FTP_PWD) do |sftp|
       files_to_get = {}
@@ -16,7 +17,7 @@ class SyncTimeCardFile
       sftp.dir.foreach(FOLDER) do |entry|
         files << entry.name unless entry.directory?
       end
-      puts files
+      # puts files
       files_sorted= sortFiles files
       files_sorted.each do |name|
         files_to_get[name] = sftp.download!("#{FOLDER}/#{name}")
@@ -24,8 +25,8 @@ class SyncTimeCardFile
 
       files_success, files_failed = import files_to_get
 
-      puts "successed ::#{files_success}"
-      puts "failed::#{files_failed}"
+      # puts "successed ::#{files_success}"
+      # puts "failed::#{files_failed}"
       files_success.each do |file|
         sftp.rename!("#{FOLDER}/#{file}", "#{FOLDER}/successed/#{file}")
       end
@@ -36,8 +37,12 @@ class SyncTimeCardFile
     end
   end
 
-  protected
-  def sortFiles files
+  def self.createJob
+    Resque.enqueue(SyncTimeCardFile)
+  end
+
+  private
+  def self.sortFiles files
     fm = {}
     result = files.sort do |a, b|
       /report_(\d+)_(\d+)_(\d+)_to_(\d+)_(\d+)_(\d+)_(\d+)_(\d+).*/ =~ a
@@ -49,11 +54,11 @@ class SyncTimeCardFile
       da <=> db
     end
 
-    puts result
+    # puts result
     result
   end
-  def import(files_to_get)
-    puts "files to process:#{files_to_get.keys.inspect}"
+  def self.import(files_to_get)
+    # puts "files to process:#{files_to_get.keys.inspect}"
     files_success = []
     files_failed = []
     files_to_get.each do |path, f|
@@ -94,10 +99,10 @@ class SyncTimeCardFile
             end
           end
         end
-        puts "file #{path} import successed, will be moved to directory:successed"
+        # puts "file #{path} import successed, will be moved to directory:successed"
         files_success << path
       rescue
-        puts "file #{f} import failed, will move to directory:failded" 
+        # puts "file #{f} import failed, will move to directory:failded" 
         files_failed << path
         next 
       end

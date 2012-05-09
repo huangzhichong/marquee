@@ -27,7 +27,7 @@
         .input
           = select_tag "rad abilities", options_for_select({"Manage" => "manage", "Create" => "create", "Update" => "update"}), :include_blank => true, :id => "rad_ability", :class => "ability chzn-select"
           = select_tag "rad resources", options_for_select({"TestRound" => "TestRound", "TestPlan" => "TestPlan", "TestSuite" => "TestSuite", "AutomationScript" => "AutomationScript", "AutomationCase" => "AutomationCase", "TestCase" => "TestCase", "AutomationScriptResult" => "AutomationScriptResult", "AutomationCaseResult" => "AutomationCaseResult", "AutomationDriverConfig" => "AutomationDriverConfig", "Project" => "Project", "ProjectCategory" => "ProjectCategory", "Slave" => "Slave"}), :include_blank => true, :id => "rad_resource", :class => "role-ability-definitions chzn-select"
-          = link_to 'Add', '#', :class => 'btn role-ability-definitions', :id => 'add_rad_btn'    
+          = link_to 'Add', '#', :class => 'btn role-ability-definitions left', :id => 'add_rad_btn'    
           %table.abilities
             %tr
               %th Ability

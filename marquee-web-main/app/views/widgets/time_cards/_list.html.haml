@@ -11,9 +11,10 @@
     %td{:class => "timecard-yellow"} Hours submitted, need approval
     %td{:class => "timecard-pink"} Hours in Oracle, need submission
     %td{:class => "timecard-orange"} No Data on Marquee
-
-%br
-
+%div
+  = link_to "<<Previous Month", "/widgets/time_cards/show?date=#{@start_date.prev_month}&widget_id=#{@widget_id}"
+  ||
+  = link_to "Next Month>>", "/widgets/time_cards/show?date=#{@start_date.next_month}&widget_id=#{@widget_id}"
 %h3= title
 %table#timecard-list
   %thead

@@ -13,7 +13,7 @@
         %td{:colspan => "4"}
           %h4 No data
     - else
-      - @mail_notify_settings.each do |mail_notify_setting|
+      - @mail_notify_settings.order("id desc").each do |mail_notify_setting|
         %tr
           %td= mail_notify_setting.mail
           %td= mail_notify_setting.all_test_types

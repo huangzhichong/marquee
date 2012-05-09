@@ -1,14 +1,14 @@
 # run with: god -c /path/to/xxxx.god -D
 # 
-# This is the actual config file used to keep marquee server running.
+# This is the actual config file used to keep marquee web server running.
 
-RAILS_ROOT = "/home/activeworks/marquee_reload/marquee-web-main"
+RAILS_ROOT = "/home/activeworks/marquee/marquee-web-main"
 NGINX_ROOT = "/opt/nginx"
 
 %w{3000}.each do |port|
   God.watch do |w|
     w.name = "nginx-watcher"
-    w.log = "#{RAILS_ROOT}/log/nginx-watcher.log"
+    w.log = "#{RAILS_ROOT}/log/god-nginx.log"
     w.interval = 30.seconds # default
     w.start = "#{NGINX_ROOT}/sbin/nginx"
     w.stop = "#{NGINX_ROOT}/sbin/nginx -s stop"
