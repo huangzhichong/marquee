@@ -6,7 +6,8 @@ class ImportDataController < ApplicationController
     owner_id = User.find_or_create_default_by_email(script["owner"].downcase).id
     tp = p.test_plans.find_by_name(script["plan_name"])
     if tp !=nil
-      as = tp.automation_scripts.find_or_create_by_name(script["script_name"])
+      as = p.automation_scripts.find_or_create_by_name(script["script_name"])
+      as.test_plan_id = tp.id
       as.status = script["status"]
       as.version = "1.0"
       as.project_id = p.id
@@ -35,7 +36,8 @@ class ImportDataController < ApplicationController
     owner_id = User.find_or_create_default_by_email(script["owner"].downcase).id
     tp = p.test_plans.find_by_name(script["plan_name"])
     if tp !=nil
-      as = tp.automation_scripts.find_or_create_by_name(script["script_name"])
+      as = p.automation_scripts.find_or_create_by_name(script["script_name"])
+      as.test_plan_id = tp.id
       as.status = script["status"]
       as.version = "1.0"
       as.project_id = p.id
