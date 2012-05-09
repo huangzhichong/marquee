@@ -143,7 +143,7 @@
     $(".new_mail_notify_setting,.edit_mail_notify_setting").bind('ajax:complete',
       function(data, status, xhr) {
         if (JSON.parse(status.responseText).result == "success") {
-          location.href = "/admin/projects/1/mail_notify_settings";
+          location.href = $(".new_mail_notify_setting,.edit_mail_notify_setting").attr("action").match(/\/admin\/projects\/\d\/mail_notify_settings/g)[0];
         } else if (JSON.parse(status.responseText).result == "failed") {
           alert("A same record in your settings already exists in the database. Please modify your settings.");
         } else {
