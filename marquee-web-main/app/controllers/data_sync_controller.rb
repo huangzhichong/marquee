@@ -1,10 +1,11 @@
 require File.expand_path('../../helpers/jira_data_sync', __FILE__)
 require File.expand_path('../../helpers/sync_time_card_file', __FILE__)
+require File.expand_path('../../helpers/sync_time_card_summary_file', __FILE__)
 
 class DataSyncController < ApplicationController
 
   include FndJiraQueries
-  
+
   def fnd_jira
     if request.remote_ip != '127.0.0.1'
       render :text => "Not allowed to generate from anywhere other than the server itself."
@@ -20,6 +21,15 @@ class DataSyncController < ApplicationController
       return
     end
     SyncTimeCardFile.createJob
+    render :nothing => true
+  end
+
+  def time_card_summary
+    if request.remote_ip != '127.0.0.1'
+      render :text => "Not allowed to generate from anywhere other than the server itself."
+      return
+    end
+    SyncTimeCardSummaryFile.createJob
     render :nothing => true
   end
 
@@ -167,4 +177,3 @@ class DataSyncController < ApplicationController
     render :text => "Successed"
   end
 end
-
