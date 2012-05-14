@@ -110,7 +110,7 @@ class SyncTimeCardSummaryFile
       begin
         TimeCard.transaction do
           CSV.parse(f) do |row|
-            unless row[0] = "Customer Name"
+            unless row[0] == "Customer Name"
               period = row[8]
               name = row[10]
               amount = row[6].to_i
