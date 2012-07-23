@@ -140,7 +140,7 @@ class ImportDataController < ApplicationController
     project_mappings << {"marquee_project" => 'PaoBuKong',"testlink_project"  => 'PaoBuKong'}
     project_mappings << {"marquee_project" => 'HuoDongKong',"testlink_project"  => 'HuoDongKong'}
     project_mappings << {"marquee_project" => 'ActiveNet',"testlink_project"  => 'ActiveNet'}
-
+    project_mappings << {"marquee_project" => 'CUI',"testlink_project"  => 'Consumer UI'}
     project_mappings.each do |mapping|
       marquee_project_name = mapping["marquee_project"]
       project_name = mapping["testlink_project"]
