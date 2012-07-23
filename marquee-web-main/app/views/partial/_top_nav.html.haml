@@ -10,10 +10,10 @@
         %li.menu
           = link_to 'Project', '#', :class => 'menu'
           %ul.menu-dropdown
+            %li= link_to 'All', projects_path
+            %li.divider
             -Project.find(:all, :order => 'display_order').each do |project|
               %li= link_to project.name, coverage_project_path(project)
-            %li.divider
-            %li= link_to 'All', projects_path
         %li= link_to 'Reports', dre_overall_path
         %li= link_to 'Farm', "/slaves"
         %li= link_to 'Admin', admin_projects_path
