@@ -31,6 +31,8 @@
         %td= test_suite.test_type.name
         %td= test_suite.creator.display_name
         - show_url, edit_url, delete_url = nil
+        - if can? :read, TestSuite, {:project_id => project.id}
+          - show_url = project_test_suite_path(project,test_suite)
         - if can? :update, TestSuite, {:project_id => project.id}
           - edit_url = edit_project_test_suite_path(project, test_suite)
         - if can? :delete, TestSuite, {:project_id => project.id}
