@@ -49,27 +49,49 @@
       = f.submit 'Save', :class => 'btn primary'
       = link_to 'Back', project_test_suites_path(@project), :class => 'btn'
 
-
 :javascript
   $(function(){
+    $("#new_test_suite").validationEngine({promptPosition : "bottomRight", scroll: false});
+    $(".edit_test_suite").validationEngine({promptPosition : "bottomRight", scroll: false});
+    function contains(id) {
+      var result = false;
+      $('#automationscripts-selected option').each(function(idx, elem){
+        if ($(elem).attr('value')==id){
+          result = true;
+          return result;
+        }
+      });
+      return result;
+    }
+    $("input.multi-select-search").keydown(function(e){
+      var k=e.keyCode;
+      if(k==13){
+        e.preventDefault();
+        var project_id = $(this).attr("id");
+        var as_name = $(this).val();
+        var url = "/admin/projects/"+project_id+"/search_automation_script?as_name="+as_name;
+        $.ajax({url:url,dataType:"json"}).success(function(data){$("#automationscripts").empty(); if (data.automation_scripts.length>0){$.each(data.automation_scripts, function(i,item){if (contains(item.id)==false){var ele="<option value='"+item.id+"'>"+item.name+"</option>";$("#automationscripts").append(ele);} });} });
+      }
+    });
+    $('#automationscripts-selected option').each(function(idx, elem){
+      $('#as-ids').append($('.span7 #test_suite_automation_script_ids_').clone().val($(elem).attr('value')));
+    });
     $('#add-button').click(function(){
-      $('#as-ids').empty();
       $('#automationscripts :selected').each(function(idx, elem){
         $('#automationscripts-selected').append($(elem));
-        $('#as-ids').append($('#test_suite_automation_script_ids_').clone().val($(elem).attr('value')));
+        $('#as-ids').append($('.span7 #test_suite_automation_script_ids_').clone().val($(elem).attr('value')));
       });
     });
     $('#remove-button').click(function(){
-      $('#as-ids').empty();
       $('#automationscripts-selected :selected').each(function(idx, elem){
         $('#automationscripts').append($(elem));
+        $('#as-ids input').remove("input[value='"+elem.value+"']");
       });
     });
     $('#add-all-button').click(function(){
-      $('#as-ids').empty();
       $('#automationscripts option').each(function(idx, elem){
         $('#automationscripts-selected').append($(elem));
-        $('#as-ids').append($('#test_suite_automation_script_ids_').clone().val($(elem).attr('value')));
+        $('#as-ids').append($('.span7 #test_suite_automation_script_ids_').clone().val($(elem).attr('value')));
       });
     });
     $('#clear-all-button').click(function(){
