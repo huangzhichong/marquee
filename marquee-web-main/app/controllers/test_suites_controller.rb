@@ -1,8 +1,8 @@
 class TestSuitesController < InheritedResources::Base
   respond_to :js
   belongs_to :project
-  before_filter :authenticate_user!
   load_and_authorize_resource
+
   def show
     @search = @test_suite.automation_scripts.search(params[:search])
     @automation_scripts = @search.page(params[:page]).per(15)
