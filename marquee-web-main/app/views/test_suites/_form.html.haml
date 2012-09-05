@@ -8,25 +8,27 @@
     %legend= title
     .clearfix
       = f.label :name
+      .required *
       .input
-        = f.text_field :name
+        = f.text_field :name, :class => "validate[required, funcCall[checkOnlySpace]]"
     .clearfix
       = f.label :test_type
       .input
-        = f.select :test_type_id, options_from_collection_for_select(TestType.all, :id, :name)
+        = f.select :test_type_id, options_from_collection_for_select(TestType.all, :id, :name, @test_suite.test_type ? @test_suite.test_type.id : "Regression"), {}, {:class => "chzn-select"}
     = f.hidden_field :creator_id, :value => current_user.id
     .clearfix
       = f.label :automation_scripts
+      .required *
       .input
         %span.search
-          %input{:type => 'text', :class => "multi-select-search"}
+          %input{:id => @project.id, :type => 'text', :class => "multi-select-search"}
     .clearfix
       .input
         .row
-          .columns.span4
+          .columns.span7
             %select.as-select#automationscripts{:multiple => 'multiple'}
-              - @project.automation_scripts.reject{|as| @test_suite.automation_scripts.include?(as)}.each do |as|
-                %option{:value => as.id}= as.name
+              - (@project.automation_scripts - @test_suite.automation_scripts).each do |as|
+                %option{:value => as.id, :title => as.name}= as.name
             %a#add-all-button
               %span.multi-select-item-add.ui-icon
               Choose All
@@ -34,18 +36,19 @@
             %a.multi-select-item-add.ui-icon#add-button
             .clearfix
             %a.multi-select-item-remove.ui-icon#remove-button
-          .columns.span4
-            %select.as-select#automationscripts-selected{:multiple => 'multiple'}
+          .columns.span7
+            %select.as-select#automationscripts-selected{:multiple => 'multiple', :class => "validate[funcCall[checkNullSelectBox]]"}
               - @test_suite.automation_scripts.each do |as|
-                %option{:value => as.id}= as.name
+                %option{:value => as.id, :title => as.name}= as.name
             %a#clear-all-button
               %span.multi-select-item-remove.ui-icon
               Clear All
-            = hidden_field_tag "test_suite[automation_script_ids][]", "10, 11"
+            = hidden_field_tag "test_suite[automation_script_ids][]", ""
           #as-ids
     .actions
       = f.submit 'Save', :class => 'btn primary'
-      = link_to 'Back', project_test_suites_path, :class => 'btn'
+      = link_to 'Back', project_test_suites_path(@project), :class => 'btn'
+
 
 :javascript
   $(function(){
