@@ -194,10 +194,10 @@ class TestRound < ActiveRecord::Base
   end
 
   def update_result
-    unless automation_script_results.any?{|asr| asr.triage_result == "Script Error"}
-      self.result = 'pass'
-    else
+    if automation_script_results.any?{|asr| ["Product Error","Environment Error"].include? asr.triage_result}
       self.result = 'failed'
+    else
+      self.result = 'pass'
     end
     save
   end
