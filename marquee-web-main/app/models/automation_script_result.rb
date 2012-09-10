@@ -75,51 +75,52 @@ class AutomationScriptResult < ActiveRecord::Base
   end
 
   def end?
-    self.state == 'done' or self.state == 'killed' or self.state == 'failed' or self.state == 'timeout' or self.state == 'not implemented' or self.state == 'network issue'
-  end
+  self.state == 'done' or self.state == 'killed' or self.state == 'failed' or self.state == 'timeout' or self.state == 'not implemented' or self.state == 'network issue'
+end
 
-  def not_run_cases
-    self.automation_case_results.where(:result => "not-run")
-  end
+def not_run_cases
+  self.automation_case_results.where(:result => "not-run")
+end
 
-  def failed_cases
-    self.automation_case_results.where(:result => "failed")
-  end
+def failed_cases
+  self.automation_case_results.where(:result => "failed")
+end
 
-  def update_state!(state)
-    self.state = state
-    if state == "running"
-      self.start_time = Time.now if self.start_time.blank?
-    elsif state == "done"
-      self.end_time = Time.now
-      self.not_run_cases.each do |automation_case_result|
-        automation_case_result.result = 'not-run'
-        automation_case_result.save
-      end
-      if self.not_run > 0
-        self.result = 'warning'
-      else
-        self.result = self.failed > 0 ? 'failed' : 'pass'
-      end
-    else
-      self.end_time = Time.now
-      self.result = 'failed'
+def update_state!(state)
+  self.state = state
+  if state == "running"
+    self.start_time = Time.now if self.start_time.blank?
+  elsif state == "done"
+    self.end_time = Time.now
+    self.not_run_cases.each do |automation_case_result|
+      automation_case_result.result = 'not-run'
+      automation_case_result.save
     end
-    save
-  end
-
-  def update_triage!(triage_result)
-    self.triage_result = triage_result
-    self.result = "failed" if triage_result == "Product Error"
-    self.result = "pass" if triage_result == "Script Error"
-    save
-  end
-
-  def duration
-    if start_time && end_time
-      end_time - start_time
+    if self.not_run > 0
+      self.result = 'warning'
     else
-      nil
+      self.result = self.failed > 0 ? 'failed' : 'pass'
     end
+  else
+    self.end_time = Time.now
+    self.result = 'failed'
   end
+  save
+end
+
+def update_triage!(triage_result)
+  self.triage_result = triage_result
+  self.result = "failed" if triage_result == "Product Error"
+  self.result = "failed" if triage_result == "Env Error"
+  self.result = "pass" if triage_result == "Script Error"
+  save
+end
+
+def duration
+  if start_time && end_time
+    end_time - start_time
+  else
+    nil
+  end
+end
 end
