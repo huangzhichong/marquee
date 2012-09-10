@@ -111,7 +111,7 @@ end
 def update_triage!(triage_result)
   self.triage_result = triage_result
   self.result = "failed" if triage_result == "Product Error"
-  self.result = "failed" if triage_result == "Env Error"
+  self.result = "failed" if triage_result == "Environment Error"
   self.result = "pass" if triage_result == "Script Error"
   save
 end

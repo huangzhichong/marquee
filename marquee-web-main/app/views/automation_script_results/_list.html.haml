@@ -45,7 +45,7 @@
         %td= in_time_zone(asr.end_time)
         %td
           - if asr.end? && asr.result!="pass" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
-            = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error","Env Error" => "Env Error"}, asr.triage_result), :id => asr.id, :class => "triage-result"
+            = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error","Environment Error" => "Environment Error"}, asr.triage_result), :id => asr.id, :class => "triage-result"
           - else
             = asr.triage_result
         %td
