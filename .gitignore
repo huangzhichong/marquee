@@ -6,3 +6,4 @@ marquee-web-main/tmp/
 marquee-web-main/db/schema.rb
 marquee-web-main/.sass-cache/
 marquee-web-main/farm_reload/server/*.pid
+.project
