@@ -1,3 +1,24 @@
+.page-header.detail
+  - @slave = Slave.find_by_ip_address(params[:ip])
+  %h2= link_to "Logs for #{@slave.name}", slave_path(@slave) 
+  = link_to_function "Go Back", "history.back()",:class => "btn primary"
+
+.row     
+  .row.brief-info
+    .span8.columns.brief-left
+      .span3.columns
+        %ul.title
+          %li Start Time
+      .span5.columns
+        %ul.value
+          %li= params[:start_time]
+    .span8.columns.brief-right
+      .span3.columns
+        %ul.title
+          %li End Time
+      .span5.columns
+        %ul.value
+          %li= params[:end_time]
 .details
-  - @slave_logs.each do |log|
+  - SlaveLog.where(:ip => params[:ip],:timestamp.gt => params[:start_time],:timestamp.lt => params[:end_time]).asc(:_id).each do |log|
     %li= "#{log.timestamp} - #{log.level.ljust(5,"#")} - #{log.message}"
