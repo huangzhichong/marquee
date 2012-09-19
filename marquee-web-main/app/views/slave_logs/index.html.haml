@@ -1,8 +1,12 @@
-- if @searched_logs
+- unless @searched_logs.nil?
   .page-header.detail
     - @slave = Slave.find_by_ip_address(params[:ip])
-    %h2= link_to "Logs for #{@slave.name}", slave_path(@slave) 
-    = link_to_function "Go Back", "history.back()",:class => "btn primary"
+    - if @slave
+      %h2= link_to "Logs for #{@slave.name}", slave_path(@slave) 
+      = link_to_function "Go Back", "history.back()",:class => "btn primary"
+    - else
+      %h2= "Logs for #{params[:ip]}"
+      = link_to_function "Go Back", "history.back()",:class => "btn primary"
 
   .row     
     .row.brief-info
