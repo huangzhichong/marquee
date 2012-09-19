@@ -49,6 +49,7 @@ MarqueeWebMain::Application.routes.draw do
   resources :slaves do
     resources :slave_assignments
   end
+  resources :slave_logs
 
   resources :project_categories
 

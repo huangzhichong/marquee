@@ -1,0 +1,3 @@
+.details
+  - @slave_logs.each do |log|
+    %li= "#{log.timestamp} - #{log.level.ljust(5,"#")} - #{log.message}"
