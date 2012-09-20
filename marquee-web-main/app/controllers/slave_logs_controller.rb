@@ -1,10 +1,10 @@
 class SlaveLogsController < ApplicationController
-  layout 'application'
 
-  def index    
+  def index     
     unless params[:ip] == ""
-      start_time = params[:start_time] ? Time.zone.parse(params[:start_time].to_s) - 30: Time.now-900
-      end_time = params[:end_time] ? Time.zone.parse(params[:end_time].to_s) + 30 : Time.now 
+      require 'time'
+      start_time = params[:start_time] ? (Time.parse(params[:start_time].to_s) - 30).utc : (Time.now-900).utc
+      end_time = params[:end_time] ? (Time.parse(params[:end_time].to_s) + 30).utc : Time.now.utc 
       @searched_logs = SlaveLog.where(:ip => params[:ip],:timestamp.gt => start_time,:timestamp.lt => end_time).asc(:_id)
     end
     respond_to do |format|

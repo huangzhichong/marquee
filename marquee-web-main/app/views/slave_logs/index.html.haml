@@ -26,6 +26,6 @@
             %li= params[:end_time]
   .detail
     - @searched_logs.each do |log|
-      %li= "#{log.timestamp} - #{log.level.ljust(5,"#")} - #{log.message}"
+      %li= "#{log.timestamp.utc} - #{log.level.ljust(5,"#")} - #{log.message}"
 - else
   %h4 Need Specify the slave's ip address.
