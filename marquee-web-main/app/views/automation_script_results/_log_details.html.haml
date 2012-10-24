@@ -1,0 +1,26 @@
+.row.brief-info
+  .span8.columns.brief-left
+    .span3.columns
+      %ul.title
+        %li Start Time
+    .span5.columns
+      %ul.value
+        %li= @automation_script_result.start_time
+  .span8.columns.brief-right
+    .span3.columns
+      %ul.title
+        %li End Time
+    .span5.columns
+      %ul.value
+        %li= @automation_script_result.end_time
+.row.action
+.detail
+.log-details
+  - if @searched_logs.size > 0
+    - @searched_logs.each do |log|
+      - if log.level == "ERROR"
+        %li.text-error= "#{log.timestamp.utc} - #{log.level.ljust(5,"#")} - #{log.message}"
+      - else
+        %li= "#{log.timestamp.utc} - #{log.level.ljust(5,"#")} - #{log.message}"
+  - else
+    %h4 No data

@@ -49,7 +49,6 @@ MarqueeWebMain::Application.routes.draw do
   resources :slaves do
     resources :slave_assignments
   end
-  resources :slave_logs 
 
   resources :project_categories
 
@@ -64,7 +63,9 @@ MarqueeWebMain::Application.routes.draw do
   end
 
   resources :test_rounds do
-    resources :automation_script_results
+    resources :automation_script_results do
+      get "show_logs"
+    end
   end
 
   resources :automation_script_results do
