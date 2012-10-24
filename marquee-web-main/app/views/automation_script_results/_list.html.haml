@@ -50,7 +50,7 @@
         %td
           -sa = asr.slave_assignments.last
           -if sa && sa.slave && asr.start_time
-            = link_to "View", slave_logs_path(:ip => sa.slave.ip_address, :start_time => asr.start_time, :end_time => asr.end_time), :class => "btn primary"
+            = link_to "View", test_round_automation_script_result_show_logs_path(asr.test_round, asr), :class => "btn primary"
         %td
           - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
             %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun"}
