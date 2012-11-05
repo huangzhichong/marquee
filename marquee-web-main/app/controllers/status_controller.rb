@@ -2,7 +2,7 @@ class StatusController < ApplicationController
   def new_build
     logger.info "New Build incoming. #{params}"
     ci_value = params[:project].split(/_|-/).map{|n| n.capitalize}.join('')
-    env = params[:environment].gsub('Regression', 'QAR').gsub('INT-Latest', 'INT').gsub('P-INT', 'PINT')
+    env = params[:environment].gsub('Regression', 'QAR').gsub('INT-Latest', 'INT').gsub('P-INT', 'PINT').gusb('PQA','QA').gsub('QA-Latest','QA')
     test_environment = TestEnvironment.find_by_value(env)
     if test_environment
       test_object = "#{ci_value} #{params[:version]}"
@@ -15,6 +15,7 @@ class StatusController < ApplicationController
         test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object, ci_mapping.browser, ci_mapping.operation_system)
         TestRoundDistributor.distribute(test_round.id)
       end
+      render :nothing => true
     end
   end
 
@@ -46,7 +47,7 @@ class StatusController < ApplicationController
 
   protected
   def update_automation_script(test_round, data)
-#    if test_round.state != "completed"
+    #    if test_round.state != "completed"
     state = data['state'].downcase
     automation_script_result = test_round.find_automation_script_result_by_script_name(data['script_name'])
     if ( (state == 'done' || state == 'failed') && data['service'])
@@ -59,7 +60,7 @@ class StatusController < ApplicationController
     if test_round.end?
       TestRoundMailer.finish_mail(test_round.id).deliver
     end
-#    end
+    #    end
   end
 
   def update_automation_case(test_round, data)
