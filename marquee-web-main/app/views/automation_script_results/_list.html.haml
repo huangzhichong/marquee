@@ -49,7 +49,7 @@
             = asr.triage_result
         %td
           -sa = asr.slave_assignments.last
-          -if sa && sa.slave && asr.start_time
+          -if sa && sa.slave && asr.end_time
             = link_to "View", test_round_automation_script_result_show_logs_path(asr.test_round, asr), :class => "btn primary"
         %td
           - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
