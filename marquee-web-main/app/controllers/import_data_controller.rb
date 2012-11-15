@@ -7,6 +7,7 @@ class ImportDataController < ApplicationController
     tp = p.test_plans.find_by_name(script["plan_name"])
     if tp !=nil
       as = p.automation_scripts.find_or_create_by_name(script["script_name"])
+      as.automation_cases.delete_all
       as.test_plan_id = tp.id
       as.status = script["status"]
       as.version = "1.0"
@@ -37,6 +38,7 @@ class ImportDataController < ApplicationController
     tp = p.test_plans.find_by_name(script["plan_name"])
     if tp !=nil
       as = p.automation_scripts.find_or_create_by_name(script["script_name"])
+      as.automation_cases.delete_all
       as.test_plan_id = tp.id
       as.status = script["status"]
       as.version = "1.0"
@@ -71,6 +73,7 @@ class ImportDataController < ApplicationController
       tp.version = "1.0"
       tp.save
       as = tp.automation_scripts.find_or_create_by_name(script["name"])
+      as.automation_cases.delete_all
       as.status = script["status"]
       as.version = "1.0"
       as.project_id = p.id
