@@ -60,7 +60,10 @@ class AutomationScriptResult < ActiveRecord::Base
 
   def clear
     self.automation_case_results.each do |acr|
-      acr.clear
+      acr.delete
+    end
+    self.automation_script.automation_cases.each do |ac|
+      AutomationCaseResult.update_from_automation_script_result_and_automation_case(self,ac)
     end
     self.set_default_values
     self.not_run = automation_script.automation_cases.count
