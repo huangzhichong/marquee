@@ -50,16 +50,6 @@ class AutomationCaseResult < ActiveRecord::Base
     acr
   end
   
-  def self.update_from_automation_script_result_and_automation_case(automation_script_result, automation_case)
-    acr = automation_script_result.automation_case_results.find_or_create_by_automation_case_id(automation_case.case_id)
-    acr.set_default_values
-    acr.automation_case_id = automation_case.id
-    acr.priority = automation_case.priority
-    acr.clear
-    acr.save
-    acr
-  end
-
   def clear
     self.set_default_values
     self.error_message = nil
