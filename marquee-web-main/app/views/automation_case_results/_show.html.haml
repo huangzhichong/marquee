@@ -27,7 +27,7 @@
         %th Steps
         %th Expected Result
       - if @test_case and @test_case.tc_steps and !(@test_case.tc_steps.empty?)
-        - @test_case.tc_steps.each do |ts|
+        - @test_case.tc_steps.group(:test_link_id).each do |ts|
           %tr
             %td
               =ts.step_number
