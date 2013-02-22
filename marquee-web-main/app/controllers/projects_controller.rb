@@ -18,9 +18,11 @@ class ProjectsController < InheritedResources::Base
     @cui_coverage = []
     @aui_coverage = []
     @coverage = []
+    @regression_coverage = []
     %w(Overall P1 P2 P3).each do |priority|
       @cui_coverage << Project.caculate_coverage_by_project_and_priority_and_type(project_name, priority,"CUI")
       @aui_coverage << Project.caculate_coverage_by_project_and_priority_and_type(project_name, priority,"AUI")
+      @regression_coverage << Project.caculate_coverage_by_project_and_priority_and_type(project_name, priority,"regression")
       @coverage << Project.caculate_coverage_by_project_and_priority(project_name,priority)
     end
     
