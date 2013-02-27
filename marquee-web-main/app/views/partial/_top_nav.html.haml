@@ -15,7 +15,7 @@
             -#Project.find(:all, :order => 'display_order').each do |project|
             -Project.order('name ASC').each do |project|
               %li= link_to project.name, coverage_project_path(project)
-        %li= link_to 'Reports', dre_overall_path
+        / %li= link_to 'Reports', dre_overall_path
         %li= link_to 'Farm', "/slaves"
         %li= link_to 'Admin', admin_projects_path
       = render :partial => 'partial/login_menu'

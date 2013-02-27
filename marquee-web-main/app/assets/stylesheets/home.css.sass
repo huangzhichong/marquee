@@ -10,9 +10,10 @@
 .outer-home-box
   -webkit-border-radius: 6px
   -moz-border-radius: 6px
-  float: left
+  // float: left
   height: 360px
   min-width: 460px
+  width: 100%
   .inner-home-box
     a
       color: #072D6A
@@ -21,15 +22,33 @@
     -moz-border-radius: 6px
     margin: 10px 10px
     height: 355px
+    .filter-dropdown
+      border-bottom: 1px solid #ccc
+      margin-left: 20px
+      margin-bottom: 15px
+    #activities-filter
+      width: 210px
+      float: left
+    #activities-filter_chzn
+      float: right
+      margin-bottom: 5px
+      margin-left: 5px
+    #activities-filter-tip
+      float: right
+      display: block
+      line-height: 26px
+      font-size: 14px
+      color: #4c4c4c
     .activity-stream
-      width: 400px
+      // width: 400px
+      width: 100%
       margin-left: 20px
       text-align: left
       .time
-        margin-top: 12px
-        border-bottom: 1px solid #ccc
+        margin-top: 5px
+        border-bottom: 1px dotted #ccc
       .activity
-        margin-top: 10px
+        margin-top: 3px
         text-indent: 15px
     .info
       font-size: 2em
