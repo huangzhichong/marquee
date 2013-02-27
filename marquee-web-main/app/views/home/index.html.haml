@@ -1,52 +1,59 @@
 .home-box
   .outer-home-box
     .inner-home-box= render 'coverage'
-  .outer-home-box
-    .inner-home-box
-      .chart-title
-        %h5 Marquee Statistics
-      .info
-        %span.desc.desc-pre= "Hosts"
-        - @project_count.to_s.split(//).each do |c|
-          %span.digital{:class => "digital-#{c}"}
-        %span.desc.desc-suf=" Projects"
-        .clearfix
-      .info
-        %span.desc.desc-pre= "Contains"
-        - @automation_script_count.to_s.split(//).each do |c|
-          %span.digital{:class => "digital-#{c}"}
-        %span.desc.desc-suf="Scripts"
-        .clearfix
-      .info
-        %span.desc.desc-pre= "Scheduled"
-        - @test_round_count.to_s.split(//).each do |c|
-          %span.digital{:class => "digital-#{c}"}
-        %span.desc.desc-suf="Tests"
-        .clearfix
+  / .outer-home-box
+  /   .inner-home-box
+  /     .chart-title
+  /       %h5 Marquee Statistics
+  /     .info
+  /       %span.desc.desc-pre= "Hosts"
+  /       - @project_count.to_s.split(//).each do |c|
+  /         %span.digital{:class => "digital-#{c}"}
+  /       %span.desc.desc-suf=" Projects"
+  /       .clearfix
+  /     .info
+  /       %span.desc.desc-pre= "Contains"
+  /       - @automation_script_count.to_s.split(//).each do |c|
+  /         %span.digital{:class => "digital-#{c}"}
+  /       %span.desc.desc-suf="Scripts"
+  /       .clearfix
+  /     .info
+  /       %span.desc.desc-pre= "Scheduled"
+  /       - @test_round_count.to_s.split(//).each do |c|
+  /         %span.digital{:class => "digital-#{c}"}
+  /       %span.desc.desc-suf="Tests"
+  /       .clearfix
   .clearfix
 .home-box
   .outer-home-box
     .inner-home-box
       .chart-title
         %h5 Activity Stream
+      .filter-dropdown
+        = select_tag 'activities-filter', options_from_collection_for_select(Project.all, :name, :name), :include_blank => true
+        %span#activities-filter-tip Filter by: 
+
+        / = f.select :project_category_id, options_from_collection_for_select(ProjectCategory.order('name asc'), :id, :name, @project.project_category_id), {}, {:class => "chzn-select", :id => "activities-filter"}
+        .clearfix
       .activity-stream
         - @activities.each do |activity|
-          .time= in_time_zone(activity.created_at)
-          .activity
-            = link_to activity.user.email, admin_user_path(activity.user.id), :class => "user"
-            %span.action= " scheduled"
-            %span.object
-              = " a new Test Round"
-              - tr = TestRound.find_by_id(activity.auditable_id)
-              - if tr
-                = link_to activity.auditable_id, project_test_round_path(tr.project.id, tr.id)
-                = " for"
-                = link_to tr.project.name, project_test_rounds_path(tr.project.id)
-  .outer-home-box#dre-table
-    .inner-home-box
-      .chart-title
-        %h5 ActiveWorks DRE Overall
-      = render 'dre/overall_small'
+          .activity-box
+            .time= in_time_zone(activity.created_at)
+            .activity
+              = link_to activity.user.email, admin_user_path(activity.user.id), :class => "user"
+              %span.action= " scheduled"
+              %span.object
+                = " a new Test Round"
+                - tr = TestRound.find_by_id(activity.auditable_id)
+                - if tr
+                  = link_to activity.auditable_id, project_test_round_path(tr.project.id, tr.id)
+                  = " for"
+                  = link_to tr.project.name, project_test_rounds_path(tr.project.id)
+  / .outer-home-box#dre-table
+  /   .inner-home-box
+  /     .chart-title
+  /       %h5 ActiveWorks DRE Overall
+  /     = render 'dre/overall_small'
   .clearfix
 
 :css
@@ -56,7 +63,18 @@
 
 :javascript
   $(function(){
-    $('#dre-table').click(function(){
-      window.location = "/dre/overall";
+    $('#activities-filter').chosen();
+    $('#activities-filter').change(function(e){
+      var value = $(e.target).val();
+      $('.activity-stream .activity-box:contains("'+value+'")').show();
+      $('.activity-stream .activity-box:not(:contains("'+value+'"))').hide();
     });
   });
+
+
+/ :javascript
+/   $(function(){
+/     $('#dre-table').click(function(){
+/       window.location = "/dre/overall";
+/     });
+/   });
