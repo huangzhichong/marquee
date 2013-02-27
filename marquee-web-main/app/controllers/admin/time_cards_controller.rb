@@ -140,16 +140,20 @@ class Admin::TimeCardsController < ApplicationController
     @week2 = ""
     @week3 = ""
     @week4 = ""
-    if TimeCardAuditLog.find_by_week_and_year(@start_date.cweek, @start_date.year).nil?
+    #if TimeCardAuditLog.find_by_week_and_year(@start_date.cweek, @start_date.year).nil?
+    if TimeCard.where(:from => @start_date).count == 0
       @week1 = "no-records"
     end
-    if TimeCardAuditLog.find_by_week_and_year((@start_date+7).cweek, (@start_date+7).year).nil?
+    #if TimeCardAuditLog.find_by_week_and_year((@start_date+7).cweek, (@start_date+7).year).nil?
+    if TimeCard.where(:from => (@start_date + 7)).count == 0
       @week2 = "no-records"
     end
-    if TimeCardAuditLog.find_by_week_and_year((@start_date+14).cweek, (@start_date+14).year).nil?
+    #if TimeCardAuditLog.find_by_week_and_year((@start_date+14).cweek, (@start_date+14).year).nil?
+    if TimeCard.where(:from => (@start_date + 14)).count == 0
       @week3 = "no-records"
     end
-    if TimeCardAuditLog.find_by_week_and_year((@start_date+21).cweek, (@start_date+21).year).nil?
+    #if TimeCardAuditLog.find_by_week_and_year((@start_date+21).cweek, (@start_date+21).year).nil?
+    if TimeCard.where(:from => (@start_date + 21)).count == 0
       @week4 = "no-records"
     end
     
