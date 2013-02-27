@@ -52,12 +52,12 @@ class HomeController < ApplicationController
 
   def get_activities_by_project
     name = params[:name]
-    project = Project.find_by_name(name)
-    tr_ids = project.test_rounds.collect{|tr| tr.id}
 
     if name.blank?
       @activities = Audit.where(:auditable_type => "TestRound", :action => "create").order('created_at desc').limit(5)
     else
+      project = Project.find_by_name(name)
+      tr_ids = project.test_rounds.collect{|tr| tr.id}
       @activities = Audit.where(:auditable_type => "TestRound", :action => "create",  :auditable_id => tr_ids).order('created_at desc').limit(5)
     end
 
