@@ -18,7 +18,7 @@ authorizations: &AUTHORIZATIONS
 ## Enviornments
 
 development:
-  host: ldap.active.local
+  host: ldap1.active.local
   port: 389
   attribute: mail
   base: DC=active,DC=local
@@ -28,7 +28,7 @@ development:
   # <<: *AUTHORIZATIONS
 
 test:
-  host: ldap.active.local
+  host: ldap1.active.local
   port: 389
   attribute: mail
   base: DC=active,DC=local
@@ -38,7 +38,7 @@ test:
   # <<: *AUTHORIZATIONS
 
 production:
-  host: ldap.active.local
+  host: ldap1.active.local
   port: 389
   attribute: mail
   base: DC=active,DC=local
