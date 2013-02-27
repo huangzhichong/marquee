@@ -1,5 +1,5 @@
 class TestRoundMailer < AsyncMailer
-  default :from => "MARQUEE <marquee@active.com>", :content_type => "text/html"
+  default :from => "MARQUEE <marquee@activenetwork.com>", :content_type => "text/html"
 
   def finish_mail(test_round_id)
     @test_round = TestRound.find(test_round_id)
