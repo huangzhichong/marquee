@@ -24,7 +24,7 @@ class HomeController < ApplicationController
     @test_round_count = TestRound.count
     # @activities = Activity.scoped.order('created_at desc').page(0).per(5)
     
-    @activities = Audit.where(:auditable_type=>"TestRound", :action=>"create").order('created_at desc').limit(5)
+    @activities = Audit.where(:auditable_type => "TestRound", :action => "create").order('created_at desc').limit(5)
     @activities.each do |activity|
       if activity.user.nil?
         activity.user = User.automator
@@ -48,5 +48,25 @@ class HomeController < ApplicationController
       # @coverage << Project.caculate_coverage_by_project_and_priority(project_name,priority)
     end
     @camps_overall_coverage = camps_regression_coverage[0]
+  end
+
+  def get_activities_by_project
+    name = params[:name]
+    project = Project.find_by_name(name)
+    tr_ids = project.test_rounds.collect{|tr| tr.id}
+
+    if name.blank?
+      @activities = Audit.where(:auditable_type => "TestRound", :action => "create").order('created_at desc').limit(5)
+    else
+      @activities = Audit.where(:auditable_type => "TestRound", :action => "create",  :auditable_id => tr_ids).order('created_at desc').limit(5)
+    end
+
+    @activities.each do |activity|
+      if activity.user.nil?
+        activity.user = User.automator
+        activity.save
+      end
+    end
+    render :partial => "home/activities"
   end
 end
