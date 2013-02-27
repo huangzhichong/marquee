@@ -42,6 +42,8 @@ MarqueeWebMain::Application.routes.draw do
   post 'import_data/import_as_and_tc_status'
   get 'import_data/refresh_testlink_data'
 
+  get 'get_activities_by_project', :controller => 'home', :action => 'get_activities_by_project'
+
   devise_for :users, :controllers => { :passwords => "passwords" }, :skip => :registrations
   resources :passwords
   # get "users/:id/password/edit", :controller => "passwords", :action => "edit"
