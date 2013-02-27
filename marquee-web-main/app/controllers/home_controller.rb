@@ -32,12 +32,20 @@ class HomeController < ApplicationController
       end
     end
     
-    @camps_overall_coverage = Rails.cache.fetch("camps_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Camps","Overall") }
+    # @camps_overall_coverage = Rails.cache.fetch("camps_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Camps","Overall") }
     # @camps_overall_goal = Rails.cache.fetch("camps_overall_goal"){ 95 }
-    @endurance_overall_coverage = Rails.cache.fetch("endurance_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Endurance","Overall") }
+    # @endurance_overall_coverage = Rails.cache.fetch("endurance_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Endurance","Overall") }
     # @endurance_overall_goal = Rails.cache.fetch("endurance_overall_goal"){ 90 }
-    @sports_overall_coverage = Rails.cache.fetch("sports_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Sports","Overall") }
+    # @sports_overall_coverage = Rails.cache.fetch("sports_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Sports","Overall") }
     # @sports_overall_goal = Rails.cache.fetch("sports_overall_goal"){ 90 }
-    @membership_overall_coverage = Rails.cache.fetch("membership_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Membership","Overall") }
+    # @membership_overall_coverage = Rails.cache.fetch("membership_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Membership","Overall") }
+
+    @regression_coverage = []
+    %w(Overall).each do |priority|
+      # @cui_coverage << Project.caculate_coverage_by_project_and_priority_and_type(project_name, priority,"CUI")
+      # @aui_coverage << Project.caculate_coverage_by_project_and_priority_and_type(project_name, priority,"AUI")
+      @regression_coverage << Project.caculate_coverage_by_project_and_priority_and_type("Camps", priority,"regression")
+      # @coverage << Project.caculate_coverage_by_project_and_priority(project_name,priority)
+    end
   end
 end
