@@ -1,7 +1,5 @@
 class RemoveUnusedColumnsFromBrowsers < ActiveRecord::Migration
   def up
-    remove_foreign_key :browsers, :name => "fk_b_m"
-    remove_index :browsers, :name => "idx_b_m"
     remove_column :browsers, :machine_id
     remove_column :browsers, :allowed
   end
