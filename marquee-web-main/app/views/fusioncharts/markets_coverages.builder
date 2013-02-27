@@ -14,9 +14,11 @@ xml.chart(:caption => "Markets Automation Coverage", :adjustDiv => "0", :formatN
   # endurance_link = Project.find_by_name('Endurance').nil? ? "#" : "/projects/#{Project.find_by_name('Endurance').id}/coverage"
   # membership_link = Project.find_by_name('MemberShip').nil? ? "#" : "/projects/#{Project.find_by_name('MemberShip').id}/coverage"
   # sports_link = Project.find_by_name('Sports').nil? ? "#" : "/projects/#{Project.find_by_name('Sports').id}/coverage"
-  
+
+  camps_overall_coverage = @regression_coverage[0]
+
   # xml.dataset(:seriesname => 'Coverage'){
-    xml.set(:Label => "Camps", :Value => (@camps_overall_coverage==100 ? 99.999 : @camps_overall_coverage), :link => camps_link, :color => "8BBA00", :HoverText => "Camps Coverage = #{@camps_overall_coverage.to_s}%")
+    xml.set(:Label => "Camps", :Value => (camps_overall_coverage==100 ? 99.999 : camps_overall_coverage), :link => camps_link, :color => "8BBA00", :HoverText => "Camps Coverage = #{@camps_overall_coverage.to_s}%")
     # xml.set(:Label => "Endurance", :Value => (@endurance_overall_coverage==100 ? 99.999 : @endurance_overall_coverage), :link => endurance_link, :color => "00a8f4", :HoverText => "Endurance Coverage = #{@endurance_overall_coverage.to_s}%")
     # xml.set(:Label => "MemberShip", :Value => (@membership_overall_coverage==100 ? 99.999 : @membership_overall_coverage), :link => membership_link, :color => "f85a2b", :HoverText => "Membership Coverage = #{@membership_overall_coverage.to_s}%")
     # xml.set(:Label => "Sports", :Value => (@sports_overall_coverage==100 ? 99.999 : @sports_overall_coverage), :link => sports_link, :color => "F6BD0F", :HoverText => "Sports Coverage = #{@sports_overall_coverage.to_s}%")
