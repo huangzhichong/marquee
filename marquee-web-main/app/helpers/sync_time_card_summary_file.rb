@@ -7,6 +7,7 @@ class SyncTimeCardSummaryFile
   @queue = :marquee_data_sync
 
   def self.perform
+    puts "Start to import time card summary file."
     require 'net/sftp'
     require 'csv'
 
@@ -18,15 +19,15 @@ class SyncTimeCardSummaryFile
         files << entry.name unless entry.directory?
       end
 
-      # puts files
+      puts files
       files.each do |name|
         files_to_get[name] = sftp.download!("#{FOLDER}/#{name}")
       end
 
       files_success, files_failed = import files_to_get
 
-      # puts "successed ::#{files_success}"
-      # puts "failed::#{files_failed}"
+      puts "successed ::#{files_success}"
+      puts "failed::#{files_failed}"
       files_success.each do |file|
         sftp.rename!("#{FOLDER}/#{file}", "#{FOLDER}/successed/#{file}")
       end
@@ -127,7 +128,8 @@ class SyncTimeCardSummaryFile
           end
         end
         files_success << path
-      rescue
+      rescue Exception => e
+        puts "An exception thrown: #{e.message}"
         puts "file #{path} import failed, will move to directory:failded"
         files_failed << path
         next
