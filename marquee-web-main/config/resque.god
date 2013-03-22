@@ -1,5 +1,5 @@
 # run with: god -c /path/to/xxxx.god -D
-# 
+#
 # This is the actual config file used to keep marquee resque job running.
 
 RAILS_ENV   = ENV['RAILS_ENV']  || "production"
@@ -43,42 +43,6 @@ RAILS_ROOT  = ENV['RAILS_ROOT'] || "/home/activeworks/marquee/marquee-web-main"
       c.name = 'Smart Huang'
       c.group = 'Marquee Team'
       c.to_email = 'smart.huang@activenetwork.com'
-    end
-
-    God.contact(:email) do |c|
-      c.name = 'Leo Yin'
-      c.group = 'Marquee Team'
-      c.to_email = 'Leo.Yin@activenetwork.com'
-    end
-
-    God.contact(:email) do |c|
-      c.name = 'Shawn Xu'
-      c.group = 'Marquee Team'
-      c.to_email = 'Shawn.Xu@activenetwork.com'
-    end
-
-    God.contact(:email) do |c|
-      c.name = 'Brent Huang'
-      c.group = 'Marquee Team'
-      c.to_email = 'Brent.Huang@activenetwork.com'
-    end
-
-    God.contact(:email) do |c|
-      c.name = 'Lynn Wang'
-      c.group = 'Marquee Team'
-      c.to_email = 'Lynnw.Wang@activenetwork.com'
-    end
-
-    God.contact(:email) do |c|
-      c.name = 'Emma Wang'
-      c.group = 'Marquee Team'
-      c.to_email = 'Emma.Wang@activenetwork.com'
-    end
-
-    God.contact(:email) do |c|
-      c.name = 'Sydney Zhang'
-      c.group = 'Marquee Team'
-      c.to_email = 'Sydney.Zhang@activenetwork.com'
     end
 
     # restart if memory gets too high
