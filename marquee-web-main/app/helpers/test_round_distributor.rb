@@ -3,6 +3,12 @@ class TestRoundDistributor
 
   def self.perform(test_round_id)
     test_round = TestRound.find(test_round_id)
+    test_round.test_suite.automation_scripts.each do |as|
+      AutomationScriptResult.create_from_test_round_and_automation_script(test_round, as)
+    end
+    test_round.not_run = test_round.automation_script_results.sum(:not_run)
+    test_round.save!
+    test_round = TestRound.find(test_round_id)
     test_round.automation_script_results.each do |asr|
       sa = SlaveAssignment.create!
       sa.automation_script_result = asr
