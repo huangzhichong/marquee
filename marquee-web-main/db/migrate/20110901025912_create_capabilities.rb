@@ -10,6 +10,6 @@ class CreateCapabilities < ActiveRecord::Migration
       t.timestamps
     end
     add_index :capabilities, :slave_id, :name => "idx_c_s"
-    add_foreign_key :capabilities, :slaves, :column => 'slave_id', :dependent => :delete, :name => "fk_c_s",
+    add_foreign_key :capabilities, :slaves, :column => 'slave_id', :dependent => :delete, :name => "fk_c_s"
   end
 end

@@ -1,5 +1,5 @@
 # run with: god -c /path/to/xxxx.god -D
-# 
+#
 # This is the actual config file used to keep marquee farm server running.
 RAILS_ENV = "production"
 FARM_SERVER_ROOT = "/home/activeworks/farm_server"
@@ -14,7 +14,7 @@ God.watch do |w|
   w.start_grace = 30.seconds
   w.restart_grace = 30.seconds
   w.pid_file = "#{FARM_SERVER_ROOT}/server.rb.pid"
-  
+
   w.behavior(:clean_pid_file)
 
   God::Contacts::Email.defaults do |d|
@@ -43,42 +43,6 @@ God.watch do |w|
     c.to_email = 'smart.huang@activenetwork.com'
   end
 
-  God.contact(:email) do |c|
-    c.name = 'Leo Yin'
-    c.group = 'Marquee Team'
-    c.to_email = 'Leo.Yin@activenetwork.com'
-  end
-
-  God.contact(:email) do |c|
-    c.name = 'Shawn Xu'
-    c.group = 'Marquee Team'
-    c.to_email = 'Shawn.Xu@activenetwork.com'
-  end
-
-  God.contact(:email) do |c|
-    c.name = 'Brent Huang'
-    c.group = 'Marquee Team'
-    c.to_email = 'Brent.Huang@activenetwork.com'
-  end
-
-  God.contact(:email) do |c|
-    c.name = 'Lynn Wang'
-    c.group = 'Marquee Team'
-    c.to_email = 'Lynnw.Wang@activenetwork.com'
-  end
-
-  God.contact(:email) do |c|
-    c.name = 'Emma Wang'
-    c.group = 'Marquee Team'
-    c.to_email = 'Emma.Wang@activenetwork.com'
-  end
-
-  God.contact(:email) do |c|
-    c.name = 'Sydney Zhang'
-    c.group = 'Marquee Team'
-    c.to_email = 'Sydney.Zhang@activenetwork.com'
-  end
-
   w.start_if do |start|
     start.condition(:process_running) do |c|
       c.interval = 30.seconds
@@ -86,7 +50,7 @@ God.watch do |w|
       c.notify = {:contacts => ['Marquee Team'], :priority => 'Urgent', :category => 'production'}
     end
   end
-  
+
   # lifecycle
   w.lifecycle do |on|
     on.condition(:flapping) do |c|

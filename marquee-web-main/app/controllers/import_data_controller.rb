@@ -133,21 +133,16 @@ class ImportDataController < ApplicationController
   def refresh_testlink_data
     project_mappings = []
     project_mappings << {"marquee_project" => 'Camps',"testlink_project"  => 'Camps'}
-    project_mappings << {"marquee_project" => 'Endurance',"testlink_project"  => 'Endurance'}
-    project_mappings << {"marquee_project" => 'Giving',"testlink_project"  => 'Giving'}
-    project_mappings << {"marquee_project" => 'Backoffice',"testlink_project"  => 'Backoffice'}
-    project_mappings << {"marquee_project" => 'Sports',"testlink_project"  => 'Sports'}
     project_mappings << {"marquee_project" => 'Membership',"testlink_project"  => 'Membership'}
-    project_mappings << {"marquee_project" => 'UsableNet',"testlink_project"  => 'UsableNet'}
-    project_mappings << {"marquee_project" => 'iPhoneApp',"testlink_project"  => 'ActiveiPhoneApp'}
-    project_mappings << {"marquee_project" => 'PaoBuKong',"testlink_project"  => 'PaoBuKong'}
-    project_mappings << {"marquee_project" => 'HuoDongKong',"testlink_project"  => 'HuoDongKong'}
     project_mappings << {"marquee_project" => 'ActiveNet',"testlink_project"  => 'ActiveNet'}
     project_mappings << {"marquee_project" => 'CUI',"testlink_project"  => 'Consumer UI'}
     project_mappings << {"marquee_project" => 'eGov',"testlink_project"  => 'eGov'}
     project_mappings << {"marquee_project" => 'LeagueOne',"testlink_project"  => 'LeagueOne'}
     project_mappings << {"marquee_project" => 'Plancast',"testlink_project"  => 'Plancast'}
     project_mappings << {"marquee_project" => 'Class', "testlink_project" => 'Class'}
+    project_mappings << {"marquee_project" => 'RTP', "testlink_project" => 'RTP'}
+    project_mappings << {"marquee_project" => 'LiteReg', "testlink_project" => 'LiteReg'}
+    project_mappings << {"marquee_project" => 'WannaDo', "testlink_project" => 'WannaDo'}
     project_mappings.each do |mapping|
       marquee_project_name = mapping["marquee_project"]
       project_name = mapping["testlink_project"]
