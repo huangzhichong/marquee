@@ -79,7 +79,6 @@ class TestRound < ActiveRecord::Base
     test_round.project = project
     test_round.test_object = test_object
     test_round.test_environment = test_environment
-    test_round.init_automation_script_result
     test_round.browser = browser
     test_round.operation_system = os
     test_round.save
