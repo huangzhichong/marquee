@@ -27,7 +27,7 @@
         .row
           .columns.span7
             %select.as-select#automationscripts{:multiple => 'multiple'}
-              - (@project.automation_scripts - @test_suite.automation_scripts).each do |as|
+              - (@project.automation_scripts.order('name asc') - @test_suite.automation_scripts.order('name asc')).each do |as|
                 %option{:value => as.id, :title => as.name}= as.name
             %a#add-all-button
               %span.multi-select-item-add.ui-icon
@@ -38,7 +38,7 @@
             %a.multi-select-item-remove.ui-icon#remove-button
           .columns.span7
             %select.as-select#automationscripts-selected{:multiple => 'multiple', :class => "validate[funcCall[checkNullSelectBox]]"}
-              - @test_suite.automation_scripts.each do |as|
+              - @test_suite.automation_scripts.order('name asc').each do |as|
                 %option{:value => as.id, :title => as.name}= as.name
             %a#clear-all-button
               %span.multi-select-item-remove.ui-icon
