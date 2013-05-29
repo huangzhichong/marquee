@@ -21,7 +21,7 @@
       %td{:colspan => "3"}
         %h4 No data
   - else
-    - test_suites.each do |test_suite|
+    - test_suites.order('name asc').each do |test_suite|
       %tr
         %td
           - ts_name = test_suite.name
