@@ -33,6 +33,7 @@ MarqueeWebMain::Application.routes.draw do
     get "activate_user/:id", :controller => "users", :action => "activate"
   end
 
+  get 'status/test_round_status', :controller => 'status', :action => 'test_round_status'
   post 'status/update'
   post 'status/new_build'
   post 'import_data/import_automation_script'
