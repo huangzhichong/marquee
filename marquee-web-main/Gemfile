@@ -43,7 +43,7 @@ gem 'redis', ">= 2.2.2"
 gem 'resque', :require => "resque/server"
 gem 'resque_mailer'
 gem 'secondbase', '0.5.0'
-
+gem 'rabl'
 
 group :test, :development do
   gem 'test-unit', '2.3.0'
