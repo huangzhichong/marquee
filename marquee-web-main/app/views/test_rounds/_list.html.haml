@@ -20,7 +20,7 @@
     %th=sort_link search, :test_environment_name, "Test environment", {}, {:remote => true}
     %th=sort_link search, :start_time, {}, {:remote => true}
     %th=sort_link search, :end_time, {}, {:remote => true}
-
+    %th Rerun
   - if test_rounds.nil? or test_rounds.count == 0
     %tr
       %td{:colspan => "9"}
@@ -43,5 +43,21 @@
         %td= tr.test_environment.name
         %td= in_time_zone(tr.start_time)
         %td= in_time_zone(tr.end_time)
-
+        %td
+          - if tr.state == "completed" && can?(:update, TestRound, {:project_id => project.id}) 
+            %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "test_rounds/#{tr.id}/rerun"}
 = paginate test_rounds
+
+
+
+:javascript
+  $(function(){
+    
+    $("input.rerun_btn:not(:disabled)").click(function(){
+      $(this).addClass("disabled");
+      $(this).disabled = true;
+      $.ajax({url: $(this).attr("remote-data")}).success(function(data) {
+        location.reload();
+      })
+    });
+  });
