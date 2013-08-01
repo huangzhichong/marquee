@@ -206,4 +206,21 @@ class TestRound < ActiveRecord::Base
     self.automation_script_results.find_last_by_automation_script_id(automation_script.id)
   end
 
+  def get_result_details
+    result_array =[]
+    self.automation_script_results.each do |asr|
+      temp = Hash.new
+      temp['script_name'] = asr.name
+      temp['test_plan_name'] = asr.automation_script.test_plan.name
+      asr.automation_case_results.each do |acr|
+        temp['case_name']=acr.name
+        temp['case_id']=acr.case_id
+        temp['test_link_id']=TestCase.find_by_case_id(acr.case_id).test_link_id
+        temp['result']=acr.result
+        result_array << temp
+      end
+    end    
+    result_array
+  end
+
 end

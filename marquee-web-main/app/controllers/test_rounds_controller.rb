@@ -1,5 +1,7 @@
+require 'csv'
 class TestRoundsController < InheritedResources::Base
   respond_to :js
+  respond_to :csv
   belongs_to :project
   before_filter :authenticate_user!, :only => [:new, :crete]
 
@@ -14,17 +16,17 @@ class TestRoundsController < InheritedResources::Base
   end
 
   protected
-  def resource
-    @project ||= Project.find(params[:project_id])
-    @test_round ||= TestRound.find(params[:id])
-    @search = @test_round.automation_script_results.search(params[:search])
-    @automation_script_results = @search.order('id desc').page(params[:page]).per(15)
-  end
+    def resource
+      @project ||= Project.find(params[:project_id])
+      @test_round ||= TestRound.find(params[:id])
+      @search = @test_round.automation_script_results.search(params[:search])
+      @automation_script_results = @search.order('id desc').page(params[:page]).per(15)
+    end
 
-  def collection
-    @project ||= Project.find(params[:project_id])
-    @search = @project.test_rounds.search(params[:search])
-    @test_rounds ||= @search.order('id desc').page(params[:page]).per(15)
-  end
+    def collection
+      @project ||= Project.find(params[:project_id])
+      @search = @project.test_rounds.search(params[:search])
+      @test_rounds ||= @search.order('id desc').page(params[:page]).per(15)
+    end
 
 end

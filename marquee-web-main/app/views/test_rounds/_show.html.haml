@@ -4,8 +4,10 @@
     %h2
       =link_to "Test Rounds", project_test_rounds_path(@project), :remote => true
       %span= " / #{@test_round.test_type.name}##{@test_round.id}"
-  .span6.columns#right
-    %span.creation-info= "Created by #{@test_round.creator.display_name}"
+  .span3.columns#right
+    -if can? :create, TestRound and @test_round.state == 'completed'
+      = link_to 'Export Result', functional_generate_automation_results_report_path(format: "csv", :test_round_id => @test_round.id),{:method=> :post, :class => 'btn primary',:style=>"float: right;"}
+
 
 = render 'brief_info'
 .list-content-box

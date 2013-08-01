@@ -128,6 +128,7 @@ MarqueeWebMain::Application.routes.draw do
   post "functional/generate_update_needed_script_report"
   post "functional/generate_bug_report"
   get "functional/endurance_qa_effort_report"
+  post "functional/generate_automation_results_report"
 
 
   get "experiment/effort_analysis_report"
