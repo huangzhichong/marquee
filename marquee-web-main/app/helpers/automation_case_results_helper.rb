@@ -7,9 +7,15 @@ module AutomationCaseResultsHelper
     1.upto(errors.length - 1) do |i|
       next if i%2 == 0
       datetime = errors[i]
-      message = errors[i+1]
+      begin
+        messages = errors[i+1].split("\n")
+      rescue Exception => e
+        messages =[]
+      end
       safe_concat("<p><span class='datetime'>" + datetime + "</span>")
-      safe_concat("<span class='message'>" + message + "</span></p>")
+      messages.each do |msg|
+        safe_concat("<span class='message'>" + msg + "</span></p>")
+      end
     end
     safe_concat("</p>")
   end
