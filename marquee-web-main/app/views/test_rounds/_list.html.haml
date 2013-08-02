@@ -20,7 +20,7 @@
     %th=sort_link search, :test_environment_name, "Test environment", {}, {:remote => true}
     %th=sort_link search, :start_time, {}, {:remote => true}
     %th=sort_link search, :end_time, {}, {:remote => true}
-
+    %th Rerun
   - if test_rounds.nil? or test_rounds.count == 0
     %tr
       %td{:colspan => "9"}
@@ -43,5 +43,39 @@
         %td= tr.test_environment.name
         %td= in_time_zone(tr.start_time)
         %td= in_time_zone(tr.end_time)
-
+        %td
+          - if tr.state == "completed" && can?(:update, TestRound, {:project_id => project.id}) 
+            %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "test_rounds/#{tr.id}/rerun"}
 = paginate test_rounds
+
+#rerun_confirmation.modal.fade{:style => "display: none; "}
+  .modal-header
+    %h3 Rerun all the tests?
+  .modal-body
+    #modal_text
+      This action will result in clearing all the results, are you sure with this?
+  .modal-footer
+    %a.btn.primary.confirm_rerun{:href => "#"} Rerun
+    %a.btn.cancel_rerun{"data-dismiss" => "modal", :href => "#"} Cancel
+
+
+:javascript
+
+  $(function(){
+    
+    $("input.rerun_btn:not(:disabled)").click(function(){
+      $('#rerun_confirmation').css("display", "block");
+
+      $('.cancel_rerun').live('click',function(e){
+        $('#rerun_confirmation').css("display", "none");
+      });
+
+      $('.confirm_rerun').live('click',function(e){
+        $("input.rerun_btn:not(:disabled)").addClass("disabled");
+        $("input.rerun_btn:not(:disabled)").disabled = true;
+        $.ajax({url: $("input.rerun_btn:not(:disabled)").attr("remote-data")}).success(function(data) {
+          location.reload();
+        });
+      });
+    });  
+  });
