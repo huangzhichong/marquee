@@ -48,16 +48,17 @@
             %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "test_rounds/#{tr.id}/rerun"}
 = paginate test_rounds
 
-
-
 :javascript
   $(function(){
     
     $("input.rerun_btn:not(:disabled)").click(function(){
-      $(this).addClass("disabled");
-      $(this).disabled = true;
-      $.ajax({url: $(this).attr("remote-data")}).success(function(data) {
-        location.reload();
-      })
+      if(confirm("rerun the test-round will clear all the result"))
+      {
+        $(this).addClass("disabled");
+        $(this).disabled = true;
+        $.ajax({url: $(this).attr("remote-data")}).success(function(data) {
+          location.reload();
+        })
+      }
     });
   });
