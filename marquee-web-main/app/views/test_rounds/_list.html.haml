@@ -48,17 +48,34 @@
             %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "test_rounds/#{tr.id}/rerun"}
 = paginate test_rounds
 
+#rerun_confirmation.modal.fade{:style => "display: none; "}
+  .modal-header
+    %h3 Rerun all the tests?
+  .modal-body
+    #modal_text
+      This action will result in clearing all the results, are you sure with this?
+  .modal-footer
+    %a.btn.primary.confirm_rerun{:href => "#"} Rerun
+    %a.btn.cancel_rerun{"data-dismiss" => "modal", :href => "#"} Cancel
+
+
 :javascript
+
   $(function(){
     
     $("input.rerun_btn:not(:disabled)").click(function(){
-      if(confirm("rerun the test-round will clear all the result"))
-      {
-        $(this).addClass("disabled");
-        $(this).disabled = true;
-        $.ajax({url: $(this).attr("remote-data")}).success(function(data) {
+      $('#rerun_confirmation').css("display", "block");
+
+      $('.cancel_rerun').live('click',function(e){
+        $('#rerun_confirmation').css("display", "none");
+      });
+
+      $('.confirm_rerun').live('click',function(e){
+        $("input.rerun_btn:not(:disabled)").addClass("disabled");
+        $("input.rerun_btn:not(:disabled)").disabled = true;
+        $.ajax({url: $("input.rerun_btn:not(:disabled)").attr("remote-data")}).success(function(data) {
           location.reload();
-        })
-      }
-    });
+        });
+      });
+    });  
   });
