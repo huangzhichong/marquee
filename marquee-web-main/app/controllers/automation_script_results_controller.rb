@@ -19,8 +19,7 @@ class AutomationScriptResultsController < InheritedResources::Base
     end
   end
 
-  def rerun
-    automation_script_result_id = params[:id]
+  def rerun(automation_script_result_id=params[:id])
     automation_script_result = AutomationScriptResult.find(automation_script_result_id)
     automation_script_result.clear
 
