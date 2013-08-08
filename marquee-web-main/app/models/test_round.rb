@@ -68,6 +68,7 @@ class TestRound < ActiveRecord::Base
     self.warning = warning_count
     self.not_run = not_run_count
     calculate_pass_rate!
+    self.exported_status = "N"
     self.save
   end
 
@@ -109,6 +110,9 @@ class TestRound < ActiveRecord::Base
     self.start_time = self.automation_script_results.collect{|asr| asr.start_time.nil? ? Time.now : asr.start_time}.min
   end
 
+  def exported_to_testlink?
+    self.exported_status == 'Y'
+  end
   def start_running!
     unless running?
       self.state = 'running'
@@ -208,15 +212,20 @@ class TestRound < ActiveRecord::Base
 
   def get_result_details
     result_array =[]
-    self.automation_script_results.each do |asr|
-      temp = Hash.new
-      temp['script_name'] = asr.name
-      temp['test_plan_name'] = asr.automation_script.test_plan.name
+    self.automation_script_results.each do |asr|      
+      script_name = asr.name
+      test_plan_name = asr.automation_script.test_plan.name
+      service_info = ''
+      asr.target_services.each {|t| service_info<<t.to_s if t}
       asr.automation_case_results.each do |acr|
+        temp = Hash.new
         temp['case_name']=acr.name
         temp['case_id']=acr.case_id
         temp['test_link_id']=TestCase.find_by_case_id(acr.case_id).test_link_id
         temp['result']=acr.result
+        temp['script_name'] = script_name
+        temp['test_plan_name'] = test_plan_name
+        temp['service_info'] = service_info
         result_array << temp
       end
     end    

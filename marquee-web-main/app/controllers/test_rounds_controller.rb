@@ -15,6 +15,11 @@ class TestRoundsController < InheritedResources::Base
     end
   end
 
+  def save_to_testlink
+    SaveResultToTestlink.save(params[:test_round_id],params[:dev_key],params[:project_name],params[:test_plan_name],params[:build_name],params[:platform_name])
+    render :nothing => true
+  end
+
   protected
     def resource
       @project ||= Project.find(params[:project_id])

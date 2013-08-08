@@ -59,7 +59,9 @@ MarqueeWebMain::Application.routes.draw do
     get 'coverage', :on => :member
     resources :test_plans
     resources :automation_scripts
-    resources :test_rounds
+    resources :test_rounds do 
+      post "save_to_testlink"
+    end
     resources :test_suites
     resources :ci_mappings
     resources :mail_notify_settings

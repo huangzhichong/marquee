@@ -1,0 +1,53 @@
+!!!
+%html
+  %head
+    %meta{:content => 'text/html; charset=UTF-8', :'http-equiv' => 'Content-Type' }
+  %body
+    :css
+      body{
+        font-family: "Lucida Grande", Sans-serif;
+        font-size: 100%;
+        line-height: 1;
+      }
+      table {
+        margin-bottom: 2em!important;
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+      table th {
+        background: none repeat scroll 0 0 #242527;
+        color: #FFFFFF;
+        padding: 6px;
+      }
+      table td {
+        padding: 5px;
+        vertical-align: middle;
+        text-align: center;
+        line-height: 150%;
+      }
+      table tr,th,td {
+        border: 1px solid #666;
+      }
+      li{
+        list-style: none;
+      }
+      span.pass{
+        font-weight: bold;
+        color: green;
+      }
+      span.failed{
+        font-weight: bold;
+        color: red;
+      }
+      span.warning{
+        font-weight: bold;
+        color: orange;
+      }
+    %h3
+      = "Saving result to Testlink was completed, below is the logs, "
+      %span{:class => "pass"}= "logs"
+    - @message.split("\n").each do |line|
+      %p
+      %span
+        = line
