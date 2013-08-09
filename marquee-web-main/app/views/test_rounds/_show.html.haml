@@ -20,45 +20,88 @@
 #save_to_testlink_info.modal.fade{:style => "display: none; "}
   .modal-header
     %h3 Save test result to Testlink
+  .alert-message.error{:style => "display: none; "}
+    fix the missing field highlighted in red
   .clearfix  
-    = form_tag("/projects/#{@test_round.project.id}/test_rounds/#{@test_round.id}/save_to_testlink",{:remote => true}) do
+    = form_tag("/projects/#{@test_round.project.id}/test_rounds/#{@test_round.id}/save_to_testlink",{:remote => true,:onsubmit => "return(validateForm(this));",:id => "save_to_testlink_form"}) do
       %fieldset
         .clearfix
+          = label_tag 'Testlink Project Name'
+          .required *
+          .input
+            = text_field_tag 'project_name'
+        .clearfix
           = label_tag 'Test Plan Name'
+          .required *          
           .input
             = text_field_tag 'test_plan_name'
         .clearfix
           = label_tag 'Build Name'
+          .required *
           .input
             = text_field_tag 'build_name'
         .clearfix
           = label_tag 'Platfrom Name'
+          .required *
           .input
             = text_field_tag 'platform_name'
         .clearfix
+          = label_tag 'Dev Key'
+          .required *
+          .input
+            = text_field_tag 'dev_key'
+        .clearfix
           = label_tag 'Email Notification'
+          .required *          
           .input
             = text_field_tag 'email'
         .modal-footer
-          = submit_tag 'Save to Testlink', {:class=>'btn primary',:id => 'confirm_save'}    
+          %input.btn.primary.confirm_save{:type => "button", :value => "Save to Testlink",:style=>"float: right;"}
           %input.btn.cancel_button{:type => "button", :value => "Cancel",:style=>"float: right;"}
 
 
 :javascript
-  $(function(){    
+  function validateForm(f){
+    var selected = true;
+    cleanFormError();
+    $('#save_to_testlink_form input:[type=text]').each(function(idx, elem){
+    if($(elem).val() == "")
+    {
+      $(elem).parent().addClass('error');
+      selected = false;
+    }
+    });
+    return selected;
+  }
+
+  function cleanFormError()
+  {
+    $('#save_to_testlink_form .error').each(function(idx, elem){
+      $(elem).removeClass('error');          
+    });
+  }
+
+  $(function(){
+    var save_button = $('input.save_to_testlink_btn');
+    var save_popup = $('#save_to_testlink_info');
     $("input.save_to_testlink_btn:not(:disabled)").click(function(){
-      $('#save_to_testlink_info').css("display", "block");
+      $('#save_to_testlink_form')[0].reset();
+      save_popup.css("display", "block");
       $(this).addClass("disabled");
       $(this).disabled = true;
       $('.cancel_button').live('click',function(e){
-        $('#save_to_testlink_info').css("display", "none");
-        $('input.save_to_testlink_btn').removeClass("disabled");
-        $('input.save_to_testlink_btn').disabled = false;
+        cleanFormError();
+        save_popup.css("display", "none");
+        save_button.removeClass("disabled");
+        save_button.disabled = false;
       });
-      $('#confirm_save').live('click',function(e){
-
-        $('#save_to_testlink_info').css("display", "none");
-        $('input.save_to_testlink_btn').remove();
+      $('.confirm_save').live('click',function(e){
+        if (validateForm($('#save_to_testlink_form')))
+        {
+          $('#save_to_testlink_form').submit()
+          save_popup.css("display", "none");
+          save_button.remove();
+        }
       });
     });
   })

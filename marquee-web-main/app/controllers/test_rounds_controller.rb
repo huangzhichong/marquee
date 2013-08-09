@@ -16,22 +16,27 @@ class TestRoundsController < InheritedResources::Base
   end
 
   def save_to_testlink
+    puts "====>>>> submit to save"
+    @test_round ||= TestRound.find(params[:test_round_id])
+    @test_round.exported_status = 'Y'
+    @test_round.save
+
     SaveResultToTestlink.save(params[:test_round_id],params[:dev_key],params[:project_name],params[:test_plan_name],params[:build_name],params[:platform_name])
     render :nothing => true
   end
 
   protected
-    def resource
-      @project ||= Project.find(params[:project_id])
-      @test_round ||= TestRound.find(params[:id])
-      @search = @test_round.automation_script_results.search(params[:search])
-      @automation_script_results = @search.order('id desc').page(params[:page]).per(15)
-    end
+  def resource
+    @project ||= Project.find(params[:project_id])
+    @test_round ||= TestRound.find(params[:id])
+    @search = @test_round.automation_script_results.search(params[:search])
+    @automation_script_results = @search.order('id desc').page(params[:page]).per(15)
+  end
 
-    def collection
-      @project ||= Project.find(params[:project_id])
-      @search = @project.test_rounds.search(params[:search])
-      @test_rounds ||= @search.order('id desc').page(params[:page]).per(15)
-    end
+  def collection
+    @project ||= Project.find(params[:project_id])
+    @search = @project.test_rounds.search(params[:search])
+    @test_rounds ||= @search.order('id desc').page(params[:page]).per(15)
+  end
 
 end
