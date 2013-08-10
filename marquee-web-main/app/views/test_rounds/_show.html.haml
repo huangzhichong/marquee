@@ -29,7 +29,7 @@
           = label_tag 'Testlink Project Name'
           .required *
           .input
-            = text_field_tag 'project_name'
+            = text_field_tag 'project_name', @test_round.project.test_link_name
         .clearfix
           = label_tag 'Test Plan Name'
           .required *          
@@ -54,7 +54,7 @@
           = label_tag 'Email Notification'
           .required *          
           .input
-            = text_field_tag 'email'
+            = text_field_tag 'email',current_user.email
         .modal-footer
           %input.btn.primary.confirm_save{:type => "button", :value => "Save to Testlink",:style=>"float: right;"}
           %input.btn.cancel_button{:type => "button", :value => "Cancel",:style=>"float: right;"}

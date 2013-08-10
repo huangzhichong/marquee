@@ -12,15 +12,21 @@ class TestlinkAPIClient
     @server.call("tl.checkDevKey", {"devKey"=>@devKey})
   end
 
-  def reportTCResult(tcid, tpid, build_id, platform_id,status)
+  def reportTCResult(case_id, testlink_id, tpid, build_id, platform_id,tc_result)
     args = {"devKey"=>@devKey,
-            "testcaseid"=>tcid,
+            "testcaseid"=>testlink_id,
             "testplanid"=>tpid,
             "buildid"=>build_id,
             "platformid"=>platform_id,
-            "status"=>status,
+            "status"=>tc_result,
             "notes"=>"Result from Marquee"}
-    @server.call("tl.reportTCResult", args)
+    result = @server.call("tl.reportTCResult", args)
+    return {:status => result[0]['status'],
+            :message => result[0]['message'],
+            :case_id => case_id,
+            :testlink_id => testlink_id,
+            :tc_result => tc_result.upcase
+          }
   end
 
   def get_test_plan_id_by_name(project_name,tp_name)
@@ -65,43 +71,43 @@ end
 
 class SaveResultToTestlink
   @queue = :testlink_save_result
-  @message = ''
-
-  def self.perform(test_round_id,tl_dev_key,tl_project_name,tl_plan_name,tl_build_name,tl_platform_name)
+  @message = Hash.new
+  @message['notes'] = []
+  @message['export_results']= []
+  def self.perform(test_round_id,tl_dev_key,tl_project_name,tl_plan_name,tl_build_name,tl_platform_name,email)
     # substitute your Dev Key Here
     begin
       client = TestlinkAPIClient.new(tl_dev_key)
       if client.check_dev_key == true
         tp_id = client.get_test_plan_id_by_name(tl_project_name,tl_plan_name)
-        @message << "Get test plan id #{tp_id} by #{tl_project_name} and #{tl_plan_name}\n"
+        @message['notes'] << "Get test plan id #{tp_id} by #{tl_project_name} and #{tl_plan_name}\n"
         platform_id = client.get_test_platform_id_by_name(tp_id,tl_platform_name)
-        @message << "Get platform id #{platform_id} by #{tl_plan_name} and #{tl_platform_name}\n"
+        @message['notes'] << "Get platform id #{platform_id} by #{tl_plan_name} and #{tl_platform_name}\n"
         build_id = client.get_build_id_by_name(tp_id,tl_build_name)
-        @message << "Get build id #{build_id} by #{tl_plan_name} and #{tl_build_name}\n"
+        @message['notes'] << "Get build id #{build_id} by #{tl_plan_name} and #{tl_build_name}\n"
         test_round = TestRound.find(test_round_id)
         test_round.get_result_details.each do |result|
-          @message << "Test case <#{result['case_id']}> with testlink id <#{result[test_link_id]}> --> #{result['result']}\n"
           if result['result'] == 'pass'
-            @message << "#{client.reportTCResult(result['test_link_id'],tp_id,build_id,platform_id,'p')}\n"
+            @message['export_results'] << client.reportTCResult(result['case_id'],result['test_link_id'],tp_id,build_id,platform_id,'p')
           elsif result['result'] == 'failed'
-            @message << "#{client.reportTCResult(result['test_link_id'],tp_id,build_id,platform_id,'f')}\n"
+            @message['export_results'] << client.reportTCResult(result['case_id'],result['test_link_id'],tp_id,build_id,platform_id,'f')
           end
         end
         test_round.exported_status = 'Y'
         test_round.save
       else
-        @message << "The devKey given is not valid, please check."
+        @message['notes'] << "The devKey given is not valid, please check."
       end
     rescue Exception => e
       test_round = TestRound.find(test_round_id)
       test_round.exported_status = 'N'
       test_round.save
-      @message << "Got error ===> #{e}"
+      @message['notes'] << "Got error ===> #{e}"
     end
-    NotificationMailer.save_to_testlink_notification("smart.huang@activenetwork.com",@message).deliver
+    NotificationMailer.save_to_testlink_notification(email,@message,test_round_id,tl_project_name).deliver
   end
 
-  def self.save(test_round_id,tl_dev_key,tl_project_name,tl_plan_name,tl_build_name,tl_platform_name)
-    Resque.enqueue(SaveResultToTestlink,test_round_id,tl_dev_key,tl_project_name,tl_plan_name,tl_build_name,tl_platform_name)
+  def self.save(test_round_id,tl_dev_key,tl_project_name,tl_plan_name,tl_build_name,tl_platform_name,email)
+    Resque.enqueue(SaveResultToTestlink,test_round_id,tl_dev_key,tl_project_name,tl_plan_name,tl_build_name,tl_platform_name,email)
   end
 end

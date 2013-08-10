@@ -127,6 +127,7 @@ class TestRound < ActiveRecord::Base
       calculate_duration!
       calculate_pass_rate!
       calculate_result!
+      self.exported_status ='N'
     end
   end
 
