@@ -28,6 +28,13 @@ MarqueeWebMain::Application.configure do
   config.sass.preferred_syntax = :sass
   Paperclip.options[:command_path] = "/opt/local/bin/"
 
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:'smtp.pod04.aw.dev.activenetwork.com',
+    port:25,
+    enable_starttls_auto:true
+  }
+
   silence_warnings do
     begin
       require 'pry'

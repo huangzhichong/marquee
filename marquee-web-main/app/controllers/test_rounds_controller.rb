@@ -1,5 +1,7 @@
+require 'csv'
 class TestRoundsController < InheritedResources::Base
   respond_to :js
+  respond_to :csv
   belongs_to :project
   before_filter :authenticate_user!, :only => [:new, :crete]
 
@@ -26,6 +28,11 @@ class TestRoundsController < InheritedResources::Base
       TestRoundDistributor.distribute(@test_round.id)
       project_test_rounds_path(@project)
     end
+  end
+
+  def save_to_testlink
+    SaveResultToTestlink.save(params[:test_round_id],params[:dev_key],params[:project_name],params[:test_plan_name],params[:build_name],params[:platform_name],params[:email])
+   render :nothing => true
   end
 
   protected
