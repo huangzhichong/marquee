@@ -61,7 +61,8 @@ MarqueeWebMain::Application.routes.draw do
     resources :automation_scripts
     resources :test_rounds do
       get "rerun", :controller => 'test_rounds', :action => 'rerun'
-    end 
+      post "save_to_testlink"
+    end
     resources :test_suites
     resources :ci_mappings
     resources :mail_notify_settings
@@ -130,6 +131,7 @@ MarqueeWebMain::Application.routes.draw do
   post "functional/generate_update_needed_script_report"
   post "functional/generate_bug_report"
   get "functional/endurance_qa_effort_report"
+  post "functional/generate_automation_results_report"
 
 
   get "experiment/effort_analysis_report"

@@ -1,12 +1,107 @@
 .row.sub-header
-  .span10.columns
+  .span9.columns
     %img.big-icon{:src => asset_path("#{@test_round.result}.png")}
     %h2
       =link_to "Test Rounds", project_test_rounds_path(@project), :remote => true
-      %span= " / #{@test_round.test_type.name}##{@test_round.id}"
+      %span= " / #{@test_round.test_type.name}##{@test_round.id}"    
   .span6.columns#right
-    %span.creation-info= "Created by #{@test_round.creator.display_name}"
+    -if can? :create, TestRound and @test_round.state == 'completed'
+      .span3{}
+        -unless @test_round.exported_to_testlink?
+          %input.btn.primary.save_to_testlink_btn{:type => "button", :value => "Save to Testlink",:style=>"float: right;"}
+      .span3{:style=>"float: right;"}
+        = link_to 'Export Result', functional_generate_automation_results_report_path(format: "csv", :test_round_id => @test_round.id),{:method=> :post, :class => 'btn primary',:style=>"float: right;"}
+
 
 = render 'brief_info'
 .list-content-box
   = render :partial => 'automation_script_results/list', :locals => {:project => @project, :automation_script_results => @automation_script_results, :test_round => @test_round, :search => @search}
+
+#save_to_testlink_info.modal.fade{:style => "display: none; "}
+  .modal-header
+    %h3 Save test result to Testlink
+  .alert-message.error{:style => "display: none; "}
+    fix the missing field highlighted in red
+  .clearfix  
+    = form_tag("/projects/#{@test_round.project.id}/test_rounds/#{@test_round.id}/save_to_testlink",{:remote => true,:onsubmit => "return(validateForm(this));",:id => "save_to_testlink_form"}) do
+      %fieldset
+        .clearfix
+          = label_tag 'Testlink Project Name'
+          .required *
+          .input
+            = text_field_tag 'project_name', @test_round.project.test_link_name
+        .clearfix
+          = label_tag 'Test Plan Name'
+          .required *          
+          .input
+            = text_field_tag 'test_plan_name'
+        .clearfix
+          = label_tag 'Build Name'
+          .required *
+          .input
+            = text_field_tag 'build_name'
+        .clearfix
+          = label_tag 'Platfrom Name'
+          .required *
+          .input
+            = text_field_tag 'platform_name'
+        .clearfix
+          = label_tag 'Dev Key'
+          .required *
+          .input
+            = text_field_tag 'dev_key'
+        .clearfix
+          = label_tag 'Email Notification'
+          .required *          
+          .input
+            = text_field_tag 'email',current_user.email
+        .modal-footer
+          %input.btn.primary.confirm_save{:type => "button", :value => "Save to Testlink",:style=>"float: right;"}
+          %input.btn.cancel_button{:type => "button", :value => "Cancel",:style=>"float: right;"}
+
+
+:javascript
+  function validateForm(f){
+    var selected = true;
+    cleanFormError();
+    $('#save_to_testlink_form input:[type=text]').each(function(idx, elem){
+    if($(elem).val() == "")
+    {
+      $(elem).parent().addClass('error');
+      selected = false;
+    }
+    });
+    return selected;
+  }
+
+  function cleanFormError()
+  {
+    $('#save_to_testlink_form .error').each(function(idx, elem){
+      $(elem).removeClass('error');          
+    });
+  }
+
+  $(function(){
+    var save_button = $('input.save_to_testlink_btn');
+    var save_popup = $('#save_to_testlink_info');
+    $("input.save_to_testlink_btn:not(:disabled)").click(function(){
+      $('#save_to_testlink_form')[0].reset();
+      save_popup.css("display", "block");
+      $(this).addClass("disabled");
+      $(this).disabled = true;
+      $('.cancel_button').live('click',function(e){
+        cleanFormError();
+        save_popup.css("display", "none");
+        save_button.removeClass("disabled");
+        save_button.disabled = false;
+      });
+      $('.confirm_save').live('click',function(e){
+        if (validateForm($('#save_to_testlink_form')))
+        {
+          $('#save_to_testlink_form').submit()
+          save_popup.css("display", "none");
+          save_button.remove();
+        }
+      });
+    });
+  })
