@@ -10,7 +10,7 @@
         -unless @test_round.exported_to_testlink?
           %input.btn.primary.save_to_testlink_btn{:type => "button", :value => "Save to Testlink",:style=>"float: right;"}
       .span3{:style=>"float: right;"}
-        = link_to 'Export Result', functional_generate_automation_results_report_path(format: "csv", :test_round_id => @test_round.id),{:method=> :post, :class => 'btn primary',:style=>"float: right;"}
+        %input.btn.primary.export_to_csv_btn{:type => "button", :value => "Export to CSV",:style=>"float: right;", "url" => "/functional/generate_automation_results_report.csv", "test_round_id" => "#{@test_round.id}"}
 
 
 = render 'brief_info'
@@ -51,7 +51,7 @@
             = text_field_tag 'dev_key',nil , {:id=> 'required'}
         .clearfix
           = label_tag 'Email Notification'
-          .required *          
+          .required *     
           .input
             = text_field_tag 'email',current_user.email,{:id=> 'required'}
         .modal-footer
@@ -60,6 +60,20 @@
 
 
 :javascript
+
+  $("input.export_to_csv_btn").click(function(){
+    var myAjaxVariable = null;  
+    var export_btn = $(this);
+    $.ajax({
+     url : $(export_btn).attr("url"),
+     type : 'POST',
+     data : {test_round_id:$(export_btn).attr("test_round_id")},
+     async : false,
+     success : function(response) {myAjaxVariable = response;},
+      });
+     window.open( "data:text/csv;charset=utf-8," + escape(myAjaxVariable))  
+  });
+
   function validateForm(f){
     var selected = true;
     cleanFormError();
