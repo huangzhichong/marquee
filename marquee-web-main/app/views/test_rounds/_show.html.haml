@@ -16,47 +16,48 @@
 = render 'brief_info'
 .list-content-box
   = render :partial => 'automation_script_results/list', :locals => {:project => @project, :automation_script_results => @automation_script_results, :test_round => @test_round, :search => @search}
-
-#save_to_testlink_info.modal.fade{:style => "display: none; "}
-  .modal-header
-    %h3 Save test result to Testlink
-  .alert-message.error{:style => "display: none; "}
-    fix the missing field highlighted in red
-  .clearfix  
-    = form_tag("/projects/#{@test_round.project.id}/test_rounds/#{@test_round.id}/save_to_testlink",{:remote => true,:onsubmit => "return(validateForm(this));",:id => "save_to_testlink_form"}) do
-      %fieldset
-        .clearfix
-          = label_tag 'Testlink Project Name'
-          .required *
-          .input
-            = text_field_tag 'project_name', @test_round.project.test_link_name, {:id=> 'required'}
-        .clearfix
-          = label_tag 'Test Plan Name'
-          .required *          
-          .input
-            = text_field_tag 'test_plan_name',nil , {:id=> 'required'}
-        .clearfix
-          = label_tag 'Build Name'
-          .required *
-          .input
-            = text_field_tag 'build_name',nil , {:id=> 'required'}
-        .clearfix
-          = label_tag 'Platfrom Name'
-          .input
-            = text_field_tag 'platform_name'
-        .clearfix
-          = label_tag 'Dev Key'
-          .required *
-          .input
-            = text_field_tag 'dev_key',nil , {:id=> 'required'}
-        .clearfix
-          = label_tag 'Email Notification'
-          .required *     
-          .input
-            = text_field_tag 'email',current_user.email,{:id=> 'required'}
-        .modal-footer
-          %input.btn.primary.confirm_save{:type => "button", :value => "Save to Testlink",:style=>"float: right;"}
-          %input.btn.cancel_button{:type => "button", :value => "Cancel",:style=>"float: right;"}
+  
+-unless current_user.nil?
+  #save_to_testlink_info.modal.fade{:style => "display: none; "}
+    .modal-header
+      %h3 Save test result to Testlink
+    .alert-message.error{:style => "display: none; "}
+      fix the missing field highlighted in red
+    .clearfix  
+      = form_tag("/projects/#{@test_round.project.id}/test_rounds/#{@test_round.id}/save_to_testlink",{:remote => true,:onsubmit => "return(validateForm(this));",:id => "save_to_testlink_form"}) do
+        %fieldset
+          .clearfix
+            = label_tag 'Testlink Project Name'
+            .required *
+            .input
+              = text_field_tag 'project_name', @test_round.project.test_link_name, {:id=> 'required'}
+          .clearfix
+            = label_tag 'Test Plan Name'
+            .required *          
+            .input
+              = text_field_tag 'test_plan_name',nil , {:id=> 'required'}
+          .clearfix
+            = label_tag 'Build Name'
+            .required *
+            .input
+              = text_field_tag 'build_name',nil , {:id=> 'required'}
+          .clearfix
+            = label_tag 'Platfrom Name'
+            .input
+              = text_field_tag 'platform_name'
+          .clearfix
+            = label_tag 'Dev Key'
+            .required *
+            .input
+              = text_field_tag 'dev_key',nil , {:id=> 'required'}
+          .clearfix
+            = label_tag 'Email Notification'
+            .required *     
+            .input
+              = text_field_tag 'email',current_user.email,{:id=> 'required'}
+          .modal-footer
+            %input.btn.primary.confirm_save{:type => "button", :value => "Save to Testlink",:style=>"float: right;"}
+            %input.btn.cancel_button{:type => "button", :value => "Cancel",:style=>"float: right;"}
 
 
 :javascript
