@@ -29,32 +29,31 @@
           = label_tag 'Testlink Project Name'
           .required *
           .input
-            = text_field_tag 'project_name', @test_round.project.test_link_name
+            = text_field_tag 'project_name', @test_round.project.test_link_name, {:id=> 'required'}
         .clearfix
           = label_tag 'Test Plan Name'
           .required *          
           .input
-            = text_field_tag 'test_plan_name'
+            = text_field_tag 'test_plan_name',nil , {:id=> 'required'}
         .clearfix
           = label_tag 'Build Name'
           .required *
           .input
-            = text_field_tag 'build_name'
+            = text_field_tag 'build_name',nil , {:id=> 'required'}
         .clearfix
           = label_tag 'Platfrom Name'
-          .required *
           .input
             = text_field_tag 'platform_name'
         .clearfix
           = label_tag 'Dev Key'
           .required *
           .input
-            = text_field_tag 'dev_key'
+            = text_field_tag 'dev_key',nil , {:id=> 'required'}
         .clearfix
           = label_tag 'Email Notification'
           .required *          
           .input
-            = text_field_tag 'email',current_user.email
+            = text_field_tag 'email',current_user.email,{:id=> 'required'}
         .modal-footer
           %input.btn.primary.confirm_save{:type => "button", :value => "Save to Testlink",:style=>"float: right;"}
           %input.btn.cancel_button{:type => "button", :value => "Cancel",:style=>"float: right;"}
@@ -64,7 +63,7 @@
   function validateForm(f){
     var selected = true;
     cleanFormError();
-    $('#save_to_testlink_form input:[type=text]').each(function(idx, elem){
+    $('#save_to_testlink_form #required').each(function(idx, elem){
     if($(elem).val() == "")
     {
       $(elem).parent().addClass('error');
