@@ -186,7 +186,7 @@ and j1.created <= '#{@to}'
   def generate_automation_status_report
     @projects = params[:projects]
     csv_string = CSV.generate do |csv|
-      csv << ["ProjectName","Total Number","Automation Candidate", "Automated","Automated Rate"]
+      csv << ["Application","Total Test Cases","Automation Candidate", "Automated","% Automated"]
       @projects.each do |project|
         project_id = Project.find_by_name(project).id
         get_total_number_of_tcs_query = "SELECT COUNT(DISTINCT `test_cases`.`case_id`) as total_number
