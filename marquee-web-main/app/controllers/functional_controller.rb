@@ -213,9 +213,10 @@ and j1.created <= '#{@to}'
         automated_number = TestCase.find_by_sql(get_number_of_automated_tcs_query)[0]["automated_number"].to_f
         not_candidate_number = TestCase.find_by_sql(get_number_of_not_candidate_tcs_query)[0]["not_candidate_number"].to_f
         to_be_automated_number = total_number - not_candidate_number
-        automated_rate = (total_number-not_candidate_number) > 0 ? automated_number/(total_number-not_candidate_number) : 0.0
-        automated_rate = sprintf("%.2f \%",automated_rate*100)
-        csv << [project,total_number,to_be_automated_number,automated_number,automated_rate]
+        automated_rate = to_be_automated_number > 0 ? automated_number/to_be_automated_number : 0.0
+        automated_rate = sprintf("%.1f \%",automated_rate*100)
+        logger.info "====>>>>>> #{automated_rate.to_s}"
+        csv << [project,total_number,to_be_automated_number,automated_number,automated_rate.to_s]
       end
     end
     today = Date.today
