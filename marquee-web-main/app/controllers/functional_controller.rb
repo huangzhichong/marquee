@@ -1,7 +1,12 @@
 require 'csv'
 
 class FunctionalController < ApplicationController
+
+  layout 'no_sidebar'
   respond_to :csv
+
+  before_filter :authenticate_user!
+
   def rmf_original_estimate
   end
 
@@ -179,30 +184,37 @@ and j1.created <= '#{@to}'
 
 
   def generate_automation_status_report
-    @project_name = params[:project]
-    @from = params[:from]
-    @to = params[:to]
-    p = Project.find_by_name(@project_name)
+    @projects = params[:projects]
     csv_string = CSV.generate do |csv|
-      csv << ['TestPlan Type','TestPlan Name','Total P1 Cases','P1 Automated','P1 Update Needed','P1 Can not','Total P2 Cases','P2 Automated','P2 Update Needed','P2 Can not','Total P3 Cases','P3 Automated','P3 Update Needed','P3 Can not','Missing P1 Cases']
-      p.test_plans.each do |tp|
-        if tp.status == 'completed'
-          total = []
-          automated = []
-          can_not = []
-          update_needed = []
-          %w(P1 P2 P3).each do |priority|
-            total << TestCase.includes("test_plan").where(:priority => priority, :test_plans => {:id => tp.id,:status => "completed"}).count
-            automated << TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Automated", :test_plans => {:id => tp.id,:status => "completed"}).count
-            can_not << TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Not a Candidate", :test_plans => {:id => tp.id,:status => "completed"}).count
-            update_needed <<TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Update Needed", :test_plans => {:id => tp.id,:status => "completed"}).count
-          end
-          missing_cases = []
-          tp.test_cases.where(:priority =>'P1').each do |tc|
-            missing_cases << tc.case_id if tc.automated_status == 'Not Automated' or ''
-          end
-          csv << [tp.plan_type, tp.name,total[0],automated[0],update_needed[0],can_not[0],total[1],automated[1],update_needed[1],can_not[1], total[2],automated[2],update_needed[2],can_not[2],missing_cases]
-        end
+      csv << ["ProjectName","Total Number","Automated","Not a Candidate","Automated Rate"]
+      @projects.each do |project|
+        project_id = Project.find_by_name(project).id
+        get_total_number_of_tcs_query = "SELECT COUNT(DISTINCT `test_cases`.`case_id`) as total_number
+                                     FROM `test_cases` 
+                                     LEFT OUTER JOIN `test_plans` ON `test_plans`.`id` = `test_cases`.`test_plan_id`
+                                     WHERE `test_plans`.`project_id` = #{project_id}
+                                     AND `test_plans`.`status` = 'completed'
+                                     AND `test_cases`.`version` > 0"
+        get_number_of_automated_tcs_query = "SELECT COUNT(DISTINCT `test_cases`.`case_id`) as automated_number
+                                     FROM `test_cases` 
+                                     LEFT OUTER JOIN `test_plans` ON `test_plans`.`id` = `test_cases`.`test_plan_id`
+                                     WHERE `test_plans`.`project_id` = #{project_id}
+                                     AND `test_plans`.`status` = 'completed'
+                                     AND `test_cases`.`version` > 0
+                                     AND `test_cases`.`automated_status` = 'Automated'"
+        get_number_of_not_candidate_tcs_query = "SELECT COUNT(DISTINCT `test_cases`.`case_id`) as not_candidate_number
+                                     FROM `test_cases` 
+                                     LEFT OUTER JOIN `test_plans` ON `test_plans`.`id` = `test_cases`.`test_plan_id`
+                                     WHERE `test_plans`.`project_id` = #{project_id}
+                                     AND `test_plans`.`status` = 'completed'
+                                     AND `test_cases`.`version` > 0
+                                     AND `test_cases`.`automated_status` = 'Not a Candidate'"
+        total_number = TestCase.find_by_sql(get_total_number_of_tcs_query)[0]["total_number"].to_f
+        automated_number = TestCase.find_by_sql(get_number_of_automated_tcs_query)[0]["automated_number"].to_f
+        not_candidate_number = TestCase.find_by_sql(get_number_of_not_candidate_tcs_query)[0]["not_candidate_number"].to_f
+        automated_rate = (total_number-not_candidate_number) > 0 ? automated_number/(total_number-not_candidate_number) : 0.0
+        automated_rate = sprintf("%.2f \%",automated_rate*100)
+        csv << [project,total_number,automated_number,not_candidate_number,automated_rate]
       end
     end
     today = Date.today
@@ -262,51 +274,51 @@ and j1.created <= '#{@to}'
   end
 
   private
-    def get_jira_projects
-      projects = []
-      query = "select id, pname from project"
-      FndJira.connection.execute(query).each{|project| projects << project}
-      projects
-    end
+  def get_jira_projects
+    projects = []
+    query = "select id, pname from project"
+    FndJira.connection.execute(query).each{|project| projects << project}
+    projects
+  end
 
-    def get_releases_of_a_jira_project(project)
-      releases = []
-      query = "select id, vname from projectversion where project = #{project} and vname like 'Release%'"
-      FndJira.connection.execute(query).each{|release| releases << release}
-      releases
-    end
+  def get_releases_of_a_jira_project(project)
+    releases = []
+    query = "select id, vname from projectversion where project = #{project} and vname like 'Release%'"
+    FndJira.connection.execute(query).each{|release| releases << release}
+    releases
+  end
 
-    def get_requirements_of_a_project_release(project, release)
-      requirements = []
-      query = "select pv.id from projectversion pv join project p on p.pname='#{project}' and pv.project=p.id and pv.vname='#{release}'"
+  def get_requirements_of_a_project_release(project, release)
+    requirements = []
+    query = "select pv.id from projectversion pv join project p on p.pname='#{project}' and pv.project=p.id and pv.vname='#{release}'"
 
-      release_id = FndJira.connection.execute(query).first[0]
+    release_id = FndJira.connection.execute(query).first[0]
 
-      query = "select j1.id from jiraissue j1 join nodeassociation n on n.SINK_NODE_ID=#{release_id} and association_type='IssueFixVersion' and n.source_node_id=j1.id and j1.issuetype=14"
-      FndJira.connection.execute(query).each{|req| requirements << req}
-      requirements
-    end
+    query = "select j1.id from jiraissue j1 join nodeassociation n on n.SINK_NODE_ID=#{release_id} and association_type='IssueFixVersion' and n.source_node_id=j1.id and j1.issuetype=14"
+    FndJira.connection.execute(query).each{|req| requirements << req}
+    requirements
+  end
 
-    def get_count_of_sub_task_of_requirements(requirments)
-      query = "select "
-    end
+  def get_count_of_sub_task_of_requirements(requirments)
+    query = "select "
+  end
 
-    def get_requirements_of_a_roadmap_feature(rmf_key)
-      query = "select j1.pkey as 'req number'
+  def get_requirements_of_a_roadmap_feature(rmf_key)
+    query = "select j1.pkey as 'req number'
 from jiraissue j1
 join issuelink i1 on j1.id = i1.destination
 join jiraissue j2 on j2.id = i1.source and i1.linktype=10020
 where j2.pkey='#{rmf_key}'
 "
-      results = []
-      FndJira.connection.execute(query).each do |result|
-        results << result
-      end
-      results
+    results = []
+    FndJira.connection.execute(query).each do |result|
+      results << result
     end
+    results
+  end
 
-    def get_original_estimate_of_a_roadmap_feature(rmf_key, task_type, results)
-      query = "select j2.pkey as 'req number',
+  def get_original_estimate_of_a_roadmap_feature(rmf_key, task_type, results)
+    query = "select j2.pkey as 'req number',
 SUM(j1.timeoriginalestimate)/3600 as 'Estimate',
 COUNT(j1.pkey) as 'count of subtasks'
 from jiraissue j1
@@ -318,120 +330,120 @@ join issuetype it on it.id = j1.issuetype and it.pname='#{task_type}'
 where j3.pkey='#{rmf_key}'
 group by j2.pkey"
 
-      FndJira.connection.execute(query).each do |result|
-        results << result
-      end
+    FndJira.connection.execute(query).each do |result|
+      results << result
+    end
+  end
+
+  def get_latest_24hr_bugs_query(project_name, priority)
+    query = "select count(*) from jiraissue j1 join project p on p.id = j1.project where j1.issuetype in (select id from issuetype where issuetype.pname = 'Bug' or issuetype.pname = 'Bug Sub-Task') and j1.created >= '#{Date.today - 1}' and p.pname = '" + project_name + "'"
+    unless priority.nil?
+      query = query + " and j1.priority = #{priority}"
+    end
+    query
+  end
+
+  def get_endurance_latest_24hr_bugs_data
+    project_name = 'Endurance'
+
+    jira_query = get_latest_24hr_bugs_query(project_name, nil)
+    all_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "all: #{all_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 1)
+    p0_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p0_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 2)
+    p1_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p1_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 3)
+    p2_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p2_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 4)
+    p3_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p3_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 5)
+    p4_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p4_count}"
+
+    today = Date.today
+    today_str = "#{today.month}/#{today.day}/#{today.year.to_s[2, 2]}"
+
+    CSV.open(File.join(Rails.root, 'public', 'metrics', 'endurance_latest_24hr_bugs.csv'), 'a') do |csv|
+      csv << [today_str, all_count, p0_count, p1_count, p2_count, p3_count, p4_count]
+    end
+  end
+
+  def get_camps_latest_24hr_bugs_data
+    project_name = 'Camps'
+    jira_query = get_latest_24hr_bugs_query(project_name, nil)
+    all_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "all: #{all_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 1)
+    p0_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p0_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 2)
+    p1_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p1_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 3)
+    p2_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p2_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 4)
+    p3_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p3_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 5)
+    p4_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p4_count}"
+
+    today = Date.today
+    today_str = "#{today.month}/#{today.day}/#{today.year.to_s[2, 2]}"
+
+    CSV.open(File.join(Rails.root, 'public', 'metrics', 'camps_latest_24hr_bugs.csv'), 'a') do |csv|
+      csv << [today_str, all_count, p0_count, p1_count, p2_count, p3_count, p4_count]
+    end
+  end
+
+  def get_sports_latest_24hr_bugs_data
+    project_name = 'Team Sports'
+    jira_query = get_latest_24hr_bugs_query(project_name, nil)
+    all_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "all: #{all_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 1)
+    p0_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p0_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 2)
+    p1_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p1_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 3)
+    p2_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p2_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 4)
+    p3_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p3_count}"
+
+    jira_query = get_latest_24hr_bugs_query(project_name, 5)
+    p4_count = FndJira.connection.execute(jira_query).first[0]
+    logger.info "priority 1: #{p4_count}"
+
+    today = Date.today
+    today_str = "#{today.month}/#{today.day}/#{today.year.to_s[2, 2]}"
+
+    CSV.open(File.join(Rails.root, 'public', 'metrics', 'sports_latest_24hr_bugs.csv'), 'a') do |csv|
+      csv << [today_str, all_count, p0_count, p1_count, p2_count, p3_count, p4_count]
     end
 
-    def get_latest_24hr_bugs_query(project_name, priority)
-      query = "select count(*) from jiraissue j1 join project p on p.id = j1.project where j1.issuetype in (select id from issuetype where issuetype.pname = 'Bug' or issuetype.pname = 'Bug Sub-Task') and j1.created >= '#{Date.today - 1}' and p.pname = '" + project_name + "'"
-      unless priority.nil?
-        query = query + " and j1.priority = #{priority}"
-      end
-      query
-    end
-
-    def get_endurance_latest_24hr_bugs_data
-      project_name = 'Endurance'
-
-      jira_query = get_latest_24hr_bugs_query(project_name, nil)
-      all_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "all: #{all_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 1)
-      p0_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p0_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 2)
-      p1_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p1_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 3)
-      p2_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p2_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 4)
-      p3_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p3_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 5)
-      p4_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p4_count}"
-
-      today = Date.today
-      today_str = "#{today.month}/#{today.day}/#{today.year.to_s[2, 2]}"
-
-      CSV.open(File.join(Rails.root, 'public', 'metrics', 'endurance_latest_24hr_bugs.csv'), 'a') do |csv|
-        csv << [today_str, all_count, p0_count, p1_count, p2_count, p3_count, p4_count]
-      end
-    end
-
-    def get_camps_latest_24hr_bugs_data
-      project_name = 'Camps'
-      jira_query = get_latest_24hr_bugs_query(project_name, nil)
-      all_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "all: #{all_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 1)
-      p0_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p0_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 2)
-      p1_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p1_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 3)
-      p2_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p2_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 4)
-      p3_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p3_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 5)
-      p4_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p4_count}"
-
-      today = Date.today
-      today_str = "#{today.month}/#{today.day}/#{today.year.to_s[2, 2]}"
-
-      CSV.open(File.join(Rails.root, 'public', 'metrics', 'camps_latest_24hr_bugs.csv'), 'a') do |csv|
-        csv << [today_str, all_count, p0_count, p1_count, p2_count, p3_count, p4_count]
-      end
-    end
-
-    def get_sports_latest_24hr_bugs_data
-      project_name = 'Team Sports'
-      jira_query = get_latest_24hr_bugs_query(project_name, nil)
-      all_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "all: #{all_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 1)
-      p0_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p0_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 2)
-      p1_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p1_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 3)
-      p2_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p2_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 4)
-      p3_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p3_count}"
-
-      jira_query = get_latest_24hr_bugs_query(project_name, 5)
-      p4_count = FndJira.connection.execute(jira_query).first[0]
-      logger.info "priority 1: #{p4_count}"
-
-      today = Date.today
-      today_str = "#{today.month}/#{today.day}/#{today.year.to_s[2, 2]}"
-
-      CSV.open(File.join(Rails.root, 'public', 'metrics', 'sports_latest_24hr_bugs.csv'), 'a') do |csv|
-        csv << [today_str, all_count, p0_count, p1_count, p2_count, p3_count, p4_count]
-      end
-
-    end
+  end
 end
