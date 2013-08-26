@@ -186,7 +186,7 @@ and j1.created <= '#{@to}'
   def generate_automation_status_report
     @projects = params[:projects]
     csv_string = CSV.generate do |csv|
-      csv << ["ProjectName","Total Number","Automated","Not a Candidate","Automated Rate"]
+      csv << ["ProjectName","Total Number","Automation Candidate", "Automated","Automated Rate"]
       @projects.each do |project|
         project_id = Project.find_by_name(project).id
         get_total_number_of_tcs_query = "SELECT COUNT(DISTINCT `test_cases`.`case_id`) as total_number
@@ -212,9 +212,10 @@ and j1.created <= '#{@to}'
         total_number = TestCase.find_by_sql(get_total_number_of_tcs_query)[0]["total_number"].to_f
         automated_number = TestCase.find_by_sql(get_number_of_automated_tcs_query)[0]["automated_number"].to_f
         not_candidate_number = TestCase.find_by_sql(get_number_of_not_candidate_tcs_query)[0]["not_candidate_number"].to_f
+        to_be_automated_number = total_number - not_candidate_number
         automated_rate = (total_number-not_candidate_number) > 0 ? automated_number/(total_number-not_candidate_number) : 0.0
         automated_rate = sprintf("%.2f \%",automated_rate*100)
-        csv << [project,total_number,automated_number,not_candidate_number,automated_rate]
+        csv << [project,total_number,to_be_automated_number,automated_number,automated_rate]
       end
     end
     today = Date.today
