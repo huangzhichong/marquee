@@ -58,52 +58,66 @@ class Project < ActiveRecord::Base
   end
 
   def self.caculate_coverage_by_project_and_priority_and_type(project_name, priority,plan_type)
-    project_id = Project.find_by_name(project_name).id
-    case priority
-    when "Overall"
-      automated_count = TestCase.includes("test_plan").where(:automated_status => "Automated", :test_plans => {:project_id => project_id,:status => "completed",:plan_type => plan_type}).count
-      update_needed_count = TestCase.includes("test_plan").where(:automated_status => "Update Needed", :test_plans => {:project_id => project_id,:status => "completed",:plan_type => plan_type}).count
-      cannot_count = TestCase.includes("test_plan").where(:automated_status => "Not a Candidate", :test_plans => {:project_id => project_id,:status => "completed",:plan_type => plan_type}).count
-      manual = TestCase.includes("test_plan").where(:automated_status => "Manual", :test_plans => {:project_id => project_id,:status => "completed",:plan_type => plan_type}).count
-      all_count = TestCase.includes("test_plan").where(:test_plans => {:project_id => project_id,:status => "completed",:plan_type => plan_type}).count
-    else
-      automated_count = TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Automated", :test_plans => {:project_id => project_id,:status => "completed",:plan_type => plan_type}).count
-      update_needed_count = TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Update Needed", :test_plans => {:project_id => project_id,:status => "completed",:plan_type => plan_type}).count
-      cannot_count = TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Not a Candidate", :test_plans => {:project_id => project_id,:status => "completed",:plan_type => plan_type}).count
-      manual = TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Manual", :test_plans => {:project_id => project_id,:status => "completed",:plan_type => plan_type}).count
-      all_count = TestCase.includes("test_plan").where(:priority => priority, :test_plans => {:project_id => project_id,:status => "completed",:plan_type => plan_type}).count
+    project = Project.find_by_name(project_name)
+    if project
+      case priority
+      when "Overall"
+        automated_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Automated"})
+        update_needed_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Update Needed"})
+        cannot_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Not a Candidate"})
+        manual = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Manual"})
+        all_count = project.count_test_case_by_plan_type_and_options(plan_type)
+      else
+        automated_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Automated",:priority => priority})
+        update_needed_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Update Needed",:priority => priority})
+        cannot_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Not a Candidate",:priority => priority})
+        manual = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Manual",:priority => priority})
+        all_count = project.count_test_case_by_plan_type_and_options(plan_type, {:priority => priority})
+      end
+      coverage_value = ((all_count - cannot_count - manual) <= 0 ? 0.0 : (automated_count+update_needed_count).to_f/(all_count - cannot_count - manual).to_f)
+      coverage_value = format("%.1f",coverage_value*100)
     end
-    coverage_value = ((all_count - cannot_count - manual) <= 0 ? 0.0 : (automated_count+update_needed_count).to_f/(all_count - cannot_count - manual).to_f)
-    coverage_value = format("%.1f",coverage_value*100)
   end
 
-  def self.caculate_coverage_by_project_and_priority(project_name, priority)
+  def self.caculate_coverage_by_project_and_priority(project_name,priority)
     coverage_value = 0.0
     project = Project.find_by_name(project_name)
     if project
       case priority
       when "Overall"
-        automated_count = TestCase.includes("test_plan").where(:automated_status => "Automated", :test_plans => {:project_id => project.id,:status => "completed"}).count
-        update_needed_count = TestCase.includes("test_plan").where(:automated_status => "Update Needed", :test_plans => {:project_id => project.id,:status => "completed"}).count
-        cannot_count = TestCase.includes("test_plan").where(:automated_status => "Not a Candidate", :test_plans => {:project_id => project.id,:status => "completed"}).count
-        manual = TestCase.includes("test_plan").where(:automated_status => "Manual", :test_plans => {:project_id => project.id,:status => "completed"}).count
-        all_count = TestCase.includes("test_plan").where(:test_plans => {:project_id => project.id,:status => "completed"}).count
+        automated_count = project.count_test_case_by_options(:automated_status => "Automated")
+        update_needed_count = project.count_test_case_by_options(:automated_status => "Update Needed")
+        cannot_count = project.count_test_case_by_options(:automated_status => "Not a Candidate")
+        manual = project.count_test_case_by_options(:automated_status => "Manual")
+        all_count = project.count_test_case_by_options
       else
-        automated_count = TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Automated", :test_plans => {:project_id => project.id,:status => "completed"}).count
-        update_needed_count = TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Update Needed", :test_plans => {:project_id => project.id,:status => "completed"}).count
-        cannot_count = TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Not a Candidate", :test_plans => {:project_id => project.id,:status => "completed"}).count
-        manual = TestCase.includes("test_plan").where(:priority => priority, :automated_status => "Manual", :test_plans => {:project_id => project.id,:status => "completed"}).count
-        all_count = TestCase.includes("test_plan").where(:priority => priority, :test_plans => {:project_id => project.id,:status => "completed"}).count
+        automated_count = project.count_test_case_by_options({:automated_status => "Automated",:priority => priority})
+        update_needed_count = project.count_test_case_by_options({:automated_status => "Update Needed",:priority => priority})
+        cannot_count = project.count_test_case_by_options({:automated_status => "Not a Candidate",:priority => priority})
+        manual = project.count_test_case_by_options({:automated_status => "Manual",:priority => priority})
+        all_count = project.count_test_case_by_options(:priority => priority)
       end
       coverage_value = ((all_count - cannot_count - manual) <= 0 ? 0.0 : (automated_count+update_needed_count).to_f/(all_count - cannot_count - manual).to_f)
       coverage_value = format("%.3f",coverage_value*100)
     end
   end
 
+  def count_test_case_by_options(options={})
+    options[:test_plans] = {:project_id => self.id,:status => "completed"}
+    TestCase.includes("test_plan").where(options).where("test_cases.version > 0").count
+  end
+
+  def count_test_case_by_plan_type_and_options(plan_type,options={})
+    options[:test_plans] = {:plan_type => plan_type, :project_id => self.id, :status => "completed"}
+    TestCase.includes("test_plan").where(options).where("test_cases.version > 0").count
+  end
+
+
+
   private
 
-    def reprocess_icon_image
-      icon_image.reprocess!
-    end
+  def reprocess_icon_image
+    icon_image.reprocess!
+  end
 
 end

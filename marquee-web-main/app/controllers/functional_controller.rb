@@ -187,42 +187,19 @@ and j1.created <= '#{@to}'
     @projects = params[:projects]
     csv_string = CSV.generate do |csv|
       csv << ["Application","Total Test Cases","To Be Automated", "\# Automated","% Automated"]
-      @projects.each do |project|
-        project_id = Project.find_by_name(project).id
-        get_total_number_of_tcs_query = "SELECT COUNT(DISTINCT `test_cases`.`case_id`) as total_number
-                                     FROM `test_cases` 
-                                     LEFT OUTER JOIN `test_plans` ON `test_plans`.`id` = `test_cases`.`test_plan_id`
-                                     WHERE `test_plans`.`project_id` = #{project_id}
-                                     AND `test_plans`.`status` = 'completed'
-                                     AND `test_cases`.`version` > 0"
-        get_number_of_automated_tcs_query = "SELECT COUNT(DISTINCT `test_cases`.`case_id`) as automated_number
-                                     FROM `test_cases` 
-                                     LEFT OUTER JOIN `test_plans` ON `test_plans`.`id` = `test_cases`.`test_plan_id`
-                                     WHERE `test_plans`.`project_id` = #{project_id}
-                                     AND `test_plans`.`status` = 'completed'
-                                     AND `test_cases`.`version` > 0
-                                     AND `test_cases`.`automated_status` = 'Automated'"
-        get_number_of_not_candidate_tcs_query = "SELECT COUNT(DISTINCT `test_cases`.`case_id`) as not_candidate_number
-                                     FROM `test_cases` 
-                                     LEFT OUTER JOIN `test_plans` ON `test_plans`.`id` = `test_cases`.`test_plan_id`
-                                     WHERE `test_plans`.`project_id` = #{project_id}
-                                     AND `test_plans`.`status` = 'completed'
-                                     AND `test_cases`.`version` > 0
-                                     AND `test_cases`.`automated_status` = 'Not a Candidate'"
-        total_number = TestCase.find_by_sql(get_total_number_of_tcs_query)[0]["total_number"].to_f
-        automated_number = TestCase.find_by_sql(get_number_of_automated_tcs_query)[0]["automated_number"].to_f
-        not_candidate_number = TestCase.find_by_sql(get_number_of_not_candidate_tcs_query)[0]["not_candidate_number"].to_f
+      @projects.each do |project_name|
+        project = Project.find_by_name(project_name)      
+        total_number = project.count_test_case_by_options().to_f
+        automated_number = project.count_test_case_by_options(:automated_status => "Automated").to_f
+        not_candidate_number = project.count_test_case_by_options(:automated_status => "Not a Candidate").to_f
         to_be_automated_number = total_number - not_candidate_number
         automated_rate = to_be_automated_number > 0 ? automated_number/to_be_automated_number : 0.0
         automated_rate = sprintf("%.1f \%",automated_rate*100)
-        logger.info "====>>>>>> #{automated_rate.to_s}"
-        csv << [project,total_number,to_be_automated_number,automated_number,automated_rate.to_s]
+        csv << [project_name,total_number,to_be_automated_number,automated_number,automated_rate.to_s]
       end
     end
-    today = Date.today
-    today_str = "#{today.month}_#{today.day}_#{today.year}"
     respond_to do |format|
-      format.csv {send_data csv_string, :filename => "automation_status_#{today_str}.csv"}
+      format.csv {send_data csv_string, :filename => "automation_status_#{Time.now.strftime("%Y%m%d_%H%M%S")}.csv"}
     end
   end
 
