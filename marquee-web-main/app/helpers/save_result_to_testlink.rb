@@ -12,14 +12,15 @@ class TestlinkAPIClient
     @server.call("tl.checkDevKey", {"devKey"=>@devKey})
   end
 
-  def reportTCResult(case_id, testlink_id, tpid, build_id, platform_id,tc_result)
+  def reportTCResult(case_id, testlink_id, tpid, build_id, platform_id,tc_result,tc_notes)
     args = {"devKey"=>@devKey,
             "testcaseid"=>testlink_id,
             "testplanid"=>tpid,
             "buildid"=>build_id,
             "status"=>tc_result,
-            "notes"=>"Result from Marquee"}
+            "notes"=>tc_notes}
     args["platformid"]=platform_id unless platform_id == ""
+    puts "Get result info ===>> #{args}"
     result = @server.call("tl.reportTCResult", args)
     return {:status => result[0]['status'],
             :message => result[0]['message'],
@@ -83,16 +84,17 @@ class SaveResultToTestlink
         @message['notes'] << "Get test plan id #{tp_id} by #{tl_project_name} and #{tl_plan_name}\n"
         build_id = client.get_build_id_by_name(tp_id,tl_build_name)
         @message['notes'] << "Get build id #{build_id} by #{tl_plan_name} and #{tl_build_name}\n"
-        unless tl_platform_name == ""
+        unless tl_platform_name.nil?
           platform_id = client.get_test_platform_id_by_name(tp_id,tl_platform_name)
           @message['notes'] << "Get platform id #{platform_id} by #{tl_plan_name} and #{tl_platform_name}\n"
         end
         test_round = TestRound.find(test_round_id)
         test_round.get_result_details.each do |result|
+          result_notes = "Result from Marquee. Get service_info #{result['service_info']}"
           if result['result'] == 'pass'
-            @message['export_results'] << client.reportTCResult(result['case_id'],result['test_link_id'],tp_id,build_id,platform_id,'p')
+            @message['export_results'] << client.reportTCResult(result['case_id'],result['test_link_id'],tp_id,build_id,platform_id,'p',result_notes)
           elsif result['result'] == 'failed'
-            @message['export_results'] << client.reportTCResult(result['case_id'],result['test_link_id'],tp_id,build_id,platform_id,'f')
+            @message['export_results'] << client.reportTCResult(result['case_id'],result['test_link_id'],tp_id,build_id,platform_id,'f',result_notes)
           end
         end
         test_round.exported_status = 'Y'
