@@ -19,7 +19,7 @@ class TestlinkAPIClient
             "buildid"=>build_id,
             "status"=>tc_result,
             "notes"=>tc_notes}
-    args["platformid"]=platform_id unless platform_id == ""
+    args["platformid"]=platform_id unless platform_id.nil? or platform_id == ""
     puts "Get result info ===>> #{args}"
     result = @server.call("tl.reportTCResult", args)
     return {:status => result[0]['status'],
@@ -90,7 +90,7 @@ class SaveResultToTestlink
         end
         test_round = TestRound.find(test_round_id)
         test_round.get_result_details.each do |result|
-          result_notes = "Result from Marquee. Get service_info #{result['service_info']}"
+          result_notes = "Result from Marquee. Get service_info #{result['service_info']}\n"
           if result['result'] == 'pass'
             @message['export_results'] << client.reportTCResult(result['case_id'],result['test_link_id'],tp_id,build_id,platform_id,'p',result_notes)
           elsif result['result'] == 'failed'
