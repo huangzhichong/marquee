@@ -136,13 +136,13 @@ class ImportDataController < ApplicationController
     project_mappings << {"marquee_project" => 'Membership',"testlink_project"  => 'Membership'}
     project_mappings << {"marquee_project" => 'ActiveNet',"testlink_project"  => 'ActiveNet'}
     project_mappings << {"marquee_project" => 'Endurance',"testlink_project"  => 'Endurance'}
-    project_mappings << {"marquee_project" => 'eGov',"testlink_project"  => 'eGov'}
     project_mappings << {"marquee_project" => 'LeagueOne',"testlink_project"  => 'LeagueOne'}
     project_mappings << {"marquee_project" => 'Plancast',"testlink_project"  => 'Plancast'}
     project_mappings << {"marquee_project" => 'Class', "testlink_project" => 'Class'}
     project_mappings << {"marquee_project" => 'RTP', "testlink_project" => 'Resort Technology Partners'}
     project_mappings << {"marquee_project" => 'SNH', "testlink_project" => 'ROL - Beta'}
     project_mappings << {"marquee_project" => 'WannaDo', "testlink_project" => 'WannaDo'}
+    project_mappings << {"marquee_project" => 'Sports', "testlink_project" => "AW-Team Sports & Swim"}
     project_mappings.each do |mapping|
       marquee_project_name = mapping["marquee_project"]
       project_name = mapping["testlink_project"]
