@@ -132,7 +132,7 @@ class ImportDataController < ApplicationController
 
   def refresh_testlink_data
     project_mappings = []
-    project_mappings << {"marquee_project" => 'Camps',"testlink_project"  => 'Camps'}
+    project_mappings << {"marquee_project" => 'Camps',"testlink_project"  => 'AW-Camps'}
     project_mappings << {"marquee_project" => 'Membership',"testlink_project"  => 'Membership'}
     project_mappings << {"marquee_project" => 'ActiveNet',"testlink_project"  => 'ActiveNet'}
     project_mappings << {"marquee_project" => 'Endurance',"testlink_project"  => 'Endurance'}
@@ -140,8 +140,8 @@ class ImportDataController < ApplicationController
     project_mappings << {"marquee_project" => 'LeagueOne',"testlink_project"  => 'LeagueOne'}
     project_mappings << {"marquee_project" => 'Plancast',"testlink_project"  => 'Plancast'}
     project_mappings << {"marquee_project" => 'Class', "testlink_project" => 'Class'}
-    project_mappings << {"marquee_project" => 'RTP', "testlink_project" => 'RTP'}
-    project_mappings << {"marquee_project" => 'SNH', "testlink_project" => 'SNH'}
+    project_mappings << {"marquee_project" => 'RTP', "testlink_project" => 'Resort Technology Partners'}
+    project_mappings << {"marquee_project" => 'SNH', "testlink_project" => 'ROL - Beta'}
     project_mappings << {"marquee_project" => 'WannaDo', "testlink_project" => 'WannaDo'}
     project_mappings.each do |mapping|
       marquee_project_name = mapping["marquee_project"]
@@ -179,7 +179,8 @@ class ImportDataController < ApplicationController
         end
       end
     end
-
+    TestPlan.where(:status => 'expired').delete_all
+    TcSteps.delete_all
     get_test_steps = ("
     select ts.step_number as step_number,
     ts.action as step_action,
