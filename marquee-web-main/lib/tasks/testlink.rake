@@ -22,8 +22,8 @@ end
 desc "import qa test cases to Marquee for specifical project "
 # task :import_test_cases => :environment , :mp_name , :p_name do |t,args|
 task :import_test_cases , [:mp_name, :p_name] => :environment  do |t, args|
-  host = "10.109.0.164"
-  user = "camps"
+  host = "10.107.100.129"
+  user = "smart"
   pwd = "start123"
   db = "testlink"
   puts "will start import data from #{host}/#{db}"
@@ -87,8 +87,8 @@ task :import_all_cases => :environment  do
   project_mappings << {"marquee_project" => 'iPhoneApp',"testlink_project"  => 'ActiveiPhoneApp'}
   project_mappings << {"marquee_project" => 'PaoBuKong',"testlink_project"  => 'PaoBuKong'}
   
-  host = "10.109.0.164"
-  user = "camps"
+  host = "10.107.100.129"
+  user = "smart"
   pwd = "start123"
   db = "testlink"
   puts "will start import data from #{host}/#{db}"
