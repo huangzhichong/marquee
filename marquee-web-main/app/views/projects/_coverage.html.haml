@@ -3,8 +3,6 @@
 
 .project-chart-box
   - case @project.name
-  - when "Endurance","Sports"
-    - str_xml = render :file=>"fusioncharts/project_coverage"
   - when "Camps"
     - str_xml = render :file=>"fusioncharts/project_regression_coverage"
   - else

@@ -1,6 +1,8 @@
 require 'csv'
 
 class HomeController < ApplicationController
+  layout 'no_sidebar'
+
   def index
     #@overall_dre = Rails.cache.fetch('overall_dre'){Report::Project.where(name: 'Overall').first.dres.last.value}
 
@@ -23,7 +25,7 @@ class HomeController < ApplicationController
     @automation_case_count = AutomationCase.count
     @test_round_count = TestRound.count
     # @activities = Activity.scoped.order('created_at desc').page(0).per(5)
-    
+
     @activities = Audit.where(:auditable_type => "TestRound", :action => "create").order('created_at desc').limit(5)
     @activities.each do |activity|
       if activity.user.nil?
@@ -31,23 +33,13 @@ class HomeController < ApplicationController
         activity.save
       end
     end
-    
-    # @camps_overall_coverage = Rails.cache.fetch("camps_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Camps","Overall") }
-    # @camps_overall_goal = Rails.cache.fetch("camps_overall_goal"){ 95 }
-    # @endurance_overall_coverage = Rails.cache.fetch("endurance_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Endurance","Overall") }
-    # @endurance_overall_goal = Rails.cache.fetch("endurance_overall_goal"){ 90 }
-    # @sports_overall_coverage = Rails.cache.fetch("sports_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Sports","Overall") }
-    # @sports_overall_goal = Rails.cache.fetch("sports_overall_goal"){ 90 }
-    # @membership_overall_coverage = Rails.cache.fetch("membership_overall_coverage"){ Project.caculate_coverage_by_project_and_priority("Membership","Overall") }
 
-    camps_regression_coverage = []
-    %w(Overall).each do |priority|
-      # @cui_coverage << Project.caculate_coverage_by_project_and_priority_and_type(project_name, priority,"CUI")
-      # @aui_coverage << Project.caculate_coverage_by_project_and_priority_and_type(project_name, priority,"AUI")
-      camps_regression_coverage << Project.caculate_coverage_by_project_and_priority_and_type("Camps", priority,"regression")
-      # @coverage << Project.caculate_coverage_by_project_and_priority(project_name,priority)
-    end
-    @camps_overall_coverage = camps_regression_coverage[0]
+
+    @endurance_overall_coverage = Project.caculate_coverage_by_project_and_priority("Endurance","Overall")
+    @sports_overall_coverage = Project.caculate_coverage_by_project_and_priority("Sports","Overall")
+    @membership_overall_coverage = Project.caculate_coverage_by_project_and_priority("Membership","Overall")
+    @rtp_overall_coverage = Project.caculate_coverage_by_project_and_priority_and_type("RTP", "Overall","regression")
+    @camps_overall_coverage = Project.caculate_coverage_by_project_and_priority_and_type("Camps", "Overall","regression")
   end
 
   def get_activities_by_project
