@@ -180,7 +180,6 @@ class ImportDataController < ApplicationController
       end
     end
     TestPlan.where(:status => 'expired').delete_all
-    TcSteps.delete_all
     get_test_steps = ("
     select ts.step_number as step_number,
     ts.action as step_action,
@@ -196,8 +195,8 @@ class ImportDataController < ApplicationController
       if TestCase.where(:case_id =>ts[3]).first != nil
         ts[3] = TestCase.where(:case_id =>ts[3]).first['id']
         ts = ts.collect{ |d| "'" + d.to_s.gsub("\\","%5c").gsub("'","%27").gsub("\"","%22") + "'" }.join(",")
-          ActiveRecord::Base.connection.insert("INSERT INTO tc_steps (step_number,step_action,expected_result,test_case_id,test_link_id) VALUES (#{ts})")
-        end
+        ActiveRecord::Base.connection.insert("INSERT INTO tc_steps (step_number,step_action,expected_result,test_case_id,test_link_id) VALUES (#{ts})")
       end
     end
   end
+end
