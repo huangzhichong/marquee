@@ -12,10 +12,32 @@ xml.chart(:caption => "Markets Automation Coverage", :adjustDiv => "0", :formatN
   sports_link = Project.find_by_name('Sports').nil? ? "#" : "/projects/#{Project.find_by_name('Sports').id}/coverage"
   rtp_link = Project.find_by_name('RTP').nil? ? "#" : "/projects/#{Project.find_by_name('RTP').id}/coverage"
 
-  xml.set(:Label => "Camps", :Value => (@camps_overall_coverage==100 ? 99.999 : @camps_overall_coverage), :link => camps_link, :HoverText => "Camps Coverage = #{@camps_overall_coverage.to_s}%")
-  xml.set(:Label => "Endurance", :Value => (@endurance_overall_coverage==100 ? 99.999 : @endurance_overall_coverage), :link => endurance_link, :HoverText => "Endurance Coverage = #{@endurance_overall_coverage.to_s}%")
-  xml.set(:Label => "MemberShip", :Value => (@membership_overall_coverage==100 ? 99.999 : @membership_overall_coverage), :link => membership_link, :HoverText => "Membership Coverage = #{@membership_overall_coverage.to_s}%")
-  xml.set(:Label => "RTP", :Value => (@rtp_overall_coverage==100 ? 99.999 : @rtp_overall_coverage), :link => rtp_link,  :HoverText => "RTP Coverage = #{@rtp_overall_coverage.to_s}%")
-  xml.set(:Label => "Sports", :Value => (@sports_overall_coverage==100 ? 99.999 : @sports_overall_coverage), :link => sports_link, :HoverText => "Sports Coverage = #{@sports_overall_coverage.to_s}%")
-
+  xml.set(:Label => "Camps", 
+          :Value => (@camps_overall_coverage==100 ? 99.999 : @camps_overall_coverage),
+          :link => camps_link, 
+          :HoverText => "#{'Automated:'.ljust(15,' ')}#{@camps_automated}{br}#{'UpdateNeeded:'.ljust(15,' ')}#{@camps_update_needed}{br}#{'NotCandidate:'.ljust(15,' ')}#{@camps_not_candidate}{br}#{'TotalCases:'.ljust(15,' ')}#{@camps_total}")
+  xml.set(:Label => "Endurance", 
+          :Value => (@endurance_overall_coverage==100 ? 99.999 : @endurance_overall_coverage), 
+          :link => endurance_link, 
+          :HoverText => "#{'Automated:'.ljust(15,' ')}#{@endurance_automated}{br}#{'UpdateNeeded:'.ljust(15,' ')}#{@endurance_update_needed}{br}#{'NotCandidate:'.ljust(15,' ')}#{@endurance_not_candidate}{br}#{'TotalCases:'.ljust(15,' ')}#{@endurance_total}")
+  xml.set(:Label => "Membership", 
+          :Value => (@membership_overall_coverage==100 ? 99.999 : @membership_overall_coverage), 
+          :link => endurance_link, 
+          :HoverText => "#{'Automated:'.ljust(15,' ')}#{@membership_automated}{br}#{'UpdateNeeded:'.ljust(15,' ')}#{@membership_update_needed}{br}#{'NotCandidate:'.ljust(15,' ')}#{@membership_not_candidate}{br}#{'TotalCases:'.ljust(15,' ')}#{@membership_total}")
+  xml.set(:Label => "RTP", 
+          :Value => (@rtp_overall_coverage==100 ? 99.999 : @rtp_overall_coverage), 
+          :link => endurance_link, 
+          :HoverText => "#{'Automated:'.ljust(15,' ')}#{@rtp_automated}{br}#{'UpdateNeeded:'.ljust(15,' ')}#{@rtp_update_needed}{br}#{'NotCandidate:'.ljust(15,' ')}#{@rtp_not_candidate}{br}#{'TotalCases:'.ljust(15,' ')}#{@rtp_total}")
+  xml.set(:Label => "Sports", 
+          :Value => (@sports_overall_coverage==100 ? 99.999 : @sports_overall_coverage), 
+          :link => endurance_link, 
+          :HoverText => "#{'Automated:'.ljust(15,' ')}#{@sports_automated}{br}#{'UpdateNeeded:'.ljust(15,' ')}#{@sports_update_needed}{br}#{'NotCandidate:'.ljust(15,' ')}#{@sports_not_candidate}{br}#{'TotalCases:'.ljust(15,' ')}#{@sports_total}")
+  xml.styles{
+    xml.definition{
+      xml.style(:name => 'hoverTextFont', :type=>'font', :font=>'Monaco', :algin=>'left')
+    }
+    xml.application{
+      xml.apply(:toObject => 'ToolTip', :styles=>'hoverTextFont')
+    }
+  }
 end

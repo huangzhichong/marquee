@@ -147,11 +147,10 @@ class ImportDataController < ApplicationController
       marquee_project_name = mapping["marquee_project"]
       project_name = mapping["testlink_project"]
       mp = Project.find_by_name(marquee_project_name)
-      get_project_by_name = "select id,name from old_projects where name ='#{project_name}'"
       if !mp.nil?
+        get_project_by_name = "select id,name from old_projects where name ='#{project_name}'"
         local_projects = LocalTestlink.connection.execute(get_project_by_name)
         local_projects.each do |p|
-          logger.info "======>>> #{p[1]} in TestLink ======>>> will import to #{mp.name} in Marquee"
           mp.test_plans.update_all(:status => "expired")
           get_tp_query = "select * from old_test_plans where project_id = '#{p[0]}' limit 9999999"
           local_test_plans = LocalTestlink.connection.execute(get_tp_query)
@@ -175,28 +174,35 @@ class ImportDataController < ApplicationController
               mtc.save
             end
           end
-          logger.info "======>>>done the import for #{mp.name}"
+          get_test_steps = ("select ts.step_number as step_number,
+                            ts.action as step_action,
+                            ts.expected_result as expected_result,
+                            tc.case_id as test_case_id,
+                            ts.test_link_id as test_link_id
+                            from old_test_steps ts
+                            join old_test_cases tc on tc.id = ts.test_case_id
+                            where tc.test_plan_id in ( 
+                            select id from old_test_plans 
+                            where project_id =(select id from old_projects where name ='#{project_name}'))
+                            limit 99999
+                            ")
+          old_test_steps = LocalTestlink.connection.execute(get_test_steps)
+          step_records = []
+          old_test_steps.each do |ts|
+            if TestCase.where(:case_id =>ts[3]).first != nil
+              ts[3] = TestCase.where(:case_id =>ts[3]).first['id']
+              record = ts.collect{ |d| "'" + d.to_s.gsub("\\","").gsub("'","").gsub("\"","") + "'" }.join(",")
+              begin
+                ActiveRecord::Base.connection.insert "INSERT INTO tc_steps (step_number,step_action,expected_result,test_case_id,test_link_id) VALUES (#{record})"
+              rescue Exception => e
+                logger.info "Error in updating test steps, => #{e}"
+              end
+            end
+          end
         end
       end
     end
     TestPlan.where(:status => 'expired').delete_all
-    get_test_steps = ("
-    select ts.step_number as step_number,
-    ts.action as step_action,
-    ts.expected_result as expected_result,
-    tc.case_id as test_case_id,
-    ts.test_link_id as test_link_id
-    from old_test_steps ts
-    join old_test_cases tc on tc.id = ts.test_case_id
-    limit 99999999
-    ")
-    old_test_steps = LocalTestlink.connection.execute(get_test_steps)
-    old_test_steps.each do |ts|
-      if TestCase.where(:case_id =>ts[3]).first != nil
-        ts[3] = TestCase.where(:case_id =>ts[3]).first['id']
-        ts = ts.collect{ |d| "'" + d.to_s.gsub("\\","%5c").gsub("'","%27").gsub("\"","%22") + "'" }.join(",")
-        ActiveRecord::Base.connection.insert("INSERT INTO tc_steps (step_number,step_action,expected_result,test_case_id,test_link_id) VALUES (#{ts})")
-      end
-    end
+    render :nothing => true
   end
 end
