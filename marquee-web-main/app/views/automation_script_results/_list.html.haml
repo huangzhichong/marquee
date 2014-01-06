@@ -43,7 +43,7 @@
         %td= in_time_zone(asr.start_time)
         %td= in_time_zone(asr.end_time)
         %td
-          - if asr.end? && asr.result!="pass" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
+          - if asr.end? && asr.result!="pass" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id}) 
             = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error","Environment Error" => "Environment Error"}, asr.triage_result), :id => asr.id, :class => "triage-result"
           - else
             = asr.triage_result
@@ -52,9 +52,9 @@
           -if sa && sa.slave && asr.end_time
             = link_to "View", test_round_automation_script_result_show_logs_path(asr.test_round, asr), :class => "btn primary"
         %td
-          - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
+          - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id}) 
             %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun"}
-          - if asr.result == "pending" && asr.state != "scheduling" && can?(:update, AutomationScriptResult, {:project_id => project.id})
+          - if asr.result == "pending" && asr.state != "scheduling" && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id})
             - if asr.state == "stopping"
               %input{:type => "button", :value => "Stopping", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn disabled", :disabled => "disabled"}
             - else
