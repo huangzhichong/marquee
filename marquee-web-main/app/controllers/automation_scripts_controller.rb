@@ -6,8 +6,6 @@ class AutomationScriptsController < InheritedResources::Base
   def resource
     @project ||= Project.find(params[:project_id])
     @automation_script ||= AutomationScript.find(params[:id])
-    @search = @automation_script.automation_cases.search(params[:search])
-    @automation_cases ||= @search.page(params[:page]).per(15)
   end
 
   def collection
