@@ -29,6 +29,9 @@ class ImportDataController < ApplicationController
       end
       as.save
     end
+    unless p.nil?
+      delete_null_case_scripts(p.id)
+    end
   end
   def import_as_and_tc_status
     script = params[:data]["automation_script"]
@@ -96,6 +99,7 @@ class ImportDataController < ApplicationController
         ac.version = "1.0"
         ac.save
       end
+      delete_null_case_scripts(p.id)
     end
   end
 
@@ -204,5 +208,14 @@ class ImportDataController < ApplicationController
     end
     TestPlan.where(:status => 'expired').delete_all
     render :nothing => true
+  end
+  
+  def delete_null_case_scripts(project_id)
+    @project ||= Project.find(project_id)
+    @project.automation_scripts.each do |automation_script| 
+      if automation_script.automation_cases.length == 0 
+        automation_script.destroy
+      end
+    end
   end
 end

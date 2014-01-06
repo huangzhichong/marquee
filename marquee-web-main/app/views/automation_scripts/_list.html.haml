@@ -13,7 +13,7 @@
     %th=sort_link search, :status, {}, {:remote => true}
     %th=sort_link search, :version, {}, {:remote => true}
     %th=sort_link search, :owner_email, "Owner", {}, {:remote => true}
-
+    %th
   - if automation_scripts.nil? or automation_scripts.count == 0
     %tr
       %td{:colspan => "4"}
@@ -25,5 +25,8 @@
         %td= automation_script.status
         %td= automation_script.version
         %td= automation_script.owner.display_name
-
+        %td
+        -if can? :delete, AutomationScript, {:project_id => project.id} or (!current_user.nil? && automation_script.owner.display_name == current_user.display_name)
+          - delete_url= project_automation_script_path(project,automation_script)
+          = render :partial => 'partial/table_actions', :locals => {:show_url => nil, :edit_url => nil, :delete_url => delete_url}
 = paginate automation_scripts
