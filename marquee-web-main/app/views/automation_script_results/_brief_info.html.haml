@@ -8,16 +8,7 @@
 - right_titles = ['Pass Count:', 'Failed Count:', 'Warning Count:', 'Not Run Count:']
 - right_values = [@automation_script_result.pass, @automation_script_result.failed, @automation_script_result.warning, @automation_script_result.not_run]
 = render :partial => "partial/brief_info", :locals => {:left_titles => left_titles, :left_values => left_values, :right_titles => right_titles, :right_values => right_values}
-= link_to "View", test_round_automation_script_result_show_logs_path(@automation_script_result.test_round, @automation_script_result), :class => "btn primary"  
-- asr =  @automation_script_result
-- project = @automation_script_result.test_round.project
-- if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
-  %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun"}
-- if asr.result == "pending" && asr.state != "scheduling" && can?(:update, AutomationScriptResult, {:project_id => project.id})
-  - if asr.state == "stopping"
-    %input{:type => "button", :value => "Stopping", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn disabled", :disabled => "disabled"}
-  - else
-    %input{:type => "button", :value => "Stop", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn"}
+
 
 :javascript
   $(function(){
