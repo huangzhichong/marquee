@@ -209,7 +209,7 @@ class ImportDataController < ApplicationController
     TestPlan.where(:status => 'expired').delete_all
     render :nothing => true
   end
-  
+  protected
   def delete_null_case_scripts(project_id)
     @project ||= Project.find(project_id)
     @project.automation_scripts.each do |automation_script| 
