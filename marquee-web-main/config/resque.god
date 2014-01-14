@@ -3,7 +3,7 @@
 # This is the actual config file used to keep marquee resque job running.
 
 RAILS_ENV   = ENV['RAILS_ENV']  || "production"
-RAILS_ROOT  = ENV['RAILS_ROOT'] || "/home/activeworks/marquee/marquee-web-main"
+RAILS_ROOT  = ENV['RAILS_ROOT'] || "/home/active/marquee/marquee-web-main"
 
 ["marquee_farm","marquee_mailer","marquee_data_sync"].each do |name|
   God.watch do |w|
@@ -16,12 +16,12 @@ RAILS_ROOT  = ENV['RAILS_ROOT'] || "/home/activeworks/marquee/marquee-web-main"
     w.start_grace   = 60.seconds
     w.log      = "#{RAILS_ROOT}/log/god-resque-#{name}.log"
 
-    w.uid = 'activeworks'
-    w.gid = 'activeworks'
+    w.uid = 'active'
+    w.gid = 'active'
 
     God::Contacts::Email.defaults do |d|
       d.from_email = 'marquee@active.com'
-      d.from_name = 'Marquee nginx monitoring'
+      d.from_name = 'Marquee resque monitoring'
       d.delivery_method = :smtp
       d.server_host = 'mx1.dev.activenetwork.com'
       d.server_port = 25

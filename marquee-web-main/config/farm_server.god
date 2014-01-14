@@ -2,7 +2,7 @@
 #
 # This is the actual config file used to keep marquee farm server running.
 RAILS_ENV = "production"
-FARM_SERVER_ROOT = "/home/activeworks/farm_server"
+FARM_SERVER_ROOT = "/home/active/farm_server"
 
 God.watch do |w|
   w.name = "farm-server-watcher"
