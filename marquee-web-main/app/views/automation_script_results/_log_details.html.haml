@@ -16,11 +16,4 @@
 .row.action
 .detail
 .log-details
-  - if @searched_logs.size > 0
-    - @searched_logs.each do |log|
-      - if log.level == "ERROR"
-        %li.text-error= "#{log.timestamp.utc} - #{log.level.ljust(5,"#")} - #{log.message}"
-      - else
-        %li= "#{log.timestamp.utc} - #{log.level.ljust(5,"#")} - #{log.message}"
-  - else
-    %h4 No data
+  <iframe id="detail_iframe" name="detail_iframe" src="http://10.107.123.56:3000/view?roundId=#{@automation_script_result.test_round_id}&scriptName=#{@automation_script_result.name}" marginheight="5" marginwidth="5" width="100%" height="1000px" frameborder="0" scrolling="auto" />
