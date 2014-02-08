@@ -1,0 +1,5 @@
+production:
+  logserver_url: http://10.119.11.200
+
+development:
+  logserver_url: http://10.119.11.200
