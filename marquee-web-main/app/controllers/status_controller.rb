@@ -3,8 +3,8 @@ class StatusController < ApplicationController
   def new_build
     logger.info "New Build incoming. #{params}"
     ci_value = params[:project].split(/_|-/).map{|n| n.capitalize}.join('')
-    env = params[:environment].gsub('Regression', 'QAR').gsub('INT-Latest', 'INT').gsub('P-INT', 'PINT').gsub('PQA','QA').gsub('QA-Latest','QA')
-    test_environment = TestEnvironment.find_by_value(env)
+    env = params[:environment]
+    test_environment = TestEnvironment.find_by_name(env)
     @test_round_ids= []
     if test_environment
       test_object = "#{ci_value} #{params[:version]}"
