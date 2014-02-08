@@ -23,6 +23,11 @@ class Project < ActiveRecord::Base
   has_many :project_browser_configs
   has_many :browsers, :through => :project_browser_configs
   accepts_nested_attributes_for :project_browser_configs
+  
+  has_many :project_test_environment_configs
+  has_many :test_environments, :through => :project_test_environment_configs
+  accepts_nested_attributes_for :project_test_environment_configs
+
 
   has_many :project_operation_system_configs
   has_many :operation_systems, :through => :project_operation_system_configs
@@ -41,7 +46,7 @@ class Project < ActiveRecord::Base
   has_attached_file :icon_image, :default_url => "/images/projects/default_project.png", :processors => [:cropper], :styles => { :large => "320x320", :medium => "180x180>", :thumb => "100x100>" }, :path => ":rails_root/public/images/projects/:style_:basename.:extension", :url => "/images/projects/:style_:basename.:extension"
   acts_as_audited :protect => false
 
-  validates_presence_of :name, :browsers, :operation_systems
+  validates_presence_of :name, :browsers, :test_environments, :operation_systems
   validates_uniqueness_of :name, :message => " already exists."
 
   def to_s
