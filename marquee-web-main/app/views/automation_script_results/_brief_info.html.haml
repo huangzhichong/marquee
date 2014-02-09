@@ -9,6 +9,7 @@
 - right_values = [@automation_script_result.pass, @automation_script_result.failed, @automation_script_result.warning, @automation_script_result.not_run]
 = render :partial => "partial/brief_info", :locals => {:left_titles => left_titles, :left_values => left_values, :right_titles => right_titles, :right_values => right_values}
 
+
 :javascript
   $(function(){
     $(".triage-result").change(function(){
