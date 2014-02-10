@@ -77,6 +77,7 @@ class StatusController < ApplicationController
       automation_script = test_round.find_automation_scirpt_by_script_name(script_name)
       automation_script_result = test_round.find_automation_script_result_by_script_name(script_name)
       automation_case = automation_script.find_case_by_case_id(data['case_id'])
+      unless automation_case.nil?
       automation_case_result = automation_script_result.find_case_result_by_case_id(automation_case.id)
       automation_case_result.screen_shot = screen_shot_name unless (screen_shot_name.nil? or screen_shot_name.empty?)
       automation_case_result.server_log = data['server_log'] unless data['server_log'].nil?
@@ -85,5 +86,6 @@ class StatusController < ApplicationController
 
       automation_script_result.update_counters_by_case_result!(automation_case_result)
       test_round.update_counters_by_case_result!(automation_case_result)
+      end
     end
 end
