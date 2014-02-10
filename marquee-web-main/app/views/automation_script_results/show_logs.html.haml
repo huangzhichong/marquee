@@ -18,4 +18,21 @@
 
 .row     
 .log-info
-  =render :partial => "log_details"
+  .row.brief-info
+    .span8.columns.brief-left
+      .span3.columns
+        %ul.title
+          %li Start Time
+      .span5.columns
+        %ul.value
+          %li= @automation_script_result.start_time
+    .span8.columns.brief-right
+      .span3.columns
+        %ul.title
+          %li End Time
+      .span5.columns
+        %ul.value
+          %li= @automation_script_result.end_time
+  .detail
+  .log-details
+    <iframe src="#{MARQUEE_CONFIG['logserver_url']}/view?roundId=32&scriptName=front_desk_registration_entry_points_check_1" frameborder=0 scrolling="auto"></iframe>
