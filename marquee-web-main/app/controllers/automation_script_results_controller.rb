@@ -50,11 +50,9 @@ class AutomationScriptResultsController < InheritedResources::Base
     @project ||= @test_round.project
     @automation_script_result ||= AutomationScriptResult.find(params[:automation_script_result_id])
     @slave_assignment ||= @automation_script_result.slave_assignments.last
-    @start_time ||= (Time.parse(@automation_script_result.start_time.to_s) - 60).utc
-    @end_time ||= (Time.parse(@automation_script_result.end_time.to_s) + 60).utc
-    @searched_logs = SlaveLog.where(:ip => @slave_assignment.slave.ip_address,
-                                    :timestamp.gt => @start_time,
-                                    :timestamp.lt => @end_time).asc(:_id)
+    #@start_time ||= (Time.parse(@automation_script_result.start_time.to_s) - 60).utc
+    #@end_time ||= (Time.parse(@automation_script_result.end_time.to_s) + 60).utc
+    #@searched_logs = SlaveLog.where(:ip => @slave_assignment.slave.ip_address,:timestamp.gt => @start_time,:timestamp.lt => @end_time).asc(:_id)
   end
 
   protected
