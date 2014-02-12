@@ -63,7 +63,6 @@ class StatusController < ApplicationController
       end
       automation_script_result.update_state!(state)
       test_round.update_state!
-
       if test_round.end?
         TestRoundMailer.finish_mail(test_round.id).deliver
       end
@@ -82,8 +81,9 @@ class StatusController < ApplicationController
       automation_case_result.server_log = data['server_log'] unless data['server_log'].nil?
       automation_case_result.update!(data)
       automation_case_result.save!
-
+=begin
       automation_script_result.update_counters_by_case_result!(automation_case_result)
       test_round.update_counters_by_case_result!(automation_case_result)
+=end
     end
 end
