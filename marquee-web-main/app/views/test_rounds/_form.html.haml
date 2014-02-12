@@ -19,7 +19,7 @@
       = f.label :test_environment
       .required *
       .input
-        = f.select :test_environment_id, options_from_collection_for_select(TestEnvironment.all, :id, :name), {}, {:class => "chzn-select validate[required]"}
+        = f.select :test_environment_id, options_from_collection_for_select(@project.test_environments, :id, :name), {}, {:class => "chzn-select validate[required]"}
     .clearfix
       = f.label :operation_system
       .required *

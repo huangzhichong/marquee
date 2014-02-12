@@ -2,7 +2,7 @@
 #
 # This is the actual config file used to keep marquee web server running.
 
-RAILS_ROOT = "/home/activeworks/marquee/marquee-web-main"
+RAILS_ROOT = "/home/active/marquee/marquee-web-main"
 NGINX_ROOT = "/opt/nginx"
 
 %w{3000}.each do |port|
@@ -25,16 +25,6 @@ NGINX_ROOT = "/opt/nginx"
       d.delivery_method = :smtp
       d.server_host = 'mx1.dev.activenetwork.com'
       d.server_port = 25
-    # d.server_auth = true
-    # d.server_domain = 'example.com'
-    # d.server_user = 'system@example.com'
-    # d.server_password = 'myPassword'
-    end
-
-    God.contact(:email) do |c|
-      c.name = 'Eric Yang'
-      c.group = 'Marquee Team'
-      c.to_email = 'eric.yang@activenetwork.com'
     end
 
     God.contact(:email) do |c|

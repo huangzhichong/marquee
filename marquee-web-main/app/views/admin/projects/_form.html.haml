@@ -45,6 +45,11 @@
       .required *
       .input
         = select_tag 'project[browsers][]', options_from_collection_for_select(Browser.all, :id, :name_with_version, @project.browsers.collect{|b|b.id}), {:multiple => true, :class => "validate[required]"}
+    .clearfix
+      = f.label :test_environments
+      .required *
+      .input
+        = select_tag 'project[test_environments][]', options_from_collection_for_select(TestEnvironment.all, :id, :name, @project.test_environments.collect{|b|b.id}), {:multiple => true, :class => "validate[required]"}
     .actions
       = f.submit 'Save', :class => 'btn primary'
       = link_to 'Cancel', admin_projects_path, :class => 'btn'
@@ -56,6 +61,6 @@
   });
 
 :css
-  select#project_operation_systems_,select#project_browsers_{
+  select#project_operation_systems_,select#project_browsers_,select#project_test_environments_{
     height: 120px;
   }

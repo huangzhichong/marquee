@@ -18,8 +18,16 @@ class Admin::ProjectsController < InheritedResources::Base
       end
     end
 
+    test_environments = []
+    if params[:project][:test_environments]
+      params[:project][:test_environments].each do |te|
+        test_environments << TestEnvironment.find(te)
+      end
+    end
+
     params[:project][:browsers] = browsers
     params[:project][:operation_systems] = operation_systems
+    params[:project][:test_environments] = test_environments
 
     update!{ admin_projects_url }
   end
@@ -45,8 +53,16 @@ class Admin::ProjectsController < InheritedResources::Base
       end
     end
 
+    test_environments = []
+    if params[:project][:test_environments]
+      params[:project][:test_environments].each do |te|
+        test_environments << TestEnvironment.find(te)
+      end
+    end
+
     params[:project][:browsers] = browsers
     params[:project][:operation_systems] = operation_systems
+    params[:project][:test_environments] = test_environments
     super
   end
 

@@ -8,7 +8,7 @@
 - can_update_os = can? :update, OperationSystem
 - can_update_automation_driver = can? :update, AutomationDriver
 - can_update_slave = can? :update, Slave
-
+- can_update_test_environment = can? :update, TestEnvironment
 - menu_item_count = 0
 - menu_item_count += can_read_project_category ? 1 : 0
 - menu_item_count += can_read_project ? 1 : 0
@@ -38,6 +38,9 @@
     - if can_update_browser
       %li{:name => "browsers"}
         =link_to 'Browsers', admin_browsers_path
+    - if can_update_test_environment
+      %li{:name => "test_environements"}
+        =link_to 'Test Environments', admin_test_environments_path
     - if can_update_automation_driver
       %li{:name => "automation_drivers"}
         =link_to 'Automation Drivers', admin_automation_drivers_path

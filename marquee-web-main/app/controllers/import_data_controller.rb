@@ -144,6 +144,7 @@ class ImportDataController < ApplicationController
     project_mappings << {"marquee_project" => 'Plancast',"testlink_project"  => 'Plancast'}
     project_mappings << {"marquee_project" => 'Class', "testlink_project" => 'Class'}
     project_mappings << {"marquee_project" => 'RTP', "testlink_project" => 'Resort Technology Partners'}
+    project_mappings << {"marquee_project" => 'RTPOneContainer', "testlink_project" => 'Resort Technology Partners'}
     project_mappings << {"marquee_project" => 'SNH', "testlink_project" => 'ROL - Beta'}
     project_mappings << {"marquee_project" => 'WannaDo', "testlink_project" => 'WannaDo'}
     project_mappings << {"marquee_project" => 'Sports', "testlink_project" => "AW-Team Sports & Swim"}

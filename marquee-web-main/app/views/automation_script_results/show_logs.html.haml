@@ -13,20 +13,26 @@
             - as_name = as_name.slice(0,30).concat("...")
           =link_to as_name, test_round_automation_script_result_path(@test_round, @automation_script_result)
           %span=" / Logs"
-      .span1.columns.brief-right
-        %input.btn.primary.refresh{:type => "button", :value => "Refresh"}
-
       
 .page-header.detail
 
 .row     
 .log-info
-  =render :partial => "log_details"
-
-:javascript
-  $(function(){
-      
-      $("input.refresh").click(function(){
-        location.reload();
-      });
-    })
+  .row.brief-info
+    .span8.columns.brief-left
+      .span3.columns
+        %ul.title
+          %li Start Time
+      .span5.columns
+        %ul.value
+          %li= @automation_script_result.start_time
+    .span8.columns.brief-right
+      .span3.columns
+        %ul.title
+          %li End Time
+      .span5.columns
+        %ul.value
+          %li= @automation_script_result.end_time
+  .detail
+  .log-details
+    <iframe src="#{MARQUEE_CONFIG['logserver_url']}/view?roundId=32&scriptName=front_desk_registration_entry_points_check_1" frameborder=0 scrolling="auto"></iframe>
