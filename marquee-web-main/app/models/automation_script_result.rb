@@ -90,6 +90,7 @@ def failed_cases
 end
 
 def update_state!(state)
+  counter_automation_script_and_test_round_result(state)
   self.state = state
   if state == "running"
     self.start_time = Time.now if self.start_time.blank?
@@ -108,6 +109,7 @@ def update_state!(state)
     self.end_time = Time.now
     self.result = 'failed'
   end
+  
   save
 end
 
@@ -126,4 +128,38 @@ def duration
     nil
   end
 end
+
+  def pass_count
+    self.automation_case_results.where("result='pass'").count
+  end
+
+  def failed_count
+    self.automation_case_results.where("result='failed'").count
+  end
+
+  def warning_count
+    self.automation_case_results.where("result='warning'").count
+  end
+
+  def not_run_count
+    self.automation_case_results.where("result='not-run'").count
+  end
+  
+  def counter_automation_script_and_test_round_result(state)
+    if state == 'done' || state == 'failed'
+      # update script result counting status
+      self.pass = pass_count
+      self.failed = failed_count
+      self.warning = warning_count
+      self.not_run = not_run_count
+      self.save
+      # update test round result counting status
+      tr = self.test_round
+      tr.pass = tr.pass_count
+      tr.failed = tr.failed_count
+      tr.warning = tr.warning_count
+      tr.not_run = tr.not_run_count
+      tr.save
+    end
+  end
 end
