@@ -1,28 +1,28 @@
 .row.sub-header
-  .span30.columns
+  .span12.columns
     %img.big-icon{:src => asset_path("#{@automation_script_result.result}.png")}
-      .span14.columns
-        %h2
-          =link_to "Test Rounds", project_test_rounds_path(@project), :remote => true
-          %span= " / "
-          =link_to "#{@test_round.test_type.name}##{@test_round.id}", project_test_round_path(@project, @test_round), :remote => true
-          %span=" / "
-          - as_name = @automation_script_result.name
-          - if as_name && as_name.length >= 30
-            - as_name = as_name.slice(0,30).concat("...")
-          %span{:title => @automation_script_result.name}="#{as_name}"
-      .span2.columns.right
-        = link_to "View", test_round_automation_script_result_show_logs_path(@automation_script_result.test_round, @automation_script_result), :class => "btn primary"  
-      .span2.columns.brief-right
-        - asr =  @automation_script_result
-        - project = @automation_script_result.test_round.project
-        - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
-          %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun"}
-          - if asr.result == "pending" && asr.state != "scheduling" && can?(:update, AutomationScriptResult, {:project_id => project.id})
-            - if asr.state == "stopping"
-              %input{:type => "button", :value => "Stopping", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn disabled", :disabled => "disabled"}
-            - else
-              %input{:type => "button", :value => "Stop", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn"}     
+    %h2
+      =link_to "Test Rounds", project_test_rounds_path(@project), :remote => true
+      %span= " / "
+      =link_to "#{@test_round.test_type.name}##{@test_round.id}", project_test_round_path(@project, @test_round), :remote => true
+      %span=" / "
+      - as_name = @automation_script_result.name
+      - if as_name && as_name.length >= 30
+        - as_name = as_name.slice(0,30).concat("...")
+      %span{:title => @automation_script_result.name}="#{as_name}"
+  .span4{:style=>"float: right;"}
+    .span2{}
+      = link_to "View", test_round_automation_script_result_show_logs_path(@automation_script_result.test_round, @automation_script_result), :class => "btn primary",:style=>"float: right;"  
+    .span2{:style=>"float: right;"}
+      - asr =  @automation_script_result
+      - project = @automation_script_result.test_round.project
+      - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
+        %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun",:style=>"float: right;"}
+        - if asr.result == "pending" && asr.state != "scheduling" && can?(:update, AutomationScriptResult, {:project_id => project.id})
+          - if asr.state == "stopping"
+            %input{:type => "button", :value => "Stopping", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn disabled",:style=>"float: right;", :disabled => "disabled"}
+          - else
+            %input{:type => "button", :value => "Stop", "remote-data" => "/automation_script_results/#{asr.id}/stop", :class => "btn primary rerun_btn",:style=>"float: right;"}     
 
 = render 'brief_info'
 = render :partial => "partial/service_info", :locals => {:asr => @automation_script_result}
