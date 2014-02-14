@@ -233,7 +233,7 @@ class TestRound < ActiveRecord::Base
     result_array
   end
   
-  def count_test_round_result
+  def count_test_round_result!
     self.pass = pass_count
     self.failed = failed_count
     self.warning = warning_count

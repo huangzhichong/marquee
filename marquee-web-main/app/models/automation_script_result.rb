@@ -129,35 +129,35 @@ def duration
 end
 
 def pass_count
-    self.automation_case_results.where("result='pass'").count
-  end
+  self.automation_case_results.where("result='pass'").count
+end
 
-  def failed_count
-    self.automation_case_results.where("result='failed'").count
-  end
+def failed_count
+  self.automation_case_results.where("result='failed'").count
+end
 
-  def warning_count
-    self.automation_case_results.where("result='warning'").count
-  end
+def warning_count
+  self.automation_case_results.where("result='warning'").count
+end
 
-  def not_run_count
-    self.automation_case_results.where("result='not-run'").count
+def not_run_count
+  self.automation_case_results.where("result='not-run'").count
+end
+
+def count_automation_script_result!
+  self.pass = pass_count
+  self.failed = failed_count
+  self.warning = warning_count
+  self.not_run = not_run_count
+  self.save
+end
+
+def count_automation_script_and_test_round_result(state)
+  if state == 'done' || state == 'failed'
+    # update script result counting status
+    count_automation_script_result!
+    # update test round result counting status
+    self.test_round.count_test_round_result!
   end
-  
-  def count_automation_script_result
-    self.pass = pass_count
-    self.failed = failed_count
-    self.warning = warning_count
-    self.not_run = not_run_count
-    self.save
-  end
-  
-  def count_automation_script_and_test_round_result(state)
-    if state == 'done' || state == 'failed'
-      # update script result counting status
-      count_automation_script_result
-      # update test round result counting status
-      self.test_round.count_test_round_result
-    end
-  end
+end
 end
