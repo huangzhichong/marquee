@@ -84,8 +84,7 @@ class StatusController < ApplicationController
       automation_case_result.update!(data)
       automation_case_result.save!
 
-      automation_script_result.update_counters_by_case_result!(automation_case_result)
-      test_round.update_counters_by_case_result!(automation_case_result)
+      
       end
     end
 end
