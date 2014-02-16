@@ -54,7 +54,6 @@ class AutomationScriptResult < ActiveRecord::Base
     automation_script.automation_cases.each do |ac|
       AutomationCaseResult.create_from_automation_script_result_and_automation_case(asr, ac)
     end
-
     asr
   end
 
@@ -78,56 +77,56 @@ class AutomationScriptResult < ActiveRecord::Base
   end
 
   def end?
-  self.state == 'done' or self.state == 'killed' or self.state == 'failed' or self.state == 'timeout' or self.state == 'not implemented' or self.state == 'network issue'
-end
+    ['done','killed','failed','timeout','not implemented','network issue'].include? self.state
+  end
 
-def not_run_cases
-  self.automation_case_results.where(:result => "not-run")
-end
+  def not_run_cases
+    self.automation_case_results.where(:result => "not-run")
+  end
 
-def failed_cases
-  self.automation_case_results.where(:result => "failed")
-end
+  def failed_cases
+    self.automation_case_results.where(:result => "failed")
+  end
 
-def update_state!(state)
-  counter_automation_script_and_test_round_result(state)
-  self.state = state
-  if state == "running"
-    self.start_time = Time.now if self.start_time.blank?
-  elsif state == "done"
-    self.end_time = Time.now
-    self.not_run_cases.each do |automation_case_result|
-      automation_case_result.result = 'not-run'
-      automation_case_result.save
-    end
-    if self.not_run > 0
-      self.result = 'warning'
+
+  def update_state!(state)
+    count_automation_script_and_test_round_result(state)
+    self.state = state
+    if state == "running"
+      self.start_time = Time.now if self.start_time.blank?
+    elsif state == "done"
+      self.end_time = Time.now
+      self.not_run_cases.each do |automation_case_result|
+        automation_case_result.result = 'not-run'
+        automation_case_result.save
+      end
+      if self.not_run > 0
+        self.result = 'warning'
+      else
+        self.result = self.failed > 0 ? 'failed' : 'pass'
+      end
     else
-      self.result = self.failed > 0 ? 'failed' : 'pass'
+      self.end_time = Time.now
+      self.result = 'failed'
     end
-  else
-    self.end_time = Time.now
-    self.result = 'failed'
+    save
   end
-  
-  save
-end
 
-def update_triage!(triage_result)
-  self.triage_result = triage_result
-  self.result = "failed" if triage_result == "Product Error"
-  self.result = "failed" if triage_result == "Environment Error"
-  self.result = "pass" if triage_result == "Script Error"
-  save
-end
-
-def duration
-  if start_time && end_time
-    end_time - start_time
-  else
-    nil
+  def update_triage!(triage_result)
+    self.triage_result = triage_result
+    self.result = "failed" if triage_result == "Product Error"
+    self.result = "failed" if triage_result == "Environment Error"
+    self.result = "pass" if triage_result == "Script Error"
+    save
   end
-end
+
+  def duration
+    if start_time && end_time
+      end_time - start_time
+    else
+      nil
+    end
+  end
 
   def pass_count
     self.automation_case_results.where("result='pass'").count
@@ -144,22 +143,22 @@ end
   def not_run_count
     self.automation_case_results.where("result='not-run'").count
   end
-  
-  def counter_automation_script_and_test_round_result(state)
+
+  def count_automation_script_result!
+    self.pass = pass_count
+    self.failed = failed_count
+    self.warning = warning_count
+    self.not_run = not_run_count
+    self.save
+  end
+
+  def count_automation_script_and_test_round_result(state)
     if state == 'done' || state == 'failed'
       # update script result counting status
-      self.pass = pass_count
-      self.failed = failed_count
-      self.warning = warning_count
-      self.not_run = not_run_count
-      self.save
+      count_automation_script_result!
       # update test round result counting status
-      tr = self.test_round
-      tr.pass = tr.pass_count
-      tr.failed = tr.failed_count
-      tr.warning = tr.warning_count
-      tr.not_run = tr.not_run_count
-      tr.save
+      self.test_round.count_test_round_result!
     end
   end
+
 end

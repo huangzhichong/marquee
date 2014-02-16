@@ -35,4 +35,4 @@
           %li= @automation_script_result.end_time
   .detail
   .log-details
-    <iframe src="#{MARQUEE_CONFIG['logserver_url']}/view?roundId=32&scriptName=front_desk_registration_entry_points_check_1" frameborder=0 scrolling="auto"></iframe>
+    <iframe src="#{MARQUEE_CONFIG['logserver_url']}/view?roundId=#{@automation_script_result.test_round_id}&scriptName=#{@automation_script_result.name}" frameborder=0 scrolling="auto"></iframe>
