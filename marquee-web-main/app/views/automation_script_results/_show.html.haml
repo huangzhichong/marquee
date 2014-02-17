@@ -17,7 +17,9 @@
       - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
         %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun",:style=>"float: right;"}
     .span2.columns{:style=>"float: right;"}
-      = link_to "Show Log", test_round_automation_script_result_show_logs_path(@automation_script_result.test_round, @automation_script_result), :class => "btn primary"
+      -sa = @automation_script_result.slave_assignments.last
+      -if sa && sa.slave && @automation_script_result.end_time
+        = link_to "Show Log", test_round_automation_script_result_show_logs_path(@automation_script_result.test_round, @automation_script_result), :class => "btn primary"
 
 = render 'brief_info'
 = render :partial => "partial/service_info", :locals => {:asr => @automation_script_result}
