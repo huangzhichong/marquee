@@ -2,8 +2,6 @@
 - can_read_project = can? :read, Project
 - can_read_role = can? :read, Role
 - can_read_user = can? :read, User
-- can_update_teammember = can? :update, TeamMember
-- can_update_dre_slide_show = can? :update, :dre_slide_show
 - can_update_browser = can? :update, Browser
 - can_update_os = can? :update, OperationSystem
 - can_update_automation_driver = can? :update, AutomationDriver
@@ -14,8 +12,6 @@
 - menu_item_count += can_read_project ? 1 : 0
 - menu_item_count += can_read_role ? 1 : 0
 - menu_item_count += can_read_user ? 1 : 0
-- menu_item_count += can_update_teammember ? 1 : 0
-- menu_item_count += can_update_dre_slide_show ? 1 : 0
 - menu_item_count += can_update_browser ? 1 : 0
 - menu_item_count += can_update_os ? 1 : 0
 - menu_item_count += can_update_automation_driver ? 1 : 0
@@ -50,12 +46,6 @@
     - if can_read_user
       %li{:name => "users"}
         =link_to 'Users', admin_users_path
-    - if can_update_teammember
-      %li{:name => "team_members"}
-        =link_to 'Time Card Members', admin_team_members_path, :remote => true
-    - if can_update_dre_slide_show
-      %li{:name => "dre_slide_show"}
-        =link_to 'DRE Slide Show', admin_dre_slide_show_configure_path
 
   .clearfix
 
