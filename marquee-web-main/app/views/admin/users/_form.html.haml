@@ -31,30 +31,7 @@
         .required *
         .input
           %input{:id => "confirm_password", :type => "password", :class => "validate[required, funcCall[checkOnlySpace], funcCall[checkPassword], equals[user_password]]"}
-    .clearfix
-      = f.label :time_card_project_permissions
-      .input
-        .row
-          .columns.span7
-            %select.as-select#tcpps{:multiple => 'multiple'}
-              - OracleProject.all.reject{|pn| @user.oracle_projects.include?(pn)}.each do |pn|
-                %option{:value => pn.id}= pn.name
-            %a#add-all-button
-              %span.multi-select-item-add.ui-icon
-              Choose All
-          .columns.span1#drag-arrow
-            %a.multi-select-item-add.ui-icon#add-button
-            .clearfix
-            %a.multi-select-item-remove.ui-icon#remove-button
-          .columns.span7
-            %select.as-select#tcpps-selected{:multiple => 'multiple'}
-              - @user.oracle_projects.each do |pn|
-                %option{:value => pn.id}= pn.name
-            %a#clear-all-button
-              %span.multi-select-item-remove.ui-icon
-              Clear All
-            = hidden_field_tag "user[oracle_project_ids][]", ""
-          #tcpp-ids
+
     .clearfix
       - val_uad = ""
       - if not(@user.ability_definitions.nil?) and not(@user.ability_definitions.empty?)

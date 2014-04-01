@@ -8,7 +8,7 @@
     = link_to 'New User', new_admin_user_path, :class => 'btn primary'
   = form_for @search, :url => admin_users_path, :html => {:method => :get} do |f|
     %span.search
-      = f.text_field :email_or_display_name_or_oracle_projects_name_contains, {:id => 'search'}
+      = f.text_field :email_or_display_name_contains, {:id => 'search'}
       = f.submit '', {:class => 'btn', :id => 'searchsubmit'}
 %table.zebra-striped
   %tr
