@@ -112,6 +112,7 @@ GEM
       haml (~> 3.0)
       railties (~> 3.0)
     has_scope (0.5.1)
+    hash-deep-merge (0.1.1)
     hike (1.2.3)
     hirb (0.4.5)
     hpricot (0.8.4)
@@ -128,6 +129,9 @@ GEM
       activesupport (>= 3.0.0)
     launchy (2.4.2)
       addressable (~> 2.3)
+    lazy_high_charts (1.5.2)
+      bundler (>= 1.0)
+      hash-deep-merge
     libv8 (3.16.14.3)
     mail (2.3.3)
       i18n (>= 0.4.0)
@@ -295,6 +299,7 @@ DEPENDENCIES
   jquery-rails (~> 1.0.16)
   kaminari
   launchy
+  lazy_high_charts
   memcache-client (= 1.8.5)
   meta_search!
   mysql2 (~> 0.3)

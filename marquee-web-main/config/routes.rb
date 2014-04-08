@@ -95,5 +95,5 @@ MarqueeWebMain::Application.routes.draw do
   post "functional/generate_automation_results_report"
 
   root :to => 'home#index'
-
+  get "highcharts",:controller => 'highcharts', :action => 'index'
 end
