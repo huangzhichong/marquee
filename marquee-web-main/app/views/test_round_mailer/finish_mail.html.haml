@@ -68,7 +68,7 @@
             %td
               - asr.target_services.each do |ts|
                 %li= ts
-            %td= asr.test_round.test_environment
+            %td= asr.test_round.test_environment.name
     %p
       = "Click "
       = link_to "#{@test_round.project} #{@test_round}", "http://marquee.dev.activenetwork.com/projects/#{@test_round.project.id}/test_rounds/#{@test_round.id}"
