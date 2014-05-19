@@ -1,4 +1,91 @@
 .home-box
   .outer-home-box
-    .inner-home-box
-      = high_chart("my_bar_div", @chart)
+    .inner-home-box        
+      #market_coverage_chart
+
+:javascript
+  $(function () {
+      var categoryLinks = {
+        'Endurance': '#{@endurance_link}',
+        'Camps': '#{@camps_link}',
+        'Sports': '#{@sports_link}',
+        'Membership': '#{@membership_link}',
+        'RTP': '#{@rtp_link}',
+        };
+
+      $('#market_coverage_chart').highcharts({
+          chart: {
+              type: 'column'
+          },
+          title: {
+              text: 'Markets Automation Coverage'
+          },
+
+          xAxis: {
+              title: {text: 'Overall Coverage'},
+              type: 'category',
+              categories: ['Endurance','Camps','Sports','Membership','RTP'],
+              labels: {
+                  align: 'center',
+                  y: 20,
+                  style: {
+                      fontSize: '13px',
+                      fontFamily: 'Verdana, sans-serif'
+                  },
+              }
+          },
+          yAxis: {
+              min: 0,
+              max: 100,
+              title: {
+                  text: 'Overall Coverage'
+              }
+          },
+          legend: {
+              enabled: false
+          },
+          tooltip: {
+              useHTML: true,
+              formatter: function () {
+                  return '<table><tr><td>Automated</td><td>'+this.point.automated+'</td></tr><tr><td>Update Neede</td><td>500</td></tr><tr><td>Not Candidate</td><td>800</td></tr><tr><td>Total Cases</td><td>500</td></tr>';
+              }
+          },
+          plotOptions: {
+            series: {
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        click: function() {
+                            location.href = this.options.url;
+                        }
+                    }
+                }
+            }
+          },
+
+          series: [{
+              name: 'Overall Coverage',
+              data: [
+              {color: '#3A8FC3',y: #{@endurance_overall_coverage}, url: categoryLinks['Endurance'], automated: #{@endurance_automated}},
+              {color: '#7BA13B',y: #{@camps_overall_coverage}, url: categoryLinks['Camps'], automated: #{@camps_automated}},
+              {color: '#CBA744',y: #{@sports_overall_coverage}, url: categoryLinks['Sports'], automated: #{@sports_automated}},
+              {color: '#B7592B',y: #{@membership_overall_coverage}, url: categoryLinks['Membership'], automated: #{@membership_automated}},
+              {color: '#59ACBD',y: #{@rtp_overall_coverage}, url: categoryLinks['RTP'], automated: #{@rtp_automated}},
+              ],
+              dataLabels: {
+                  offset: '120',
+                  enabled: true,
+                  color: '#000000',
+                  align: 'center',                  
+                  format: '{y} %',
+                  style: {
+                      fontSize: '13px',
+                      fontFamily: 'Verdana, sans-serif',
+                      textShadow: '0 0 3px black'
+                  }
+              }
+          }]
+      });
+  });
+    
+  
