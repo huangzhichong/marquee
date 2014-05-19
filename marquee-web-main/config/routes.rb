@@ -50,6 +50,7 @@ MarqueeWebMain::Application.routes.draw do
     resources :automation_scripts
     resources :test_rounds do
       get "rerun", :controller => 'test_rounds', :action => 'rerun'
+      get "rerun_failed", :controller => 'test_rounds', :action => 'rerun_failed'
       post "save_to_testlink"
     end
     resources :test_suites
