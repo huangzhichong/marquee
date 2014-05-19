@@ -8,7 +8,7 @@ class TestRoundsController < InheritedResources::Base
 
   def rerun_failed
     test_round = TestRound.find(params[:test_round_id])
-    test_round.automation_script_results.where("result != 'pass'").each do |asr|
+    test_round.automation_script_results.where("result != 'pass' and triage_result ='N/A'").each do |asr|
       asr.clear
       non_rerunned_asr = asr.test_round.automation_script_results.select {|asr| asr.state != "scheduling"}
       if non_rerunned_asr.nil? || non_rerunned_asr.empty?
