@@ -1,28 +1,49 @@
 - left_titles = ['Result:', 'Start Time:', 'End Time:', 'Duration:', 'Triage Result:']
 - triage = nil
 - if @automation_script_result.end? && @automation_script_result.result!="pass" && @automation_script_result.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => @automation_script_result.test_round.project.id})
-  - triage = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error"}, @automation_script_result.triage_result), :id => @automation_script_result.id, :class => "triage-result"
+  - triage = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error","Environment Error" => "Environment Error"}, @automation_script_result.triage_result), :id => @automation_script_result.id, :class => "triage-result"
 - else
   - triage = @automation_script_result.triage_result
-- left_values = [@automation_script_result.result, in_time_zone(@automation_script_result.start_time), in_time_zone(@automation_script_result.end_time), @automation_script_result.duration.nil? ? "N/A" : ChronicDuration.output(@automation_script_result.duration), triage]
+- left_values = [@automation_script_result.result, in_time_zone(@automation_script_result.start_time), in_time_zone(@automation_script_result.end_time), (@automation_script_result.duration.nil? or @automation_script_result.duration == 0) ? "N/A" : ChronicDuration.output(@automation_script_result.duration), triage]
 - right_titles = ['Pass Count:', 'Failed Count:', 'Warning Count:', 'Not Run Count:']
 - right_values = [@automation_script_result.pass, @automation_script_result.failed, @automation_script_result.warning, @automation_script_result.not_run]
 = render :partial => "partial/brief_info", :locals => {:left_titles => left_titles, :left_values => left_values, :right_titles => right_titles, :right_values => right_values}
 
 
 :javascript
-  $(function(){
-    $(".triage-result").change(function(){
-      var triage_result = $("option:selected",this).text();
-      var id = $(this).attr("id");
-      var url = "/update_automation_script_result_triagge_result?id="+id+"&triage_result="+triage_result;
-      var ele = $(this);
-      $.ajax({url:url,dataType:"json"}).success(function(data) {
-        if (data.result == "failed") {
-          alert("Updating triage result failed, something is wrong with the server. Please try again later.");
-        } else {
-          $("img.big-icon").attr("src","/assets/"+data.asr_result+".png"); ele.parent().html(triage_result);
+  $(function() {
+
+    $(".triage-result").change(function() {
+      var triage_result = $("option:selected", this).text();
+      var comments = prompt("Please enter your comments", "");
+      if (comments != null) {
+        if (comments != "") {
+          triage_result = triage_result + ", " + comments
         }
-      });
+      var display_text = triage_result;
+      if (triage_result.length > 18)
+        {
+          display_text = triage_result.substring(0,18)+"..."
+        };
+
+
+        var id = $(this).attr("id");
+        var url = "/update_automation_script_result_triagge_result?id=" + id + "&triage_result=" + triage_result;
+        var ele = $(this);
+
+        $.ajax({url: url, dataType: "json"}).success(function(data){
+          if (data.result == "failed") {
+              alert("Updating triage result failed, something is wrong with the server. Please try again later.");
+            } 
+          else 
+            {
+              ele.parent().attr("title", triage_result);                        
+              $("input[remote-data='/automation_script_results/" + id + "/rerun']").remove();
+              ele.parent().parent().children().first().children("img").attr("src", "/assets/" + data.asr_result + ".png");
+              $("img.big-icon").attr("src", "/assets/" + data.tr_result + ".png");
+              ele.parent().html(display_text);
+            }
+        });
+      }
     });
   });
