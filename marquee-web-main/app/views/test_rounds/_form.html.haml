@@ -30,6 +30,11 @@
       .required *
       .input
         = f.select :browser_id, options_from_collection_for_select(@project.browsers, :id, :name_with_version), {}, {:class => "chzn-select validate[required]"}
+    .clearfix
+      = f.label :assign_to_slave
+      .input
+        = f.select :assigned_slave_id, options_for_select(get_eligible_slaves(@project.name)), {}, {:class => "chzn-select"}
+
     = f.hidden_field :creator_id, :value => current_user.id
     .actions
       = f.submit 'Schedule!', :class => 'btn primary', :id => 'schedule_commit_button'
