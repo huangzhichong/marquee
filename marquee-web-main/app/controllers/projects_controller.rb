@@ -25,26 +25,16 @@ class ProjectsController < InheritedResources::Base
       @regression_coverage << Project.caculate_coverage_by_project_and_priority_and_type(project_name, priority,"regression")
       @coverage << Project.caculate_coverage_by_project_and_priority(project_name,priority)
     end
-    
-    # @aui_overall_goal = 95.0
-    # @aui_p1_goal = 95.0
-    # @aui_p2_goal = 95.0
-    # @aui_p3_goal = 95.0
-    
-    # @cui_overall_goal = 90.0
-    # @cui_p1_goal = 90.0
-    # @cui_p2_goal = 90.0
-    # @cui_p3_goal = 90.0
-    
-    # p1_goal = (project_name == "Camps") ? 95 : 90
-    # p2_goal = (project_name == "Camps") ? 95 : 90
-    # p3_goal = (project_name == "Camps") ? 95 : 90
-    # overall_goal = (project_name == "Camps") ? 95 : 90
-    
-    # @p1_goal = Rails.cache.fetch("#{project_name}_p1_goal"){ p1_goal }
-    # @p2_goal = Rails.cache.fetch("#{project_name}_p2_goal"){ p2_goal }
-    # @p3_goal = Rails.cache.fetch("#{project_name}_p3_goal"){ p3_goal }
-    # @overall_goal = Rails.cache.fetch("#{project_name}_overall_goal"){ overall_goal }
+    %W(P1 P2 P3).each do |priority|
+      eval "@#{priority}_automated = @project.count_test_case_by_options({:automated_status => 'Automated',:priority => '#{priority}'})"
+      eval "@#{priority}_update_needed = @project.count_test_case_by_options({:automated_status => 'Update Needed',:priority => '#{priority}'})"
+      eval "@#{priority}_not_candidate = @project.count_test_case_by_options({:automated_status => 'Not a Candidate',:priority => '#{priority}'})"
+      eval "@#{priority}_total = @project.count_test_case_by_options({:priority => '#{priority}'})"
+    end
+    @total_automated =  @project.count_test_case_by_options(:automated_status => "Automated")
+    @total_update_needed = @project.count_test_case_by_options(:automated_status => "Update Needed")
+    @total_not_candidate = @project.count_test_case_by_options(:automated_status => "Not a Candidate")
+    @total = @project.count_test_case_by_options
   end
 
 end
