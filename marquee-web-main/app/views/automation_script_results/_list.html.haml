@@ -42,11 +42,15 @@
         %td= asr.automation_script.owner.display_name
         %td= in_time_zone(asr.start_time)
         %td= in_time_zone(asr.end_time)
-        %td
+        - triage_result = asr.triage_result
+        %td{:title => triage_result}
           - if asr.end? && asr.result!="pass" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id}) 
             = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error","Environment Error" => "Environment Error"}, asr.triage_result), :id => asr.id, :class => "triage-result"
           - else
-            = asr.triage_result
+            - if triage_result.size > 18
+              = triage_result.slice(0,18)+"..."
+            - else
+              = triage_result
         %td
           -sa = asr.slave_assignments.last
           -if sa && sa.slave && asr.end_time
@@ -63,29 +67,49 @@
 = paginate automation_script_results
 
 :javascript
-  $(function(){
-    
-    $("input.rerun_btn:not(:disabled)").click(function(){
+  $(function() {
+
+    $("input.rerun_btn:not(:disabled)").click(function() {
       $(this).addClass("disabled");
       $(this).disabled = true;
-      $.ajax({url: $(this).attr("remote-data")}).success(function(data) {
+      $.ajax({
+        url: $(this).attr("remote-data")
+      }).success(function(data) {
         location.reload();
       })
     });
 
-    $(".triage-result").change(function(){
-      var triage_result = $("option:selected",this).text();
-      var id = $(this).attr("id");
-      var url = "/update_automation_script_result_triagge_result?id="+id+"&triage_result="+triage_result;
-      var ele = $(this);
-      $.ajax({url:url,dataType:"json"}).success(function(data) {
-        if (data.result == "failed") {
-          alert("Updating triage result failed, something is wrong with the server. Please try again later.");
-        } else{
-          $("input[remote-data='/automation_script_results/"+id+"/rerun']").remove();
-          ele.parent().parent().children().first().children("img").attr("src","/assets/"+data.asr_result+".png");
-          $("img.big-icon").attr("src","/assets/"+data.tr_result+".png"); ele.parent().html(triage_result);
+    $(".triage-result").change(function() {
+      var triage_result = $("option:selected", this).text();
+      var comments = prompt("Please enter your comments", "");
+      if (comments != null) {
+        if (comments != "") {
+          triage_result = triage_result + ", " + comments
         }
-      });
+      var display_text = triage_result;
+      if (triage_result.length > 18)
+        {
+          display_text = triage_result.substring(0,18)+"..."
+        };
+
+
+        var id = $(this).attr("id");
+        var url = "/update_automation_script_result_triagge_result?id=" + id + "&triage_result=" + triage_result;
+        var ele = $(this);
+
+        $.ajax({url: url, dataType: "json"}).success(function(data){
+          if (data.result == "failed") {
+              alert("Updating triage result failed, something is wrong with the server. Please try again later.");
+            } 
+          else 
+            {
+              ele.parent().attr("title", triage_result);                        
+              $("input[remote-data='/automation_script_results/" + id + "/rerun']").remove();
+              ele.parent().parent().children().first().children("img").attr("src", "/assets/" + data.asr_result + ".png");
+              $("img.big-icon").attr("src", "/assets/" + data.tr_result + ".png");
+              ele.parent().html(display_text);
+            }
+        });
+      }
     });
   });
