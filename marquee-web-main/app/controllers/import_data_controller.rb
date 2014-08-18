@@ -136,18 +136,21 @@ class ImportDataController < ApplicationController
 
   def refresh_testlink_data
     project_mappings = []
-    project_mappings << {"marquee_project" => 'Camps',"testlink_project"  => 'AW-Camps'}
+    project_mappings << {"marquee_project" => 'Camps',"testlink_project"  => 'Camps'}
     project_mappings << {"marquee_project" => 'Membership',"testlink_project"  => 'Membership'}
     project_mappings << {"marquee_project" => 'ActiveNet',"testlink_project"  => 'ActiveNet'}
     project_mappings << {"marquee_project" => 'Endurance',"testlink_project"  => 'Endurance'}
     project_mappings << {"marquee_project" => 'LeagueOne',"testlink_project"  => 'LeagueOne'}
-    project_mappings << {"marquee_project" => 'Plancast',"testlink_project"  => 'Plancast'}
-    project_mappings << {"marquee_project" => 'Class', "testlink_project" => 'Class'}
-    project_mappings << {"marquee_project" => 'RTP', "testlink_project" => 'Resort Technology Partners'}
-    project_mappings << {"marquee_project" => 'RTPOneContainer', "testlink_project" => 'Resort Technology Partners'}
-    project_mappings << {"marquee_project" => 'SNH', "testlink_project" => 'ROL - Beta'}
-    project_mappings << {"marquee_project" => 'WannaDo', "testlink_project" => 'WannaDo'}
-    project_mappings << {"marquee_project" => 'Sports', "testlink_project" => "AW-Team Sports & Swim"}
+    # project_mappings << {"marquee_project" => 'Plancast',"testlink_project"  => 'Plancast'}
+    # project_mappings << {"marquee_project" => 'Class', "testlink_project" => 'Class'}
+    project_mappings << {"marquee_project" => 'RTP', "testlink_project" => 'RTP-Revolution'}
+    project_mappings << {"marquee_project" => 'RTPOneContainer', "testlink_project" => 'RTPOneContainer'}
+    project_mappings << {"marquee_project" => 'RTP-MooseCreek', "testlink_project" => 'RTP-MooseCreek'}
+    # project_mappings << {"marquee_project" => 'SNH', "testlink_project" => 'ROL - Beta'}
+    # project_mappings << {"marquee_project" => 'WannaDo', "testlink_project" => 'WannaDo'}
+    project_mappings << {"marquee_project" => 'Sports', "testlink_project" => "Sports"}
+    project_mappings << {"marquee_project" => 'Platform-Checkout', "testlink_project" => "Platform-Checkout"}
+
     project_mappings.each do |mapping|
       marquee_project_name = mapping["marquee_project"]
       project_name = mapping["testlink_project"]
@@ -213,8 +216,8 @@ class ImportDataController < ApplicationController
   protected
   def delete_null_case_scripts(project_id)
     @project ||= Project.find(project_id)
-    @project.automation_scripts.each do |automation_script| 
-      if automation_script.automation_cases.length == 0 
+    @project.automation_scripts.each do |automation_script|
+      if automation_script.automation_cases.length == 0
         automation_script.destroy
       end
     end
