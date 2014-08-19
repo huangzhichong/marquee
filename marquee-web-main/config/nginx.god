@@ -23,14 +23,8 @@ NGINX_ROOT = "/opt/nginx"
       d.from_email = 'marquee@active.com'
       d.from_name = 'Marquee nginx monitoring'
       d.delivery_method = :smtp
-      d.server_host = 'mx1.dev.activenetwork.com'
+      d.server_host = 'smtp.dev.activenetwork.com'
       d.server_port = 25
-    end
-
-    God.contact(:email) do |c|
-      c.name = 'Tyrael Tong'
-      c.group = 'Marquee Team'
-      c.to_email = 'tyrael.tong@activenetwork.com'
     end
 
     God.contact(:email) do |c|
