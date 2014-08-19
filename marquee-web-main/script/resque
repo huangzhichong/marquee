@@ -2,5 +2,5 @@
 # This a shell script. Run it directly.
 QUEUE=testlink_save_result rake environment resque:work &
 QUEUE=marquee_farm rake environment resque:work &
-QUEUES=marquee_mailer,marquee_data_sync rake environment resque:work &
+QUEUES=marquee_mailer rake environment resque:work &
 #QUEUE=test_resque rake environment resque:work &
