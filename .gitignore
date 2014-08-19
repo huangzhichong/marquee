@@ -8,3 +8,4 @@ marquee-web-main/.sass-cache/
 marquee-web-main/farm_reload/server/*.pid
 .project
 marquee-web-main/public/images
+marquee-web-main/public/assets

@@ -13,7 +13,6 @@ development:
   username: root
   password: 
 
-  
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
@@ -37,17 +36,6 @@ production:
   pool: 5
   username: dashboard
   password: dashboardrocks!
-  
-fnd_jira:
-   adapter: mysql2
-#  host: 10.109.2.114
-#  username: dashboard
-#  password: dashboardrocks!
-#  database: jira_sub_mirror
-   host: mysql-402.pod04.aw.dev.activenetwork.com
-   username: scmrgao
-   password: @ct1v3!
-   database: jiraFND_jira
 
 local_testlink:
   adapter: mysql2
@@ -55,23 +43,3 @@ local_testlink:
   username: smart
   password: start123
   database: testlink
-
-secondbase:
-  development:
-      adapter: mysql2
-      encoding: utf8
-      reconnect: false
-      host: localhost 
-      pool: 5
-      database: jira_sub_mirror
-      username: root
-      password:
-  production:
-      adapter: mysql2
-      encoding: utf8
-      reconnect: false
-      host: 10.109.2.114
-      pool: 5
-      database: jira_sub_mirror
-      username: root
-      password: AutomationRocks!

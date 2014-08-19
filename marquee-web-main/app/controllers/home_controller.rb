@@ -35,6 +35,7 @@ class HomeController < ApplicationController
     end
     %w(Endurance Sports Membership RTP Camps).each do |m|
       p = Project.find_by_name(m)
+      eval "@#{m.downcase}_link = url_for([:coverage,p])"
       eval "@#{m.downcase}_automated = p.count_test_case_by_plan_type_and_options('regression',{:automated_status => 'Automated'})"
       eval "@#{m.downcase}_update_needed = p.count_test_case_by_plan_type_and_options('regression',{:automated_status => 'Update Needed'})"
       eval "@#{m.downcase}_not_candidate = p.count_test_case_by_plan_type_and_options('regression',{:automated_status => 'Not a Candidate'}) + p.count_test_case_by_plan_type_and_options('regression',{:automated_status => 'Manual'})"
