@@ -8,9 +8,9 @@ God.watch do |w|
   w.name = "farm-server-watcher"
   w.log = "#{FARM_SERVER_ROOT}/log/god-farm-server.log"
   w.interval = 30.seconds # default
-  w.start = "cd #{FARM_SERVER_ROOT}; RAILS_ENV=#{RAILS_ENV} ruby server_control.rb start"
-  w.stop = "cd #{FARM_SERVER_ROOT}; RAILS_ENV=#{RAILS_ENV} ruby server_control.rb stop"
-  w.restart = "cd #{FARM_SERVER_ROOT}; RAILS_ENV=#{RAILS_ENV} ruby server_control.rb restart"
+  w.start = "cd #{FARM_SERVER_ROOT}; rvm use ruby-1.9.3-p429@rails31; RAILS_ENV=#{RAILS_ENV} ruby server_control.rb start"
+  w.stop = "cd #{FARM_SERVER_ROOT}; rvm use ruby-1.9.3-p429@rails31; RAILS_ENV=#{RAILS_ENV} ruby server_control.rb stop"
+  w.restart = "cd #{FARM_SERVER_ROOT}; rvm use ruby-1.9.3-p429@rails31; RAILS_ENV=#{RAILS_ENV} ruby server_control.rb restart"
   w.start_grace = 30.seconds
   w.restart_grace = 30.seconds
   w.pid_file = "#{FARM_SERVER_ROOT}/server.rb.pid"
@@ -21,20 +21,8 @@ God.watch do |w|
     d.from_email = 'marquee@active.com'
     d.from_name = 'Marquee farm server monitoring'
     d.delivery_method = :smtp
-    d.server_host = 'mx1.dev.activenetwork.com'
+    d.server_host = 'smtp.dev.activenetwork.com'
     d.server_port = 25
-  end
-
-  God.contact(:email) do |c|
-    c.name = 'Eric Yang'
-    c.group = 'Marquee Team'
-    c.to_email = 'eric.yang@activenetwork.com'
-  end
-
-  God.contact(:email) do |c|
-    c.name = 'Tyrael Tong'
-    c.group = 'Marquee Team'
-    c.to_email = 'tyrael.tong@activenetwork.com'
   end
 
   God.contact(:email) do |c|

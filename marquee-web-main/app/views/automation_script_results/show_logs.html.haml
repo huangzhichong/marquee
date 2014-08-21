@@ -34,5 +34,5 @@
         %ul.value
           %li= @automation_script_result.end_time
   .detail
-  .log-details
+  .log-details{:style => "height: 600px"}
     <iframe src="#{MARQUEE_CONFIG['logserver_url']}/view?roundId=#{@automation_script_result.test_round_id}&scriptName=#{@automation_script_result.name}" frameborder=0 scrolling="auto"></iframe>
