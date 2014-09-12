@@ -1,0 +1,34 @@
+%table.zebra-striped
+  %tr 
+    %th Result
+    %th Comments
+    %th Environment
+    %th Browser
+    %th Operation System
+    %th Pass
+    %th Failed
+    %th Warning
+    %th Not Run
+
+  - if @automation_script_result.get_related_baseline_script_results.nil? or @automation_script_result.get_related_baseline_script_results.count == 0
+    %tr
+      %td{:colspan => "9"}
+        %h4 No data
+  - else
+    -@automation_script_result.get_related_baseline_script_results.each do |bsr|
+      %tr
+        %td
+          - icon_name = bsr.test_result
+          %img.ui-icon{:src => asset_path("#{icon_name}.png")}
+        %td= bsr.triage_result
+        %td= bsr.environment
+        %td= bsr.browser
+        %td= bsr.os_type
+        %td= bsr.pass_count
+        %td= bsr.failed_count
+        %td= bsr.warning_count
+        %td= bsr.not_run_count
+
+
+
+
