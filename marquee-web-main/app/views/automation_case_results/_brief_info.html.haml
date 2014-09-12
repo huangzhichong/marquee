@@ -1,5 +1,5 @@
-- left_titles = ['Case Id:', 'Result:']
-- left_values = [@automation_case_result.case_id, @automation_case_result.result]
+- left_titles = ['Script Name','Case Id:', 'Result:']
+- left_values = [@automation_script_result.automation_script.name, @automation_case_result.case_id, @automation_case_result.result]
 - right_titles = ['Priority:', 'Owner:']
 - right_values = [@automation_case_result.priority, @automation_case_result.owner.display_name]
 = render :partial => "partial/brief_info", :locals => {:left_titles => left_titles, :left_values => left_values, :right_titles => right_titles, :right_values => right_values}
