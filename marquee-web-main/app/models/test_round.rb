@@ -213,16 +213,17 @@ class TestRound < ActiveRecord::Base
 
   def get_result_details
     result_array =[]
-    self.automation_script_results.each do |asr|      
+    self.automation_script_results.each do |asr|            
       script_name = asr.name
-      test_plan_name = asr.automation_script.test_plan.name
+      test_plan = asr.automation_script.test_plan
+      test_plan_name = test_plan.name
       service_info = ''
       asr.target_services.each {|t| service_info<<t.to_s if t}
       asr.automation_case_results.each do |acr|
         temp = Hash.new
         temp['case_name']=acr.name
         temp['case_id']=acr.case_id
-        temp['test_link_id']=TestCase.find_by_case_id(acr.case_id).test_link_id
+        temp['test_link_id']=test_plan.test_cases.find_by_case_id(acr.case_id).test_link_id
         temp['result']=acr.result
         temp['script_name'] = script_name
         temp['test_plan_name'] = test_plan_name
