@@ -1,18 +1,21 @@
 .row.sub-header
-  .span14.columns
+  .span12.columns
     %img.big-icon{:src => asset_path("#{@test_round.result}.png")}
     %h2
       =link_to "Test Rounds", project_test_rounds_path(@project), :remote => true
       %span= " / #{@test_round.test_type.name}##{@test_round.id}"    
-  .span4.columns#right
-    -if can? :create, TestRound and @test_round.state == 'completed'
-      .span2{}
-        -unless @test_round.exported_to_testlink?
-          %input.btn.primary.save_to_testlink_btn{:type => "button", :value => "Save to Testlink",:style=>"float: right;"}
-      .span2{:style=>"float: right;"}
-        %input.btn.primary.export_to_csv_btn{:type => "button", :value => "Export to CSV",:style=>"float: right;", "url" => "/functional/generate_automation_results_report.csv", "test_round_id" => "#{@test_round.id}"}
-
-
+  .span3#right
+    -if can? :create, TestRound and @test_round.state == 'completed'            
+      #dropdown-1.dropdown.dropdown-tip
+        %ul.dropdown-menu
+          %li
+            %a.export_to_csv_btn{:href => "#","url" => "/functional/generate_automation_results_report.csv", "test_round_id" => "#{@test_round.id}", :remote => true} Export to CSV
+          / %li
+          /   %a.save_to_base_result{:href => "#"} Save to Base Result
+          -unless @test_round.exported_to_testlink?
+            %li
+              %a.save_to_testlink{:href => "#"} Save to Testlink
+      %a.btn.primary{"data-dropdown" => "#dropdown-1"} Custom Actions
 = render 'brief_info'
 .list-content-box
   = render :partial => 'automation_script_results/list', :locals => {:project => @project, :automation_script_results => @automation_script_results, :test_round => @test_round, :search => @search}
@@ -61,9 +64,9 @@
 
 
 :javascript
-
-  $("input.export_to_csv_btn").click(function(){
-    var myAjaxVariable = null;  
+  $("a.export_to_csv_btn").click(function(){
+    $("#dropdown-1").dropdown("hide");
+    var myAjaxVariable = null;
     var export_btn = $(this);
     $.ajax({
      url : $(export_btn).attr("url"),
@@ -72,7 +75,7 @@
      async : false,
      success : function(response) {myAjaxVariable = response;},
       });
-     window.open( "data:text/csv;charset=utf-8," + escape(myAjaxVariable))  
+     window.open( "data:text/csv;charset=utf-8," + escape(myAjaxVariable))
   });
 
   function validateForm(f){
@@ -96,9 +99,10 @@
   }
 
   $(function(){
-    var save_button = $('input.save_to_testlink_btn');
+    var save_button = $('a.save_to_testlink');
     var save_popup = $('#save_to_testlink_info');
-    $("input.save_to_testlink_btn:not(:disabled)").click(function(){
+    $("a.save_to_testlink:not(:disabled)").click(function(){
+      $("#dropdown-1").dropdown("hide");
       $('#save_to_testlink_form')[0].reset();
       save_popup.css("display", "block");
       $(this).addClass("disabled");

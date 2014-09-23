@@ -15,24 +15,20 @@
       - if ac_name && ac_name.length >= 15
         - ac_name = ac_name.slice(0,15).concat("...")
       %span{:title => @automation_case_result.name}="#{ac_name}"
-
-  .span2.columns{:style=>"float: right;"}
-    -sa = @automation_script_result.slave_assignments.last
-    -if sa && sa.slave && @automation_script_result.end_time
-      = link_to "Show Log", test_round_automation_script_result_show_logs_path(@automation_script_result.test_round, @automation_script_result), :class => "btn primary"
-
 =render "brief_info"
-.row.detail
+
+.row.detail.toggle_header
   .span16.columns
+    %img.big-icon{:src => asset_path("plus.ico")}
     %h3 Test Steps and Expected Results
-.row
+.row.detail.toggle_body{:style=>"display:none"}
   .span16.columns
-    %table.test-steps
-      %tr
-        %th NO.
-        %th Steps
-        %th Expected Result
-      - if @test_case and @test_case.tc_steps and !(@test_case.tc_steps.empty?)
+    - if @test_case and @test_case.tc_steps and !(@test_case.tc_steps.empty?)
+      %table.test-steps
+        %tr
+          %th NO.
+          %th Steps
+          %th Expected Result
         - @test_case.tc_steps.group(:test_link_id).each do |ts|
           %tr
             %td
@@ -43,31 +39,28 @@
             %td
               .expected-result
                 =ts.expected_result.html_safe
-      - else
-        %h6 No steps and expected results
-
-.row.detail
-  .span16.columns
-    %h3 Error Message
-.row.detail
-  .span16.columns
-    .error-message
-      %span
-        - if @automation_case_result.error_message
-          - format_error_message(@automation_case_result.error_message)
-        - else
-          %h6 No Error Messages
-
-#server-log-box
-  #server-log-content
-    - if @automation_case_result.server_log
-      %span= @automation_case_result.server_log
     - else
-      %span No Data
-.row.detail
+      .error-message
+        %span
+          %h6 No steps and expected results
+
+.row.detail.toggle_header  
   .span16.columns
+    %img.big-icon{:src => asset_path("minus.ico")}
+    %h3 Error Message
+.row.detail.toggle_body
+  .span16.columns        
+    - if @automation_case_result.error_message and @automation_case_result.error_message != ""          
+      - format_error_message(@automation_case_result.error_message)
+    - else
+      .error-message
+        %h6 No Error Messages
+
+.row.detail.toggle_header
+  .span16.columns
+    %img.big-icon{:src => asset_path("minus.ico")}    
     %h3 Screen Shot
-.row.detail
+.row.detail.toggle_body
   .span16.columns
     .screen-shot-box
       - if @automation_case_result.screen_shots && @automation_case_result.screen_shots.count > 0
@@ -76,13 +69,23 @@
             = link_to image_tag(ss.screen_shot.url(:thumb)), ss.screen_shot.url, :rel => 'attachments', :class => "screen-shot"
       - else
         %h6 No Screen Shots
+  
 
-.row
-  .span16.columns
-    = link_to "Server Log","#server-log-content" ,:class => "btn primary", :id => "server-log"
 
 :javascript
+  $(".toggle_header").click(function() {
+    $header = $(this);
+    $icon = $header.children().first().children(".big-icon")
+    $body = $header.next(".toggle_body");
+    $body.slideToggle(500, function () {
+      if($body.is(":visible"))
+        $icon.attr("src", "/assets/minus.ico");
+      else
+        $icon.attr("src", "/assets/plus.ico");
+    });
+
+  });
+
   $(function(){
     $("a.screen-shot").fancybox({ 'autoDimensions' : true});
-    $("#server-log").fancybox({'overlayShow': true});
   });

@@ -10,10 +10,10 @@
     %th=sort_link search, :result, "Result", {}, {:remote => true}      
     %th=sort_link search, :automation_script_name, "Name", {}, {:remote => true}
     %th=sort_link search, :state, {}, {:remote => true}
-    %th Slave
+    %th=sort_link search, :slave, {}, {:remote => true}
     %th=sort_link search, :automation_script_owner_email, "Owner", {}, {:remote => true}
-    %th=sort_link search, :start_time, {}, {:remote => true}
-    %th=sort_link search, :end_time, {}, {:remote => true}
+    %th=sort_link search, :start_time, "Start Time", {}, {:remote => true}
+    %th=sort_link search, :end_time, "End Time", {}, {:remote => true}
     %th=sort_link search, :triage_result, {}, {:remote => true}
     %th Slave Logs
     %th Rerun/Stop
