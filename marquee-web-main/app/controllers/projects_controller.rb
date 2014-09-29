@@ -10,11 +10,7 @@ class ProjectsController < InheritedResources::Base
   def coverage
     @project = Project.find(params[:id])
     project_name = @project.name
-    # @p1_covergae = Rails.cache.fetch("#{project_name}_p1_covergae"){ Project.caculate_coverage_by_project_and_priority(project_name, "P1") }
-    # @p2_covergae = Rails.cache.fetch("#{project_name}_p2_covergae"){ Project.caculate_coverage_by_project_and_priority(project_name, "P2") }
-    # @p3_covergae = Rails.cache.fetch("#{project_name}_p3_covergae"){ Project.caculate_coverage_by_project_and_priority(project_name, "P3") }
-    # @overall_coverage = Rails.cache.fetch("#{project_name}_overall_coverage"){ Project.caculate_overall_coverage_by_project(project_name) }
-    
+
     @cui_coverage = []
     @aui_coverage = []
     @coverage = []
@@ -25,16 +21,31 @@ class ProjectsController < InheritedResources::Base
       @regression_coverage << Project.caculate_coverage_by_project_and_priority_and_type(project_name, priority,"regression")
       @coverage << Project.caculate_coverage_by_project_and_priority(project_name,priority)
     end
-    %W(P1 P2 P3).each do |priority|
-      eval "@#{priority}_automated = @project.count_test_case_by_options({:automated_status => 'Automated',:priority => '#{priority}'})"
-      eval "@#{priority}_update_needed = @project.count_test_case_by_options({:automated_status => 'Update Needed',:priority => '#{priority}'})"
-      eval "@#{priority}_not_candidate = @project.count_test_case_by_options({:automated_status => 'Not a Candidate',:priority => '#{priority}'})"
-      eval "@#{priority}_total = @project.count_test_case_by_options({:priority => '#{priority}'})"
+    #count regression test plans only when in below projects    
+    if %W(Endurance Camps Sports Membership Platform-Checkout RTP-Revolution  RTP-MooseCreek RTPOneContainer ActiveNet LeagueOne).include? project_name
+      %W(P1 P2 P3).each do |priority|
+        eval "@#{priority}_automated = @project.count_test_case_by_plan_type_and_options('regression',{:automated_status => 'Automated',:priority => '#{priority}'})"
+        eval "@#{priority}_update_needed = @project.count_test_case_by_plan_type_and_options('regression',{:automated_status => 'Update Needed',:priority => '#{priority}'})"
+        eval "@#{priority}_not_candidate = @project.count_test_case_by_plan_type_and_options('regression',{:automated_status => 'Not a Candidate',:priority => '#{priority}'})"
+        eval "@#{priority}_total = @project.count_test_case_by_plan_type_and_options('regression',{:priority => '#{priority}'})"
+      end
+      @total_automated =  @project.count_test_case_by_plan_type_and_options('regression',:automated_status => "Automated")
+      @total_update_needed = @project.count_test_case_by_plan_type_and_options('regression',:automated_status => "Update Needed")
+      @total_not_candidate = @project.count_test_case_by_plan_type_and_options('regression',:automated_status => "Not a Candidate")
+      @total = @project.count_test_case_by_plan_type_and_options('regression',{})
+    else
+      @regression_coverage = @coverage
+      %W(P1 P2 P3).each do |priority|
+        eval "@#{priority}_automated = @project.count_test_case_by_options({:automated_status => 'Automated',:priority => '#{priority}'})"
+        eval "@#{priority}_update_needed = @project.count_test_case_by_options({:automated_status => 'Update Needed',:priority => '#{priority}'})"
+        eval "@#{priority}_not_candidate = @project.count_test_case_by_options({:automated_status => 'Not a Candidate',:priority => '#{priority}'})"
+        eval "@#{priority}_total = @project.count_test_case_by_options({:priority => '#{priority}'})"
+      end
+      @total_automated =  @project.count_test_case_by_options(:automated_status => "Automated")
+      @total_update_needed = @project.count_test_case_by_options(:automated_status => "Update Needed")
+      @total_not_candidate = @project.count_test_case_by_options(:automated_status => "Not a Candidate")
+      @total = @project.count_test_case_by_options
     end
-    @total_automated =  @project.count_test_case_by_options(:automated_status => "Automated")
-    @total_update_needed = @project.count_test_case_by_options(:automated_status => "Update Needed")
-    @total_not_candidate = @project.count_test_case_by_options(:automated_status => "Not a Candidate")
-    @total = @project.count_test_case_by_options
   end
 
 end

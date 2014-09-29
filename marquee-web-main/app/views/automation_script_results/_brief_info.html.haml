@@ -1,18 +1,22 @@
-- left_titles = ['Browser:','Environment:', 'Start Time:', 'End Time:', 'Duration:', 'Triage Result:']
-- triage = nil
+- os = image_tag("#{@test_round.operation_system.name}.png", class: "ui-icon")
+- os = os + "  -  #{@test_round.operation_system.name_with_version}"
+- browser = image_tag("#{@test_round.browser.name}.png", class: "ui-icon")
+- browser = browser + "  -  #{@test_round.browser.name_with_version}"
+- slave = @automation_script_result.slave_assignments.last.slave.name
+
 - if @automation_script_result.end? && @automation_script_result.result!="pass" && @automation_script_result.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => @automation_script_result.test_round.project.id})
   - triage = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error","Environment Error" => "Environment Error"}, @automation_script_result.triage_result), :id => @automation_script_result.id, :class => "triage-result"
 - else
   - triage = @automation_script_result.triage_result
-- left_values = [@test_round.browser.name, @test_round.test_environment.name, in_time_zone(@automation_script_result.start_time), in_time_zone(@automation_script_result.end_time), (@automation_script_result.duration.nil? or @automation_script_result.duration == 0) ? "N/A" : ChronicDuration.output(@automation_script_result.duration), triage]
-- right_titles = ['Result:','Operation System:','Pass Count:', 'Failed Count:', 'Warning Count:', 'Not Run Count:']
-- right_values = [@automation_script_result.result, @test_round.operation_system.name, @automation_script_result.pass, @automation_script_result.failed, @automation_script_result.warning, @automation_script_result.not_run]
+- left_titles = ['Result:', 'Start Time:', 'End Time:', 'Duration:', 'Operation System:','Browser:']
+- left_values = [@automation_script_result.result, in_time_zone(@automation_script_result.start_time), in_time_zone(@automation_script_result.end_time), (@automation_script_result.duration.nil? or @automation_script_result.duration == 0) ? "N/A" : ChronicDuration.output(@automation_script_result.duration), os,browser]
+- right_titles = ['Pass Count:', 'Failed Count:', 'Warning Count:', 'Not Run Count:', 'Slave:', 'Triage Result:']
+- right_values = [@automation_script_result.pass, @automation_script_result.failed, @automation_script_result.warning, @automation_script_result.not_run, slave, triage]
+
 = render :partial => "partial/brief_info", :locals => {:left_titles => left_titles, :left_values => left_values, :right_titles => right_titles, :right_values => right_values}
 
-
-:javascript
+:javascript  
   $(function() {
-
     $(".triage-result").change(function() {
       var triage_result = $("option:selected", this).text();
       var comments = prompt("Please enter your comments", "");
