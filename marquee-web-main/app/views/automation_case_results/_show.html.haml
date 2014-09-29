@@ -79,9 +79,9 @@
     $body = $header.next(".toggle_body");
     $body.slideToggle(500, function () {
       if($body.is(":visible"))
-        $icon.attr("src", "/assets/minus.ico");
+        $icon.attr("src", "#{asset_path('minus.ico')}");
       else
-        $icon.attr("src", "/assets/plus.ico");
+        $icon.attr("src", "#{asset_path('plus.ico')}");
     });
 
   });
