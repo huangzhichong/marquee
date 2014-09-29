@@ -11,15 +11,15 @@
 
 %table.zebra-striped
   %tr
-    %th=sort_link search, :id, "NO.", {}, {:remote => true}
-    %th=sort_link search, :pass, "Pass", {}, {:remote => true}
-    %th=sort_link search, :failed, "Failed", {}, {:remote => true}
-    %th=sort_link search, :not_run, "Not Run", {}, {:remote => true}
+    %th="NO."
+    %th=sort_link search, :pass, "P", {}, {:remote => true}
+    %th=sort_link search, :failed, "F", {}, {:remote => true}
+    %th=sort_link search, :not_run, "N", {}, {:remote => true}
     %th=sort_link search, :creator_email, "Creator", {}, {:remote => true}
-    %th=sort_link search, :test_object, "Test Description", {}, {:remote => true}
-    %th=sort_link search, :test_environment_name, "Test environment", {}, {:remote => true}
-    %th=sort_link search, :start_time, {}, {:remote => true}
-    %th=sort_link search, :end_time, {}, {:remote => true}
+    %th=sort_link search, :test_object, "Description", {}, {:remote => true}
+    %th=sort_link search, :test_environment_name, "Environment", {}, {:remote => true}
+    %th=sort_link search, :start_time, "Start Time", {}, {:remote => true}
+    %th=sort_link search, :end_time, "End Time", {}, {:remote => true}
     %th Rerun
   - if test_rounds.nil? or test_rounds.count == 0
     %tr
@@ -28,12 +28,15 @@
   - else
     - test_rounds.each do |tr|
       %tr
-        %td
-          %img.ui-icon{:src => asset_path("#{tr.result}.png")}
-          = link_to "#{tr.test_suite.test_type.name} ##{tr.id}", project_test_round_path(project, tr), :remote => true
-        %td= tr.pass_count
-        %td= tr.failed_count
-        %td= tr.not_run_count
+        %td{:style => "width: 145px"}
+          = image_tag("#{tr.result}.png", class: "ui-icon")
+          = image_tag("#{tr.browser.name}.png", class: "ui-icon")
+          = image_tag("#{tr.operation_system.name}.png", class: "ui-icon")
+          - test_type = tr.test_suite.test_type.name.include?("BVT") ? 'BVT' : 'REG'           
+          = link_to "#{test_type} ##{tr.id}", project_test_round_path(project, tr), :remote => true
+        %td.pass= tr.pass_count
+        %td.failed= tr.failed_count
+        %td.not-run= tr.not_run_count
         %td= tr.creator.display_name
         %td
           - test_object = tr.test_object 
@@ -59,6 +62,15 @@
     %a.btn.primary.confirm_rerun_all{:href => "#"} Rerun All
     %a.btn.cancel_rerun{"data-dismiss" => "modal", :href => "#"} Cancel
 
+:css
+  .pass{
+    color: green;
+  }
+  .failed{
+    color: red;
+  }
+  .not-run{   
+  }
 
 :javascript
 
