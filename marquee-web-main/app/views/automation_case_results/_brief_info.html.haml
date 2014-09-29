@@ -3,7 +3,10 @@
 - os = os + "  -  #{test_round.operation_system.name_with_version}"
 - browser = image_tag("#{test_round.browser.name}.png", class: "ui-icon")
 - browser = browser + "  -  #{test_round.browser.name_with_version}"
-- slave = @automation_script_result.slave_assignments.last.slave.name
+- if @automation_script_result.slave_assignments.last.slave
+  - slave = @automation_script_result.slave_assignments.last.slave.name  
+- else
+  - slave = 'N/A'
 - left_titles = ['Case Id:', 'Result:','Operation System:','Browser:']
 - left_values = [@automation_case_result.case_id, @automation_case_result.result, os, browser]
 - right_titles = ['Priority:', 'Owner:','Slave:']
