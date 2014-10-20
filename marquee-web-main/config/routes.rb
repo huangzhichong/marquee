@@ -81,6 +81,9 @@ MarqueeWebMain::Application.routes.draw do
   end
 
   resources :automation_scripts do
+    get 'view_note'
+    get "edit_note"
+    post "save_note"
     resources :automation_cases
   end
 

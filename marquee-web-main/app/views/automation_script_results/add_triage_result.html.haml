@@ -21,7 +21,7 @@
             - if @automation_script_result.automation_script.note
               = text_area_tag 'note', @automation_script_result.automation_script.note, disabled: true, rows: 10, style: "width: 500px"
             - else
-              = text_area_tag 'note', nil, disabled: true, rows: 10, style: "width: 500px"
+              = text_area_tag 'note', nil, placeholder: "No Automation Script Note.", disabled: true, rows: 10, style: "width: 500px"
 
         .clearfix
           .input.copy-note
