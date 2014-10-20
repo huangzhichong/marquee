@@ -48,6 +48,8 @@ MarqueeWebMain::Application.routes.draw do
     get 'coverage', :on => :member
     resources :test_plans
     resources :automation_scripts
+    resources :base_script_results
+    resources :issues
     resources :test_rounds do
       get "rerun", :controller => 'test_rounds', :action => 'rerun'
       get "rerun_failed", :controller => 'test_rounds', :action => 'rerun_failed'
@@ -66,8 +68,12 @@ MarqueeWebMain::Application.routes.draw do
 
   resources :automation_script_results do
     resources :automation_case_results
+    post "save_triage_result"
   end
-
+  resources :issues
+  resources :base_script_results do
+    resources :base_case_results
+  end
   resources :screen_shots
 
   resources :test_plans do
@@ -78,9 +84,12 @@ MarqueeWebMain::Application.routes.draw do
     resources :automation_cases
   end
 
+  get "update_automation_case_result_triagge_result", :controller => 'automation_case_results', :action => 'update_triage_result'
   get "update_automation_script_result_triagge_result", :controller => 'automation_script_results', :action => 'update_triage_result'
   get "automation_script_results/:id/rerun", :controller => 'automation_script_results', :action => 'rerun'
   get "automation_script_results/:id/stop", :controller => 'automation_script_results', :action => 'stop'
+  get "automation_script_results/:id/add_triage_result", :controller => 'automation_script_results', :action => 'add_triage_result'
+  get "automation_script_results/:id/view_triage_result", :controller => 'automation_script_results', :action => 'view_triage_result'
 
   get "functional/bug_report"
   get "functional/rmf_original_estimate"

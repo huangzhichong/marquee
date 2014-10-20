@@ -7,14 +7,13 @@
 
 %table.zebra-striped
   %tr
-    %th=sort_link search, :result, "Result", {}, {:remote => true}      
     %th=sort_link search, :automation_script_name, "Name", {}, {:remote => true}
     %th=sort_link search, :state, {}, {:remote => true}
     %th=sort_link search, :slave, {}, {:remote => true}
     %th=sort_link search, :automation_script_owner_email, "Owner", {}, {:remote => true}
     %th=sort_link search, :start_time, "Start Time", {}, {:remote => true}
     %th=sort_link search, :end_time, "End Time", {}, {:remote => true}
-    %th=sort_link search, :triage_result, {}, {:remote => true}
+    %th=sort_link search, :triage_result, "Triage Result", {}, {:remote => true}
     %th Slave Logs
     %th Rerun/Stop
 
@@ -29,7 +28,6 @@
           - icon_name = asr.result
           - icon_name = asr.state if asr.state == "stopping"
           %img.ui-icon{:src => asset_path("#{icon_name}.png")}
-        %td
           - asr_name = asr.name
           - if asr_name and asr_name.length >= 30
             - asr_name = asr_name.slice(0,30).concat("...")
@@ -45,14 +43,12 @@
         %td= in_time_zone(asr.start_time)
         %td= in_time_zone(asr.end_time)
         - triage_result = asr.triage_result
-        %td{:title => triage_result}
-          - if asr.end? && asr.result!="pass" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id}) 
-            = select_tag "triage_result", options_for_select({"N/A" => "N/A", "Script Error" => "Script Error", "Product Error" => "Product Error","Environment Error" => "Environment Error"}, asr.triage_result), :id => asr.id, :class => "triage-result"
-          - else
-            - if triage_result.size > 18
-              = triage_result.slice(0,18)+"..."
-            - else
-              = triage_result
+        %td
+          - if asr.end? && asr.result!="pass" && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id}) 
+            - if asr.triage_result == "N/A"      
+              %input{:type => "button", :value => "Triage", "remote-data" => "/automation_script_results/#{asr.id}/add_triage_result", :class => "btn primary add-triage-result"}
+            - else  
+              %input{:type => "button", :value => "#{asr.error_type.name}", "remote-data" => "/automation_script_results/#{asr.id}/view_triage_result", :class => "btn view-triage-result"}
         %td
           -sa = asr.slave_assignments.last
           -if sa && sa.slave && asr.end_time
@@ -69,7 +65,25 @@
 = paginate automation_script_results
 
 :javascript
-  $(function() {
+  $(function(){
+    $("input.view-triage-result").click(function() {
+      $.fancybox({
+          width: 400,
+          height: 400,
+          autoSize: false,
+          href: $(this).attr("remote-data"),
+          type: 'ajax'
+      }); 
+    });
+    $("input.add-triage-result").click(function() {
+      $.fancybox({
+          width: 400,
+          height: 400,
+          autoSize: false,
+          href: $(this).attr("remote-data"),
+          type: 'ajax'
+      }); 
+    });
 
     $("input.rerun_btn:not(:disabled)").click(function() {
       $(this).addClass("disabled");
