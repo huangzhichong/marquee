@@ -25,4 +25,9 @@ class MailNotifySetting < ActiveRecord::Base
   def all_test_types
     test_types.collect{|tt| tt.name}.join(', ')
   end
+  def set_default_settings
+    self.mail_notify_groups << MailNotifyGroup.last
+    self.test_types << TestType.last
+    self.save
+  end
 end

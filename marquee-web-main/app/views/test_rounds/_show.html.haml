@@ -10,11 +10,11 @@
         %ul.dropdown-menu
           %li
             %a.export_to_csv_btn{:href => "#","url" => "/functional/generate_automation_results_report.csv", "test_round_id" => "#{@test_round.id}", :remote => true} Export to CSV
-          / %li
-          /   %a.save_to_base_result{:href => "#"} Save to Base Result
           -unless @test_round.exported_to_testlink?
             %li
               %a.save_to_testlink{:href => "#"} Save to Testlink
+          %li
+            %a.config_notify_email{:href => "#", "remote-data" => "/test_rounds/#{@test_round.id}/config_notify_email", :remote => true}Send Notify Email
       %a.btn.primary{"data-dropdown" => "#dropdown-1"} Custom Actions
 = render 'brief_info'
 .list-content-box
@@ -64,6 +64,17 @@
 
 
 :javascript
+
+  $("a.config_notify_email").click(function() {
+    $.fancybox({        
+        width: 400,
+        height: 400,
+        autoSize: false,        
+        href: $(this).attr("remote-data"),
+        type: 'ajax'
+    }); 
+  });
+
   $("a.export_to_csv_btn").click(function(){
     $("#dropdown-1").dropdown("hide");
     var myAjaxVariable = null;

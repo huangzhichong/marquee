@@ -26,38 +26,26 @@ class AutomationScriptResultsController < InheritedResources::Base
 
   def save_triage_result
     @automation_script_result ||= AutomationScriptResult.find(params[:automation_script_result_id])
-
-    @automation_script_result.triage_result=params[:triage_result]
-    @automation_script_result.error_type_id=params[:error_type_id]
     respond_to do |format|
       begin
+        @automation_script_result.triage_result = params[:triage_result]
+        @automation_script_result.error_type_id = params[:error_type_id]
         @automation_script_result.save
+        @automation_script_result.count_automation_script_and_test_round_result
+
         if params['override']
           as = @automation_script_result.automation_script
           as.note = @automation_script_result.triage_result
           as.save
+        end        
+        unless @automation_script_result.test_round.send_triage_mail?
+          @automation_script_result.test_round.update_result
+          TestRoundMailer.triage_mail(@automation_script_result.test_round.id).deliver
         end
         format.js {}
       rescue Exception => e
         @automation_script_result.errors[:triage_result] << e
         format.js {}
-      end
-    end
-  end
-
-  def update_triage_result
-    automation_script_result = AutomationScriptResult.find(params[:id])
-    triage_result = params[:triage_result]
-    respond_to do |format|
-      if automation_script_result.update_triage!(triage_result)
-        result = automation_script_result.test_round.send_triage_mail?
-        if not result
-          automation_script_result.test_round.update_result
-          TestRoundMailer.triage_mail(automation_script_result.test_round.id).deliver
-        end
-        format.js { render :json => {:result => "success", :tr_result => automation_script_result.test_round.result, :asr_result => automation_script_result.result}}
-      else
-        format.js { render :json => {:result => "failed", :tr_result => automation_script_result.test_round.result, :asr_result => automation_script_result.result}}
       end
     end
   end

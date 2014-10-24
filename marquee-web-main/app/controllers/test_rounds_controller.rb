@@ -5,7 +5,32 @@ class TestRoundsController < InheritedResources::Base
   belongs_to :project
   before_filter :authenticate_user!, :only => [:new, :crete]
 
+  def config_notify_email
+    @test_round = TestRound.find(params[:test_round_id])
+    @notification_emails = @test_round.notification_emails
+    respond_to do |format|
+      format.html { render :layout => false}
+      format.js { render :layout => false}
+    end
+  end
+  def send_notify_email
+    @test_round = TestRound.find(params[:test_round_id])
+    @notification_emails = params[:notify_emails]
 
+    respond_to do |format|
+      unless @notification_emails.empty?
+        unless @notification_emails.split(',').any?{|email| not_a_valid_email?(email.strip)}
+          TestRoundMailer.notify_mail(@test_round.id,@notification_emails).deliver
+        else
+          flash[:notice] = "there is invalid email address, please check."
+        end
+        format.js { render :layout => false}
+      else
+        flash[:notice] = "please select or enter email address."
+        format.js { render :layout => false}
+      end
+    end
+  end
   def rerun_failed
     test_round = TestRound.find(params[:test_round_id])
     test_round.automation_script_results.where("result != 'pass' and triage_result ='N/A'").each do |asr|
@@ -60,6 +85,10 @@ class TestRoundsController < InheritedResources::Base
     @project ||= Project.find(params[:project_id])
     @search = @project.test_rounds.search(params[:search])
     @test_rounds ||= @search.order('id desc').page(params[:page]).per(15)
+  end
+  private
+  def not_a_valid_email?(email)
+    (email =~ /\A([\S].?)+@(activenetwork|active)\.com\z/i).nil?
   end
 
 end

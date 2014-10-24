@@ -117,7 +117,10 @@ class Project < ActiveRecord::Base
     TestCase.includes("test_plan").where(options).where("test_cases.version > 0").count
   end
 
-
+  def add_default_notify_email(email_address)
+    mns = self.mail_notify_settings.build(:mail=>"#{email_address}")
+    mns.set_default_settings
+  end
 
   private
 
