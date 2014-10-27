@@ -61,6 +61,8 @@ MarqueeWebMain::Application.routes.draw do
   end
 
   resources :test_rounds do
+    get "config_notify_email"
+    post "send_notify_email"
     resources :automation_script_results do
       get "show_logs"
     end
@@ -87,8 +89,6 @@ MarqueeWebMain::Application.routes.draw do
     resources :automation_cases
   end
 
-  get "update_automation_case_result_triagge_result", :controller => 'automation_case_results', :action => 'update_triage_result'
-  get "update_automation_script_result_triagge_result", :controller => 'automation_script_results', :action => 'update_triage_result'
   get "automation_script_results/:id/rerun", :controller => 'automation_script_results', :action => 'rerun'
   get "automation_script_results/:id/stop", :controller => 'automation_script_results', :action => 'stop'
   get "automation_script_results/:id/add_triage_result", :controller => 'automation_script_results', :action => 'add_triage_result'

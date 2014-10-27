@@ -89,11 +89,11 @@ class AutomationScriptResult < ActiveRecord::Base
   end
 
   def update_state!(state)
-    count_automation_script_and_test_round_result(state)
     self.state = state
     if state == "running"
       self.start_time = Time.now if self.start_time.blank?
     elsif state == "done"
+      count_automation_script_and_test_round_result
       self.end_time = Time.now
       self.not_run_cases.each do |automation_case_result|
         automation_case_result.result = 'not-run'
@@ -105,24 +105,10 @@ class AutomationScriptResult < ActiveRecord::Base
         self.result = self.failed > 0 ? 'failed' : 'pass'
       end
     else
+      count_automation_script_and_test_round_result
       self.end_time = Time.now
       self.result = 'failed'
     end
-    save
-  end
-
-  def update_triage!(triage_result)
-    self.triage_result = triage_result
-    self.result = "failed" if triage_result.starts_with? "Product Error"
-    self.result = "failed" if triage_result.starts_with? "Environment Error"
-    if triage_result.starts_with?  "Script Error"
-      self.automation_case_results.each do |tcr|
-        tcr.result = 'pass'
-        tcr.save
-      end
-      self.result = "pass"
-    end
-    count_automation_script_and_test_round_result("done")
     save
   end
 
@@ -158,8 +144,8 @@ class AutomationScriptResult < ActiveRecord::Base
     self.save
   end
 
-  def count_automation_script_and_test_round_result(state)
-    if state == 'done' || state == 'failed'
+  def count_automation_script_and_test_round_result
+    if self.end?
       # update script result counting status
       count_automation_script_result!
       # update test round result counting status
@@ -169,7 +155,7 @@ class AutomationScriptResult < ActiveRecord::Base
 
   def save_result_to_baseline
     update_info_to_base_script_result
-    self.automation_case_results.each{|acr| acr.update_info_to_base_case_result}    
+    self.automation_case_results.each{|acr| acr.update_info_to_base_case_result}
     get_corresponding_base_script_result.update_triage_result!
   end
 
@@ -177,6 +163,7 @@ class AutomationScriptResult < ActiveRecord::Base
 
   def get_related_baseline_script_results
     BaseScriptResult.find_all_by_automation_script_name_and_project_id(self.automation_script.name, self.test_round.project_id)
+    count_automation_script_and_test_round_result
   end
 
   def get_corresponding_base_script_result
