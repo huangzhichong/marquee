@@ -1,5 +1,5 @@
 .row.sub-header
-  .span16.columns
+  .span12.columns
     %img.big-icon{:src => asset_path("#{@automation_script_result.result}.png")}
     %h2
       =link_to "Test Rounds", project_test_rounds_path(@project), :remote => true
@@ -13,8 +13,8 @@
   .span3.columns#right
     #dropdown-1.dropdown.dropdown-tip
       %ul.dropdown-menu
-        / %li
-        /   = link_to "View Triage Result","#triage-result-content" ,:class => "triage-result", :id => "action-view-triage-result"
+        %li
+          = link_to "View Triage Result","#", :id => "action-view-triage-result","remote-data" => "/automation_script_results/#{@automation_script_result.id}/view_triage_result"
         - asr =  @automation_script_result
         - project = @automation_script_result.test_round.project
         - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
@@ -31,10 +31,16 @@
   = render :partial => 'automation_case_results/list', :locals => {:automation_case_results => @automation_case_results, :automation_script_result => @automation_script_result, :search => @search}
 
 :javascript
-  $(function(){
-    $("#action-view-triage-result").fancybox({'overlayShow': true});
+  $(function(){  
     $("#action-view-triage-result").click(function(){
       $("#dropdown-1").dropdown("hide");
+      $.fancybox({
+          width: 400,
+          height: 400,
+          autoSize: false,
+          href: $("#action-view-triage-result").attr("remote-data"),
+          type: 'ajax'
+      }); 
     });
     $("a.rerun_btn:not(:disabled)").click(function(){
       $(this).parent().addClass("disabled");

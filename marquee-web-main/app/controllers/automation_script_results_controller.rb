@@ -2,19 +2,46 @@ class AutomationScriptResultsController < InheritedResources::Base
   respond_to :js
   belongs_to :test_round
 
-  def update_triage_result
-    automation_script_result = AutomationScriptResult.find(params[:id])
-    triage_result = params[:triage_result]
+  def view_triage_result
+    @automation_script_result ||= AutomationScriptResult.find(params[:id])
+    @test_round ||= @automation_script_result.test_round
+    @triage_result ||= @automation_script_result.triage_result
+
     respond_to do |format|
-      if automation_script_result.update_triage!(triage_result)
-        result = automation_script_result.test_round.send_triage_mail?
-        if not result
-          automation_script_result.test_round.update_result
-          TestRoundMailer.triage_mail(automation_script_result.test_round.id).deliver
-        end
-        format.js { render :json => {:result => "success", :tr_result => automation_script_result.test_round.result, :asr_result => automation_script_result.result}}
-      else
-        format.js { render :json => {:result => "failed", :tr_result => automation_script_result.test_round.result, :asr_result => automation_script_result.result}}
+      format.html { render :layout => false}
+      format.js { render :layout => false}
+    end
+  end
+
+  def add_triage_result
+    @automation_script_result ||= AutomationScriptResult.find(params[:id])
+    @test_round ||= @automation_script_result.test_round
+    @triage_result ||= @automation_script_result.triage_result
+
+    respond_to do |format|
+      format.html { render :layout => false}
+      format.js { render :layout => false}
+    end
+  end
+
+  def save_triage_result
+    @automation_script_result ||= AutomationScriptResult.find(params[:automation_script_result_id])
+    respond_to do |format|
+      begin
+        @automation_script_result.triage_result = params[:triage_result]
+        @automation_script_result.error_type_id = params[:error_type_id]
+        @automation_script_result.save
+        @automation_script_result.count_automation_script_and_test_round_result
+
+        if params['override']
+          as = @automation_script_result.automation_script
+          as.note = @automation_script_result.triage_result
+          as.save
+        end        
+        format.js {}
+      rescue Exception => e
+        @automation_script_result.errors[:triage_result] << e
+        format.js {}
       end
     end
   end
@@ -30,7 +57,9 @@ class AutomationScriptResultsController < InheritedResources::Base
     end
 
     AutomationScriptResultRunner.rerun(automation_script_result_id)
-    render :nothing => true
+    respond_to do |format|
+      format.html { redirect_to :back, notice: 'BaseIssueResult was successfully updated.' }
+    end
   end
 
   def stop
@@ -44,7 +73,7 @@ class AutomationScriptResultsController < InheritedResources::Base
 
     render :nothing => true
   end
-  
+
   def show_logs
     @test_round ||= TestRound.find(params[:test_round_id])
     @project ||= @test_round.project

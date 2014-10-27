@@ -242,4 +242,17 @@ class TestRound < ActiveRecord::Base
     self.save
   end
 
+  def owner_emails
+    emails = []
+    query_string = "select DISTINCT a.owner_id from automation_scripts a
+           join automation_script_results asr on asr.automation_script_id = a.id
+           where asr.test_round_id = '#{self.id}'"
+    AutomationScript.find_by_sql(query_string).each {|as| emails << as.owner.email}
+    return emails
+  end
+
+  def notification_emails
+    self.project.mail_notify_settings.map(&:mail)
+  end
+
 end
