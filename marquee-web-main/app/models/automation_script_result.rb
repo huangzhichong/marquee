@@ -145,7 +145,6 @@ class AutomationScriptResult < ActiveRecord::Base
   end
 
   def count_automation_script_and_test_round_result
-    puts "=============================> #{self.state}"
     if self.end?
       # update script result counting status
       count_automation_script_result!

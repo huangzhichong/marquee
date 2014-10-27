@@ -38,10 +38,6 @@ class AutomationScriptResultsController < InheritedResources::Base
           as.note = @automation_script_result.triage_result
           as.save
         end        
-        unless @automation_script_result.test_round.send_triage_mail?
-          @automation_script_result.test_round.update_result
-          TestRoundMailer.triage_mail(@automation_script_result.test_round.id).deliver
-        end
         format.js {}
       rescue Exception => e
         @automation_script_result.errors[:triage_result] << e

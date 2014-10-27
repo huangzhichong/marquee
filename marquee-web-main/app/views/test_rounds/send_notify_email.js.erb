@@ -1,6 +1,5 @@
 var el = $('.send-notification-email');
 <% if flash[:notice] %>
-  <% puts @error_message %>
   var errors = $('<span />');  
   errors.append('<%= escape_javascript( flash[:notice] ) %>');    
   el.find('.alert-message.block-message').addClass('error').show().html(errors);
