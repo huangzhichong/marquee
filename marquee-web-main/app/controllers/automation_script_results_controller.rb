@@ -30,6 +30,13 @@ class AutomationScriptResultsController < InheritedResources::Base
       begin
         @automation_script_result.triage_result = params[:triage_result]
         @automation_script_result.error_type_id = params[:error_type_id]
+        if params[:error_type_id] == '1'
+          @automation_script_result.automation_case_results.each do |acr|
+            acr.result = 'pass'
+            acr.save
+          end
+          @automation_script_result.result = 'pass'
+        end
         @automation_script_result.save
         @automation_script_result.count_automation_script_and_test_round_result
 

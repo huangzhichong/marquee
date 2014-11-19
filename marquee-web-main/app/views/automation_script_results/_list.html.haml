@@ -46,9 +46,10 @@
           = in_time_zone(asr.end_time)
         - triage_result = asr.triage_result
         %td
-          - if asr.end? && asr.result!="pass" && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id}) 
-            - if asr.triage_result == "N/A"      
-              %input{:type => "button", :value => "Triage", "remote-data" => "/automation_script_results/#{asr.id}/add_triage_result", :class => "btn primary add-triage-result"}
+          - if asr.end? && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id}) 
+            - if asr.triage_result == "N/A"
+              - unless asr.result == 'pass'
+                %input{:type => "button", :value => "Triage", "remote-data" => "/automation_script_results/#{asr.id}/add_triage_result", :class => "btn primary add-triage-result"}
             - else  
               %input{:type => "button", :value => "#{asr.error_type.name}", "remote-data" => "/automation_script_results/#{asr.id}/view_triage_result", :class => "btn view-triage-result"}
         %td
