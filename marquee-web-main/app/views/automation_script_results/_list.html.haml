@@ -7,6 +7,7 @@
 
 %table.zebra-striped
   %tr
+    %th=sort_link search, :result, "Result", {}, {:remote => true}      
     %th=sort_link search, :automation_script_name, "Name", {}, {:remote => true}
     %th=sort_link search, :state, {}, {:remote => true}
     %th=sort_link search, :slave, {}, {:remote => true}
@@ -28,6 +29,7 @@
           - icon_name = asr.result
           - icon_name = asr.state if asr.state == "stopping"
           %img.ui-icon{:src => asset_path("#{icon_name}.png")}
+        %td  
           - asr_name = asr.name
           - if asr_name and asr_name.length >= 30
             - asr_name = asr_name.slice(0,30).concat("...")
