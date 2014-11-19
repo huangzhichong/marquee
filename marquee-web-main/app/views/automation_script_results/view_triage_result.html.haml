@@ -18,7 +18,8 @@
           .input
             = text_area_tag 'triage_result', @automation_script_result.triage_result,rows: 10, style: "width: 500px", disabled: true
         .actions
-          %input.btn.primary.update_button{:type => "button", :value => "Edit", "remote-data" => "/automation_script_results/#{@automation_script_result.id}/add_triage_result"}
+          - unless @automation_script_result.error_type_id == 1
+            %input.btn.primary.update_button{:type => "button", :value => "Edit", "remote-data" => "/automation_script_results/#{@automation_script_result.id}/add_triage_result"}
           %input.btn.cancel_button{:type => "button", :value => "Cancel"}
 
 :javascript
