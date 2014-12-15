@@ -9,16 +9,21 @@
 
 %table.zebra-striped
   %tr
-    %th= 'Result'
-    %th=sort_link search, :test_round_id, 'Test Round', {}, {:remote => true}
+    %th= sort_link search, :result, {}, {:remote => true}
+    %th= 'Test Round'
     %th=sort_link search, :market, {}, {:remote => true}
     %th= 'Offer Type'
     %th= 'Description'
     %th=sort_link search, :timestamp, {}, {:remote => true}
   - offer_reports.each do |offer_report|
+    - tr = TestRound.where(:id => offer_report.test_round_id)    
     %tr
       %td= image_tag("#{offer_report.result.downcase}.png", class: "ui-icon")
-      %td= offer_report.test_round_id
+      %td
+        -if tr.size > 0
+          = link_to offer_report.test_round_id, project_test_round_path(tr.first.project, tr.first), :remote => true
+        -else 
+          = offer_report.test_round_id
       %td= offer_report.market
       %td= offer_report.offer_type
       %td= offer_report.description

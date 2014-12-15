@@ -10,7 +10,7 @@ class OfferReportsController < InheritedResources::Base
 
   def collection
     @search = OfferReport.search(params[:search])
-    @offer_reports ||= @search.page(params[:page]).per(30)
+    @offer_reports ||= @search.order('test_round_id DESC').page(params[:page]).per(30)
   end
 
 end
