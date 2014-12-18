@@ -1,21 +1,24 @@
 class StatusController < ApplicationController
-
   def new_build
     logger.info "New Build incoming. #{params}"
     ci_value = params[:project].split(/_|-/).map{|n| n.capitalize}.join('')
     env = params[:environment]
-    test_environment = TestEnvironment.find_by_name(env)
     @test_round_ids= []
-    if test_environment
+    unless env.empty?
       test_object = "#{ci_value} #{params[:version]}"
       CiMapping.find_all_by_ci_value(ci_value).each do |ci_mapping|
         if ci_mapping.browser.nil? or ci_mapping.operation_system.nil?
           logger.error "A CI Mapping without Browser and Operation System found: #{ci_mapping.inspect}"
           return
         end
-        test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object, ci_mapping.browser, ci_mapping.operation_system)
-        TestRoundDistributor.distribute(test_round.id)
-        @test_round_ids << test_round.id
+        test_environment = ci_mapping.project.test_environments.find_by_name(env)
+        if test_environment
+          test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object, ci_mapping.browser, ci_mapping.operation_system)
+          TestRoundDistributor.distribute(test_round.id)
+          @test_round_ids << test_round.id
+        else
+          logger.error "Test Environment #{env} is not assigned to project #{ci_mapping.project.name}"
+        end
       end
     end
     render "status/new_build"
