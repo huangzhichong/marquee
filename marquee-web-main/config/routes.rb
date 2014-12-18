@@ -1,5 +1,9 @@
 MarqueeWebMain::Application.routes.draw do
 
+  resources :offer_monitoring_records
+
+  resources :offer_reports
+
   namespace :admin do
     constraints CanAccessResque do
       mount Resque::Server.new, :at => "/resque"
