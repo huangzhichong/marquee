@@ -31,9 +31,17 @@
       .input
         = f.select :browser_id, options_from_collection_for_select(@project.browsers, :id, :name_with_version), {}, {:class => "chzn-select validate[required]"}
     .clearfix
+      = f.label :branch_name      
+      .input
+        = f.select :branch_name, options_for_select(@project.branches,selected: "master"), {}, {:class => "chzn-select"}
+    .clearfix
       = f.label :assign_to_slave
       .input
         = f.select :assigned_slave_id, options_for_select(get_eligible_slaves(@project.name)), {}, {:class => "chzn-select"}
+    .clearfix
+      = f.label :parameter
+      .input
+        = f.text_field :parameter
 
     = f.hidden_field :creator_id, :value => current_user.id
     .actions

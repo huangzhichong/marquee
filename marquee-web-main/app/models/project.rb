@@ -19,7 +19,7 @@ class Project < ActiveRecord::Base
 
   attr_accessor :crop_x, :crop_y, :crop_w, :crop_h
   after_update :reprocess_icon_image, :if => :cropping?
-
+  has_many :project_branch_scripts
   has_many :project_browser_configs
   has_many :browsers, :through => :project_browser_configs
   accepts_nested_attributes_for :project_browser_configs
@@ -121,7 +121,10 @@ class Project < ActiveRecord::Base
     mns = self.mail_notify_settings.build(:mail=>"#{email_address}")
     mns.set_default_settings
   end
-
+  def branches
+    branches = self.project_branch_scripts.all(:select => 'distinct(branch_name)').map{|n| n.branch_name}
+    branches << "master"
+  end
   private
 
   def reprocess_icon_image
