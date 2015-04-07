@@ -30,4 +30,11 @@ class TestSuite < ActiveRecord::Base
   def automation_case_count
     self.automation_scripts.inject(0){|count,as| count + as.automation_cases.count}
   end
+  def automation_driver_config_ids
+    self.automation_scripts.all(:select => 'distinct(automation_driver_config_id)').map{|n| n.automation_driver_config_id}
+  end
+
+  def count_of_uniq_source_paths
+    AutomationDriverConfig.find(automation_driver_config_ids).map{|n| n.source_paths}.uniq.count
+  end
 end

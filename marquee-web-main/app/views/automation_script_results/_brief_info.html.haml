@@ -7,10 +7,15 @@
 - else
   - triage = link_to "Click to triage","#", :id => "triage-result","remote-data" => "/automation_script_results/#{@automation_script_result.id}/add_triage_result"
 
-- left_titles = ['Result:', 'Start Time:', 'End Time:', 'Duration:', 'Operation System:','Triage Result:']
-- left_values = [@automation_script_result.result, in_time_zone(@automation_script_result.start_time), in_time_zone(@automation_script_result.end_time), (@automation_script_result.duration.nil? or @automation_script_result.duration == 0) ? "N/A" : ChronicDuration.output(@automation_script_result.duration), os,triage]
-- right_titles = ['Pass Count:', 'Failed Count:', 'Warning Count:', 'Not Run Count:', 'Browser:']
-- right_values = [@automation_script_result.pass, @automation_script_result.failed, @automation_script_result.warning, @automation_script_result.not_run,browser]
+- branch_name = @test_round.branch_name.nil? ? "master" : @test_round.branch_name
+- parameter = @test_round.parameter.nil? ? "" : @test_round.parameter
+- parameter_dislay = (parameter.length >= 37) ? parameter.slice(0,37).concat("...") : parameter
+- parameter_html = content_tag(:p, parameter_dislay, :title=>parameter) 
+
+- left_titles = ['Result:', 'Start Time:', 'End Time:', 'Duration:', 'Operation System:','Branch:','Triage Result:']
+- left_values = [@automation_script_result.result, in_time_zone(@automation_script_result.start_time), in_time_zone(@automation_script_result.end_time), (@automation_script_result.duration.nil? or @automation_script_result.duration == 0) ? "N/A" : ChronicDuration.output(@automation_script_result.duration), os,branch_name,triage]
+- right_titles = ['Pass Count:', 'Failed Count:', 'Warning Count:', 'Not Run Count:', 'Browser:', 'Parameter:']
+- right_values = [@automation_script_result.pass, @automation_script_result.failed, @automation_script_result.warning, @automation_script_result.not_run,browser, parameter_html]
 
 = render :partial => "partial/brief_info", :locals => {:left_titles => left_titles, :left_values => left_values, :right_titles => right_titles, :right_values => right_values}
 
