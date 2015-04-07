@@ -3,6 +3,9 @@ class StatusController < ApplicationController
     logger.info "New Build incoming. #{params}"
     ci_value = params[:project].split(/_|-/).map{|n| n.capitalize}.join('')
     env = params[:environment]
+    branch_name = params.has_key?(:branch_name) ? params[:branch_name] : "master"
+    parameter = params.has_key?(:parameter) ? params[:parameter] : ""
+    test_environment = TestEnvironment.find_by_name(env)
     @test_round_ids= []
     unless env.empty?
       test_object = "#{ci_value} #{params[:version]}"
@@ -11,9 +14,13 @@ class StatusController < ApplicationController
           logger.error "A CI Mapping without Browser and Operation System found: #{ci_mapping.inspect}"
           return
         end
+        unless ci_mapping.project.branches.index branch_name
+          logger.error "Branch #{parameter} could not be found: #{ci_mapping.inspect}"
+          return
+        end
         test_environment = ci_mapping.project.test_environments.find_by_name(env)
         if test_environment
-          test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object, ci_mapping.browser, ci_mapping.operation_system)
+          test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object, ci_mapping.browser, ci_mapping.operation_system, branch_name, parameter)
           TestRoundDistributor.distribute(test_round.id)
           @test_round_ids << test_round.id
         else

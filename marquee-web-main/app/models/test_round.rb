@@ -39,7 +39,7 @@ class TestRound < ActiveRecord::Base
   acts_as_audited :protect => false
   # acts_as_audited :protect => false, :only => [:create, :destroy]
 
-  validates_presence_of :test_object
+  validates_presence_of :test_object,:branch_name
 
   def to_s
     "#{self.test_type.name} ##{self.id}"
@@ -72,7 +72,7 @@ class TestRound < ActiveRecord::Base
     self.save
   end
 
-  def self.create_for_new_build(test_suite, project, test_environment, user, test_object, browser, os)
+  def self.create_for_new_build(test_suite, project, test_environment, user, test_object, browser, os, branch_name, parameter)
     test_round = TestRound.new
     test_round.set_default_value
     test_round.test_suite = test_suite
@@ -82,6 +82,8 @@ class TestRound < ActiveRecord::Base
     test_round.test_environment = test_environment
     test_round.browser = browser
     test_round.operation_system = os
+    test_round.branch_name = branch_name
+    test_round.parameter = parameter
     test_round.save
     test_round
   end

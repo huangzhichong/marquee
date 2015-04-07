@@ -7,8 +7,12 @@
   - slave = @automation_script_result.slave_assignments.last.slave.name  
 - else
   - slave = 'N/A'
-- left_titles = ['Case Id:', 'Result:','Operation System:','Browser:']
-- left_values = [@automation_case_result.case_id, @automation_case_result.result, os, browser]
-- right_titles = ['Priority:', 'Owner:','Slave:']
-- right_values = [@automation_case_result.priority, @automation_case_result.owner.display_name, slave]
+- branch_name = test_round.branch_name.nil? ? "master" : test_round.branch_name
+- parameter = test_round.parameter.nil? ? "" : test_round.parameter
+- parameter_dislay = (parameter.length >= 37) ? parameter.slice(0,37).concat("...") : parameter
+- parameter_html = content_tag(:p, parameter_dislay, :title=>parameter) 
+- left_titles = ['Case Id:', 'Result:','Operation System:','Branch:']
+- left_values = [@automation_case_result.case_id, @automation_case_result.result, os, branch_name]
+- right_titles = ['Priority:','Slave:', 'Browser:', 'Parameter:']
+- right_values = [@automation_case_result.priority, slave, browser, parameter_html]
 = render :partial => "partial/brief_info", :locals => {:left_titles => left_titles, :left_values => left_values, :right_titles => right_titles, :right_values => right_values}
