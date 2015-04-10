@@ -73,6 +73,11 @@ class TestRoundsController < InheritedResources::Base
     render :nothing => true
   end
 
+  def execute_multiple_site
+    ActivenetMultipleSiteDistributor.distribute(params)
+    redirect_to project_test_rounds_path(Project.find_by_name('ActiveNet'))
+  end
+
   protected
   def resource
     @project ||= Project.find(params[:project_id])
