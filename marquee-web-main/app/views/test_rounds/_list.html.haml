@@ -34,7 +34,7 @@
           = image_tag("#{tr.result}.png", class: "ui-icon")
           = image_tag("#{tr.browser.name}.png", class: "ui-icon")
           = image_tag("#{tr.operation_system.name}.png", class: "ui-icon")
-          - test_type = tr.test_suite.test_type.name.include?("BVT") ? 'BVT' : 'REG'           
+          - test_type = tr.test_suite.test_type.name.slice(0..2).upcase
           = link_to "#{test_type} ##{tr.id}", project_test_round_path(project, tr), :remote => true
         %td.pass= tr.pass_count
         %td.failed= tr.failed_count
