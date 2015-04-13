@@ -75,7 +75,7 @@ class TestRoundsController < InheritedResources::Base
 
   def execute_multiple_site
     ActivenetMultipleSiteDistributor.distribute(params)
-    redirect_to project_test_rounds_path(Project.find_by_name('ActiveNet'))
+    # redirect_to project_test_rounds_path(Project.find_by_name('ActiveNet'))
   end
 
   protected
