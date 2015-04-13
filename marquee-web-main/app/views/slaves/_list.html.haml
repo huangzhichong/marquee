@@ -28,9 +28,9 @@
         %td= slave.status_with_active
         %td
           - slave.capabilities_hash[:browsers].each do |browser|
-            = image_tag("#{browser}.png", class: "ui-icon")
+            = image_tag("#{browser}.png", class: "ui-icon",title: "#{browser}")
         %td
           - slave.capabilities_hash[:drivers].each do |driver|
-            = image_tag("#{driver}.png", class: "ui-icon")
+            = image_tag("#{driver}.png", class: "ui-icon",title: "#{driver}")
 
 = paginate slaves
