@@ -60,25 +60,10 @@
     $("#create_multiple_site").validationEngine({
       promptPosition: "bottomRight", 
       scroll: false,
-      onValidationComplete: function(form, status){
-        if(status == false){
-          submit = false;
-        } else{
-          $("#schedule_multiple_site").addClass("disabled");
-          submit = true;
-          $("#schedule_multiple_site").submit();
-        }
+      onSuccess: function(form, status){
+        $("#schedule_multiple_site").addClass("disabled");
+        $("#schedule_multiple_site").submit();
       }
     });
 
-    $("#schedule_multiple_site").submit(function(){
-      submit = true;
-      $(".chzn-container > .chzn-single > span").each(function(i){
-        if ($(this).text() == "Select an Option") {
-          $(this).parent().parent().validationEngine("showPrompt", "This a custom msg", "error", "bottomRight", true);
-          submit = false;
-        }
-      });
-      return submit;
-    });
   });
