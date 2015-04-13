@@ -69,4 +69,10 @@ class Slave < ActiveRecord::Base
     test_type_arr.map {|test_type| test_type.strip}
   end
 
+  def capabilities_hash
+    capabilities = self.capabilities.select(:name).map{|n| n.name}
+    {:browsers => (Browser.all.map{|n| n.name} & capabilities).sort,
+     :drivers => (AutomationDriver.all.map{|n| n.name} & capabilities).sort
+     }
+  end
 end

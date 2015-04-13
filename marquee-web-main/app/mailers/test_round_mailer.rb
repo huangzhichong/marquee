@@ -3,26 +3,28 @@ class TestRoundMailer < AsyncMailer
   # send email to creator and script owners when test round is finished.
   def finish_mail(test_round_id)
     @test_round = TestRound.find(test_round_id)
-    @project = @test_round.project
-    mail_to = []
-    if @test_round.test_type.name == 'BVT'
-      #add mails from settings
-      mail_to = @project.mail_notify_settings.map(&:mail)
+    #send email only when test type in BVT or Regression
+    if ['BVT','Regression'].index @test_round.test_type.name
+      @project = @test_round.project
+      mail_to = []
+      if @test_round.test_type.name == 'BVT'
+        mail_to = @project.mail_notify_settings.map(&:mail)
+      end
+      mail_to << @test_round.creator.email
+      mail_to << @test_round.owner_emails
+      mail_to << 'nancy.guzman@activenetwork.com'
+      mail_to << 'smart.huang@activenetwork.com'
+      mail_to = mail_to.uniq.join(',')
+      subject = "[#{@project} #{@test_round.test_suite.test_type.name}##{@test_round.id} on #{@test_round.test_environment.name}] #{@test_round.result} : for testing #{@test_round.test_object}"
+      send_mail(mail_to, subject)
     end
-    mail_to << @test_round.creator.email
-    mail_to << @test_round.owner_emails
-    mail_to << 'nancy.guzman@activenetwork.com'
-    mail_to << 'smart.huang@activenetwork.com'
-    mail_to = mail_to.uniq.join(',')    
-    subject = "[#{@project} #{@test_round.test_suite.test_type.name}##{@test_round.id} on #{@test_round.test_environment.name}] #{@test_round.result} : for testing #{@test_round.test_object}"
-    send_mail(mail_to, subject)
   end
 
   def notify_mail(test_round_id,reveivers_string)
     @test_round = TestRound.find(test_round_id)
     @project = @test_round.project
     @test_services = @test_round.automation_script_results.collect{|asr| asr.target_services}.flatten.join(', ')
-    subject = "[Report for #{@project} #{@test_round.test_suite.test_type.name}##{@test_round.id} on #{@test_round.test_environment.name} ] #{@test_round.result} : for testing #{@test_round.test_object}"    
+    subject = "[Report for #{@project} #{@test_round.test_suite.test_type.name}##{@test_round.id} on #{@test_round.test_environment.name} ] #{@test_round.result} : for testing #{@test_round.test_object}"
     send_mail(reveivers_string, subject)
   end
 

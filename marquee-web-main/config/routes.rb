@@ -27,6 +27,7 @@ MarqueeWebMain::Application.routes.draw do
   end
 
   get 'status/test_round_status/:id', :controller => 'status', :action => 'test_round_status'
+  post 'test_rounds/execute_multiple_site'
   post 'status/update'
   post 'status/new_build'
   post 'import_data/import_automation_script'

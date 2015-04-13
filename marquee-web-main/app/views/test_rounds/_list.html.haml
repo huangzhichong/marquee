@@ -4,6 +4,8 @@
     %small= "#{@project.test_rounds.count} in total"
   -if can? :create, TestRound, {:project_id => project.id}
     = link_to 'Schedule', new_project_test_round_path(project), :class => 'btn primary'
+    - if project.name == 'ActiveNet'
+      %a#multiple_site.btn.primary{:href => "#multiple_site_form", :remote => true} Multiple Site
   = form_for search, :url => project_test_rounds_path, :remote => true do |f|
     %span.search
       = f.text_field :creator_email_or_test_environment_name_or_test_object_or_test_suite_test_type_name_contains, {:id => 'search'}
@@ -32,7 +34,7 @@
           = image_tag("#{tr.result}.png", class: "ui-icon")
           = image_tag("#{tr.browser.name}.png", class: "ui-icon")
           = image_tag("#{tr.operation_system.name}.png", class: "ui-icon")
-          - test_type = tr.test_suite.test_type.name.include?("BVT") ? 'BVT' : 'REG'           
+          - test_type = tr.test_suite.test_type.name.slice(0..2).upcase
           = link_to "#{test_type} ##{tr.id}", project_test_round_path(project, tr), :remote => true
         %td.pass= tr.pass_count
         %td.failed= tr.failed_count
@@ -61,6 +63,8 @@
     %a.btn.primary.confirm_rerun_failed{:href => "#"} Rerun Failed
     %a.btn.primary.confirm_rerun_all{:href => "#"} Rerun All
     %a.btn.cancel_rerun{"data-dismiss" => "modal", :href => "#"} Cancel
+    
+= render :partial => "multiple_sites", :locals => {:project => project}
 
 :css
   .pass{
@@ -76,6 +80,12 @@
 
   $(function(){
     
+    $("#multiple_site").fancybox({      
+      'onClosed'    : function() {
+          $("#login_error").hide();
+      }
+    });
+
     $("input.rerun_btn:not(:disabled)").click(function(){
       var rerun = $(this);
       $('#rerun_confirmation').css("display", "block");
