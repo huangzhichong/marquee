@@ -61,8 +61,10 @@
       promptPosition: "bottomRight", 
       scroll: false,
       onSuccess: function(form, status){
-        $("#schedule_multiple_site").addClass("disabled");
-        $("#schedule_multiple_site").submit();
+        if(status == true){
+          $("#schedule_multiple_site").addClass("disabled");
+          $("#schedule_multiple_site").submit();
+        }
       }
     });
 
