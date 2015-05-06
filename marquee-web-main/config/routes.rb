@@ -1,5 +1,10 @@
 MarqueeWebMain::Application.routes.draw do
 
+  post 'automation_progresses',:controller => "automation_progresses", :action => "create"
+  post 'automation_progresses/dump', :controller => "automation_progresses", :action => "dump_all_monitor_projects" 
+  get 'automation_progresses/:project_id', :controller => "automation_progresses", :action => "project_progress"
+  get 'automation_progresses', :controller => "automation_progresses", :action => "index"
+
   resources :offer_monitoring_records
 
   resources :offer_reports

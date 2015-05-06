@@ -1,7 +1,8 @@
 .page-header
   %h2
-    Automation Cases
+    = "Automation Cases of #{@automation_script.name}"
     %small= "#{@automation_script.automation_cases.count} in total"
+  
   = form_for search, :url => automation_script_automation_cases_path(automation_script), :remote => true do |f|
     %span.search
       = f.text_field :name_or_case_id_or_priority_or_version_contains, {:id => 'search'}
@@ -20,8 +21,8 @@
         %h4 No data
   - else
     - automation_cases.each do |automation_case|
-      %tr.link
-        %td= link_to automation_case.name, automation_script_automation_case_path(automation_script, automation_case), :remote => true
+      %tr
+        %td= automation_case.name
         %td= automation_case.case_id
         %td= automation_case.version
         %td= automation_case.priority

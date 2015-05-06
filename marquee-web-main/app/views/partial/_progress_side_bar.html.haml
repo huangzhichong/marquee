@@ -1,0 +1,13 @@
+.sidebar
+  %input#hidden-item{:type => "hidden"}
+  %ul.menu
+    - even = true
+    - Project.where(:monitor_flag => true).each do |project|
+      - if even
+        - even = false
+        %li{:name => project.name}        
+          = link_to project.name, "/automation_progresses/#{project.id}", :remote => true
+      - else
+        - even = true
+        %li.odd{:name => project.name}
+          = link_to project.name, "/automation_progresses/#{project.id}", :remote => true

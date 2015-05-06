@@ -23,7 +23,7 @@ class Project < ActiveRecord::Base
   has_many :project_browser_configs
   has_many :browsers, :through => :project_browser_configs
   accepts_nested_attributes_for :project_browser_configs
-  
+
   has_many :project_test_environment_configs
   has_many :test_environments, :through => :project_test_environment_configs
   accepts_nested_attributes_for :project_test_environment_configs
@@ -43,6 +43,7 @@ class Project < ActiveRecord::Base
   has_many :mail_notify_settings
   has_many :automation_driver_configs
   has_many :projects_roles, :class_name => "ProjectsRoles", :dependent => :destroy
+  has_many :automation_progresses
   has_attached_file :icon_image, :default_url => "/images/projects/default_project.png", :processors => [:cropper], :styles => { :large => "320x320", :medium => "180x180>", :thumb => "100x100>" }, :path => ":rails_root/public/images/projects/:style_:basename.:extension", :url => "/images/projects/:style_:basename.:extension"
   acts_as_audited :protect => false
 
@@ -125,10 +126,27 @@ class Project < ActiveRecord::Base
     branches = self.project_branch_scripts.all(:select => 'distinct(branch_name)').map{|n| n.branch_name}
     branches << "master"
   end
+  def recent_automation_progress
+    progress = Hash.new
+    progress["total"]=[]
+    progress["automated"]=[]
+    progress["coverage"]=[]
+    progress["record_date"]=[]
+
+    self.automation_progresses.order('record_date ASC').each do |t|
+      progress["total"] << t.total_case
+      progress["automated"] << t.total_automated
+      progress["coverage"] << ((t.total_automated.to_f/t.total_case.to_f)*100).round(1)
+      progress["record_date"] << t.record_date.to_s
+    end
+    progress["new_auto"] = progress["automated"].map.with_index{|x,i|  (i>0) ? x-progress["automated"][i-1] : 0}
+    return progress
+  end
   private
 
   def reprocess_icon_image
     icon_image.reprocess!
   end
+
 
 end
