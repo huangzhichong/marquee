@@ -151,6 +151,7 @@ class ImportDataController < ApplicationController
     project_mappings << {"marquee_project" => 'Sports', "testlink_project" => "Sports"}
     project_mappings << {"marquee_project" => 'Platform-Checkout', "testlink_project" => "Platform-Checkout"}
     project_mappings << {"marquee_project" => 'RTP-eStore', "testlink_project" => "RTP-eStore"}
+    project_mappings << {"marquee_project" => 'Platform-Commerce', "testlink_project" => "Platform - Commerce"}
     
     project_mappings.each do |mapping|
       marquee_project_name = mapping["marquee_project"]
