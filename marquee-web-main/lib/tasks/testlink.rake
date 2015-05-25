@@ -91,6 +91,7 @@ task :import_all_cases => :environment  do
   # project_mappings << {"marquee_project" => 'WannaDo', "testlink_project" => 'WannaDo'}
   project_mappings << {"marquee_project" => 'Sports', "testlink_project" => "Sports"}
   project_mappings << {"marquee_project" => 'Platform-Checkout', "testlink_project" => "Platform-Checkout"}
+  project_mappings << {"marquee_project" => 'Platform-Commerce', "testlink_project" => "Platform-Commerce"}
 
   host = "10.107.100.129"
   user = "smart"
