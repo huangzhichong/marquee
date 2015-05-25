@@ -141,11 +141,13 @@ class ImportDataController < ApplicationController
     project_mappings << {"marquee_project" => 'ActiveNet',"testlink_project"  => 'ActiveNet'}
     project_mappings << {"marquee_project" => 'Endurance',"testlink_project"  => 'Endurance'}
     project_mappings << {"marquee_project" => 'LeagueOne',"testlink_project"  => 'LeagueOne'}
-    # project_mappings << {"marquee_project" => 'Plancast',"testlink_project"  => 'Plancast'}
-    # project_mappings << {"marquee_project" => 'Class', "testlink_project" => 'Class'}
+    project_mappings << {"marquee_project" => 'ACL',"testlink_project"  => 'ACL'}
+    project_mappings << {"marquee_project" => 'USTA', "testlink_project" => 'USTA'}
     project_mappings << {"marquee_project" => 'RTP', "testlink_project" => 'RTP-Revolution'}
     project_mappings << {"marquee_project" => 'RTPOneContainer', "testlink_project" => 'RTPOneContainer'}
     project_mappings << {"marquee_project" => 'RTP-MooseCreek', "testlink_project" => 'RTP-MooseCreek'}
+    # project_mappings << {"marquee_project" => 'Plancast',"testlink_project"  => 'Plancast'}
+    # project_mappings << {"marquee_project" => 'Class', "testlink_project" => 'Class'}
     # project_mappings << {"marquee_project" => 'SNH', "testlink_project" => 'ROL - Beta'}
     # project_mappings << {"marquee_project" => 'WannaDo', "testlink_project" => 'WannaDo'}
     project_mappings << {"marquee_project" => 'Sports', "testlink_project" => "Sports"}
@@ -191,8 +193,8 @@ class ImportDataController < ApplicationController
                             ts.test_link_id as test_link_id
                             from old_test_steps ts
                             join old_test_cases tc on tc.id = ts.test_case_id
-                            where tc.test_plan_id in ( 
-                            select id from old_test_plans 
+                            where tc.test_plan_id in (
+                            select id from old_test_plans
                             where project_id =(select id from old_projects where name ='#{project_name}'))
                             limit 99999
                             ")
