@@ -181,4 +181,13 @@ class AutomationScriptResult < ActiveRecord::Base
       bsr.update_result_from_asr(self)
     end
   end
+
+  def is_triage_result_editable?
+    self.error_type_id.nil? or ErrorType.non_editable_ids.index(self.error_type_id).nil?
+  end
+
+  def is_rerunnable?
+    not (['pass','pending'].include?(self.result) or (self.error_type && self.error_type.name == 'Not in Branch'))
+  end
+
 end

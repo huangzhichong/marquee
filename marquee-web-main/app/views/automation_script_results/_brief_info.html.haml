@@ -12,7 +12,7 @@
 - parameter_dislay = (parameter.length >= 37) ? parameter.slice(0,37).concat("...") : parameter
 - parameter_html = content_tag(:p, parameter_dislay, :title=>parameter) 
 
-- left_titles = ['Result:', 'Start Time:', 'End Time:', 'Duration:', 'Operation System:','Branch:','Triage Result:']
+- left_titles = ['Result:', 'Start Time:', 'End Time:', 'Duration:', 'OS:','Branch:','Triage Result:']
 - left_values = [@automation_script_result.result, in_time_zone(@automation_script_result.start_time), in_time_zone(@automation_script_result.end_time), (@automation_script_result.duration.nil? or @automation_script_result.duration == 0) ? "N/A" : ChronicDuration.output(@automation_script_result.duration), os,branch_name,triage]
 - right_titles = ['Pass Count:', 'Failed Count:', 'Warning Count:', 'Not Run Count:', 'Browser:', 'Parameter:']
 - right_values = [@automation_script_result.pass, @automation_script_result.failed, @automation_script_result.warning, @automation_script_result.not_run,browser, parameter_html]

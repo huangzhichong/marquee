@@ -59,7 +59,7 @@
           -if sa && sa.slave && asr.end_time
             = link_to "View", test_round_automation_script_result_show_logs_path(asr.test_round, asr), :class => "btn primary"
         %td
-          - if asr.result != "pass" && asr.result != "pending" && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id}) 
+          - if asr.is_rerunnable? && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id}) 
             %input.btn.primary.rerun_btn{:type => "button", :value => "Rerun", "remote-data" => "/automation_script_results/#{asr.id}/rerun"}
           - if asr.result == "pending" && asr.state != "scheduling" && can?(:update, AutomationScriptResult, {:project_id => test_round.project.id})
             - if asr.state == "stopping"

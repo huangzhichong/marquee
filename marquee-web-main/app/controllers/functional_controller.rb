@@ -239,7 +239,7 @@ and j1.created <= '#{@to}'
       if test_round
         csv << ['TestRound ID', params['test_round_id']]
         csv << ['Environment', test_round.test_environment]
-        csv << ['Operation System',test_round.operation_system.name]
+        csv << ['OS',test_round.operation_system.name]
         csv << ['Browser Type',test_round.browser.name]
         csv << ['Script Name','Test Plan Name','Case Name','Case ID','Testlink ID','Result']
         test_round.get_result_details.each do |result|

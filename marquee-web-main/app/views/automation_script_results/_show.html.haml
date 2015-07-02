@@ -17,7 +17,7 @@
           = link_to "View Triage Result","#", :id => "action-view-triage-result","remote-data" => "/automation_script_results/#{@automation_script_result.id}/view_triage_result"
         - asr =  @automation_script_result
         - project = @automation_script_result.test_round.project
-        - if asr.result != "pass" && asr.result != "pending" && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
+        - if asr.is_rerunnable? && asr.triage_result == "N/A" && can?(:update, AutomationScriptResult, {:project_id => project.id}) 
           %li.rerun_container
             %a.rerun_btn{:href => "#", "remote-data" => "/automation_script_results/#{asr.id}/rerun",:remote => true} Rerun Script
         -sa = @automation_script_result.slave_assignments.last  

@@ -3,7 +3,7 @@
 - os = os + "  -  #{test_round.operation_system.name_with_version}"
 - browser = image_tag("#{test_round.browser.name}.png", class: "ui-icon")
 - browser = browser + "  -  #{test_round.browser.name_with_version}"
-- if @automation_script_result.slave_assignments.last.slave
+- if @automation_script_result.slave_assignments.last && @automation_script_result.slave_assignments.last.slave
   - slave = @automation_script_result.slave_assignments.last.slave.name  
 - else
   - slave = 'N/A'
@@ -11,7 +11,7 @@
 - parameter = test_round.parameter.nil? ? "" : test_round.parameter
 - parameter_dislay = (parameter.length >= 37) ? parameter.slice(0,37).concat("...") : parameter
 - parameter_html = content_tag(:p, parameter_dislay, :title=>parameter) 
-- left_titles = ['Case Id:', 'Result:','Operation System:','Branch:']
+- left_titles = ['Case Id:', 'Result:','OS:','Branch:']
 - left_values = [@automation_case_result.case_id, @automation_case_result.result, os, branch_name]
 - right_titles = ['Priority:','Slave:', 'Browser:', 'Parameter:']
 - right_values = [@automation_case_result.priority, slave, browser, parameter_html]

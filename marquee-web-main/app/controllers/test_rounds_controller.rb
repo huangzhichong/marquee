@@ -33,27 +33,31 @@ class TestRoundsController < InheritedResources::Base
   end
   def rerun_failed
     test_round = TestRound.find(params[:test_round_id])
-    test_round.automation_script_results.where("result != 'pass' and triage_result ='N/A'").each do |asr|
-      asr.clear
-      non_rerunned_asr = asr.test_round.automation_script_results.select {|asr| asr.state != "scheduling"}
-      if non_rerunned_asr.nil? || non_rerunned_asr.empty?
-        asr.test_round.start_time = nil
-        asr.test_round.save
+    test_round.automation_script_results.where("result != 'pass' and triage_result ='N/A'").each do |asr|          
+      if asr.slave_assignments.count > 0
+        asr.clear
+        non_rerunned_asr = asr.test_round.automation_script_results.select {|asr| asr.state != "scheduling"}
+        if non_rerunned_asr.nil? || non_rerunned_asr.empty?
+          asr.test_round.start_time = nil
+          asr.test_round.save
+        end
+        AutomationScriptResultRunner.rerun(asr.id)
       end
-      AutomationScriptResultRunner.rerun(asr.id)
     end
     render :nothing => true
   end
   def rerun
     test_round = TestRound.find(params[:test_round_id])
     test_round.automation_script_results.each do |asr|
-      asr.clear
-      non_rerunned_asr = asr.test_round.automation_script_results.select {|asr| asr.state != "scheduling"}
-      if non_rerunned_asr.nil? || non_rerunned_asr.empty?
-        asr.test_round.start_time = nil
-        asr.test_round.save
+      if asr.slave_assignments.count > 0
+        asr.clear
+        non_rerunned_asr = asr.test_round.automation_script_results.select {|asr| asr.state != "scheduling"}
+        if non_rerunned_asr.nil? || non_rerunned_asr.empty?
+          asr.test_round.start_time = nil
+          asr.test_round.save
+        end
+        AutomationScriptResultRunner.rerun(asr.id)
       end
-      AutomationScriptResultRunner.rerun(asr.id)
     end
     render :nothing => true
   end
