@@ -7,6 +7,7 @@
 - can_update_automation_driver = can? :update, AutomationDriver
 - can_update_slave = can? :update, Slave
 - can_update_test_environment = can? :update, TestEnvironment
+- can_manage_import_testlink_config = can? :manage, ImportTestlinkConfig
 - menu_item_count = 0
 - menu_item_count += can_read_project_category ? 1 : 0
 - menu_item_count += can_read_project ? 1 : 0
@@ -16,6 +17,7 @@
 - menu_item_count += can_update_os ? 1 : 0
 - menu_item_count += can_update_automation_driver ? 1 : 0
 - menu_item_count += can_update_slave ? 1 : 0
+- menu_item_count += can_manage_import_testlink_config ? 1 : 0
 
 - if menu_item_count > 1
   %ul.menu
@@ -46,6 +48,9 @@
     - if can_read_user
       %li{:name => "users"}
         =link_to 'Users', admin_users_path
+    - if can_manage_import_testlink_config
+      %li{:name => "testlink_sync"}
+        =link_to 'Testlink Sync', admin_import_testlink_configs_path
 
   .clearfix
 

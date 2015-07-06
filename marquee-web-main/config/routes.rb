@@ -17,6 +17,7 @@ MarqueeWebMain::Application.routes.draw do
     end
 
     get '/', :controller => 'projects', :action => 'index'
+    resources :import_testlink_configs
     resources :browsers
     resources :test_environments
     resources :operation_systems

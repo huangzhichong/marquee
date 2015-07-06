@@ -1,0 +1,26 @@
+.page-header
+  %h3 Configs of Testlink Sync
+.browsers
+  %table.zebra-striped
+    %tr
+      %th Marquee Project Name
+      %th Testlink Project Name
+      %th
+    - if @import_testlink_configs.blank?
+      %tr
+        %td{:colspan => "3"}
+          %h4 No data
+    - else
+      - @import_testlink_configs.each do |config|
+        %tr
+          %td= config.marquee_project
+          %td= config.testlink_project
+          - edit_url, delete_url = nil
+          - if can? :delete, ImportTestlinkConfig
+            - delete_url = admin_import_testlink_config_path(config)
+          - if can? :update, ImportTestlinkConfig
+            - edit_url = edit_admin_import_testlink_config_path(config)
+          = render :partial => 'partial/table_actions', :locals => {:show_url => nil, :edit_url => edit_url, :delete_url => delete_url }
+
+- if can? :create, ImportTestlinkConfig
+  = link_to 'New Config', new_admin_import_testlink_config_path, :class => 'btn primary'
