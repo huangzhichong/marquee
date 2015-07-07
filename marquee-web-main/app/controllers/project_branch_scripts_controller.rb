@@ -1,6 +1,6 @@
 class ProjectBranchScriptsController < ApplicationController
   def import
-    project_id = Project.find_by_name(params[:project_name])
+    project_id = Project.find_by_name(params[:project_name]).id
     branch_name = params[:branch_name]
     scripts = params[:scripts].uniq
 
