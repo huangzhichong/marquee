@@ -80,7 +80,7 @@ class Project < ActiveRecord::Base
         manual = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Manual",:priority => priority})
         all_count = project.count_test_case_by_plan_type_and_options(plan_type, {:priority => priority})
       end
-      coverage_value = ((all_count - cannot_count - manual) <= 0 ? 0.0 : (automated_count+update_needed_count).to_f/(all_count - cannot_count - manual).to_f)
+      coverage_value = ((all_count - manual) <= 0 ? 0.0 : (automated_count+update_needed_count).to_f/(all_count - manual).to_f)
       coverage_value = format("%.1f",coverage_value*100)
     end
   end
@@ -103,8 +103,8 @@ class Project < ActiveRecord::Base
         manual = project.count_test_case_by_options({:automated_status => "Manual",:priority => priority})
         all_count = project.count_test_case_by_options(:priority => priority)
       end
-      coverage_value = ((all_count - cannot_count - manual) <= 0 ? 0.0 : (automated_count+update_needed_count).to_f/(all_count - cannot_count - manual).to_f)
-      coverage_value = format("%.3f",coverage_value*100)
+      coverage_value = ((all_count - manual) <= 0 ? 0.0 : (automated_count+update_needed_count).to_f/(all_count - manual).to_f)
+      coverage_value = format("%.1f",coverage_value*100)
     end
   end
 

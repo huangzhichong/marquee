@@ -43,11 +43,6 @@ class HomeController < ApplicationController
       eval "@#{m.downcase}_overall_coverage = Project.caculate_coverage_by_project_and_priority_and_type('#{m.downcase}', 'Overall','regression')"
     end
 
-    # @endurance_overall_coverage = Project.caculate_coverage_by_project_and_priority("Endurance","Overall")
-    # @sports_overall_coverage = Project.caculate_coverage_by_project_and_priority("Sports","Overall")
-    # @membership_overall_coverage = Project.caculate_coverage_by_project_and_priority("Membership","Overall")
-    # @rtp_overall_coverage = Project.caculate_coverage_by_project_and_priority_and_type("RTP", "Overall","regression")
-    # @camps_overall_coverage = Project.caculate_coverage_by_project_and_priority_and_type("Camps", "Overall","regression")
   end
 
   def get_activities_by_project
