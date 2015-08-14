@@ -14,6 +14,15 @@ class TestRoundDistributor
       existing_branch_scripts = ProjectBranchScript.where(:project_id => test_round.project_id, :branch_name => test_round.branch_name).map(&:automation_script_name)
     end
     test_round.automation_script_results.each do |asr|
+      unless asr.automation_script.status == 'completed'
+        asr.error_type_id = ErrorType.find_by_name("Not Ready").id
+        asr.triage_result = asr.automation_script.note
+        asr.result = "failed"
+        asr.state = "not implemented"
+        asr.save
+        next
+      end
+
       if on_master_branch or existing_branch_scripts.index(asr.automation_script.name)
         sa = SlaveAssignment.create!
         sa.automation_script_result = asr

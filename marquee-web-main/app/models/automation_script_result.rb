@@ -39,6 +39,7 @@ class AutomationScriptResult < ActiveRecord::Base
     self.warning = 0
     self.not_run = 0
     self.result = 'pending'
+    self.error_type_id = nil
     self.triage_result = 'N/A'
   end
 
@@ -187,7 +188,30 @@ class AutomationScriptResult < ActiveRecord::Base
   end
 
   def is_rerunnable?
-    not (['pass','pending'].include?(self.result) or (self.error_type && self.error_type.name == 'Not in Branch'))
+    not ['pass','pending'].include?(self.result)
+    # not (['pass','pending'].include?(self.result) or (self.error_type && self.error_type.name == 'Not in Branch'))
+  end
+
+
+  def is_in_current_branch?
+    test_round = self.test_round
+    self.test_round.branch_name == 'master' or ProjectBranchScript.where(:project_id => test_round.project_id, :branch_name => test_round.branch_name, :automation_script_name => self.automation_script.name).count > 0
+  end
+
+  def set_to_not_in_branch
+    self.error_type_id = ErrorType.find_by_name("Not in Branch").id
+    self.triage_result = "this script is not in current branch"
+    self.result = "failed"
+    self.state = "not implemented"
+    self.save
+  end
+
+  def set_to_not_ready
+    self.error_type_id = ErrorType.find_by_name("Not Ready").id
+    self.triage_result = self.automation_script.note
+    self.result = "failed"
+    self.state = "not implemented"
+    self.save
   end
 
 end
