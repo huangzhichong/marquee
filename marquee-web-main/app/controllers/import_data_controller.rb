@@ -10,6 +10,7 @@ class ImportDataController < ApplicationController
       as.automation_cases.delete_all
       as.test_plan_id = tp.id
       as.status = script["status"]
+      as.note = script['comment']
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = owner_id
@@ -32,6 +33,7 @@ class ImportDataController < ApplicationController
     unless p.nil?
       delete_null_case_scripts(p.id)
     end
+    render :nothing => true
   end
   def import_as_and_tc_status
     script = params[:data]["automation_script"]
@@ -44,6 +46,7 @@ class ImportDataController < ApplicationController
       as.automation_cases.delete_all
       as.test_plan_id = tp.id
       as.status = script["status"]
+      as.note = script['comment']
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = owner_id
@@ -65,6 +68,7 @@ class ImportDataController < ApplicationController
       end
       as.save
     end
+    render :nothing => true
   end
   def import_script_without_test_plan
     script = params[:data]["automation_script"]
@@ -78,6 +82,7 @@ class ImportDataController < ApplicationController
       as = tp.automation_scripts.find_or_create_by_name(script["name"])
       as.automation_cases.delete_all
       as.status = script["status"]
+      as.note = script['comment']
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = User.find_or_create_default_by_email(script["owner"]).id
@@ -101,6 +106,7 @@ class ImportDataController < ApplicationController
       end
       delete_null_case_scripts(p.id)
     end
+    render :nothing => true
   end
 
   def import_test_plan_from_xml
@@ -136,7 +142,7 @@ class ImportDataController < ApplicationController
 
   def refresh_testlink_data
 
-    ImportTestlinkConfig.all.each do |mapping|    
+    ImportTestlinkConfig.all.each do |mapping|
       marquee_project_name = mapping.marquee_project
       project_name = mapping.testlink_project
       mp = Project.find_by_name(marquee_project_name)

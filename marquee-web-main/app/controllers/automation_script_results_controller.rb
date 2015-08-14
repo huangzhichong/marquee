@@ -44,7 +44,7 @@ class AutomationScriptResultsController < InheritedResources::Base
           as = @automation_script_result.automation_script
           as.note = @automation_script_result.triage_result
           as.save
-        end        
+        end
         format.js {}
       rescue Exception => e
         @automation_script_result.errors[:triage_result] << e
@@ -55,18 +55,19 @@ class AutomationScriptResultsController < InheritedResources::Base
 
   def rerun(automation_script_result_id=params[:id])
     automation_script_result = AutomationScriptResult.find(automation_script_result_id)
+    test_round = automation_script_result.test_round
     automation_script_result.clear
 
-    non_rerunned_asr = automation_script_result.test_round.automation_script_results.select {|asr| asr.state != "scheduling"}
-    if non_rerunned_asr.nil? || non_rerunned_asr.empty?
-      automation_script_result.test_round.start_time = nil
-      automation_script_result.test_round.save
+    if automation_script_result.is_in_current_branch?
+      if automation_script_result.automation_script.status == 'completed'
+        AutomationScriptResultRunner.rerun(automation_script_result_id)
+      else
+        automation_script_result.set_to_not_ready
+      end
+    else
+      automation_script_result.set_to_not_in_branch
     end
-
-    AutomationScriptResultRunner.rerun(automation_script_result_id)
-    respond_to do |format|
-      format.html { redirect_to :back, notice: 'BaseIssueResult was successfully updated.' }
-    end
+    render :nothing => true
   end
 
   def stop
@@ -86,9 +87,6 @@ class AutomationScriptResultsController < InheritedResources::Base
     @project ||= @test_round.project
     @automation_script_result ||= AutomationScriptResult.find(params[:automation_script_result_id])
     @slave_assignment ||= @automation_script_result.slave_assignments.last
-    #@start_time ||= (Time.parse(@automation_script_result.start_time.to_s) - 60).utc
-    #@end_time ||= (Time.parse(@automation_script_result.end_time.to_s) + 60).utc
-    #@searched_logs = SlaveLog.where(:ip => @slave_assignment.slave.ip_address,:timestamp.gt => @start_time,:timestamp.lt => @end_time).asc(:_id)
   end
 
   protected

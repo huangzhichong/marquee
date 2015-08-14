@@ -33,32 +33,13 @@ class TestRoundsController < InheritedResources::Base
   end
   def rerun_failed
     test_round = TestRound.find(params[:test_round_id])
-    test_round.automation_script_results.where("result != 'pass' and triage_result ='N/A'").each do |asr|          
-      if asr.slave_assignments.count > 0
-        asr.clear
-        non_rerunned_asr = asr.test_round.automation_script_results.select {|asr| asr.state != "scheduling"}
-        if non_rerunned_asr.nil? || non_rerunned_asr.empty?
-          asr.test_round.start_time = nil
-          asr.test_round.save
-        end
-        AutomationScriptResultRunner.rerun(asr.id)
-      end
-    end
+    # rerun_automation_script_results(test_round, test_round.automation_script_results.where("result != 'pass' and triage_result ='N/A'"))
+    rerun_automation_script_results(test_round, test_round.automation_script_results.where("result != 'pass' and (error_type_id is null or error_type_id in (4,5))"))
     render :nothing => true
   end
   def rerun
     test_round = TestRound.find(params[:test_round_id])
-    test_round.automation_script_results.each do |asr|
-      if asr.slave_assignments.count > 0
-        asr.clear
-        non_rerunned_asr = asr.test_round.automation_script_results.select {|asr| asr.state != "scheduling"}
-        if non_rerunned_asr.nil? || non_rerunned_asr.empty?
-          asr.test_round.start_time = nil
-          asr.test_round.save
-        end
-        AutomationScriptResultRunner.rerun(asr.id)
-      end
-    end
+    rerun_automation_script_results(test_round, test_round.automation_script_results)
     render :nothing => true
   end
 
@@ -96,6 +77,31 @@ class TestRoundsController < InheritedResources::Base
     @test_rounds ||= @search.order('id desc').page(params[:page]).per(15)
   end
   private
+
+  def rerun_automation_script_results(test_round, automation_script_results)
+    branch_name = test_round.branch_name
+    existing_branch_scripts = ProjectBranchScript.where(:project_id => test_round.project_id, :branch_name => branch_name).map(&:automation_script_name)
+
+    automation_script_results.each do |asr|
+      # conditions about rerun
+      # the status of automation script is 'completed', otherwise marked it as 'Not Ready'
+      # the script is in current branch, otherwise marked it as 'Not in Branch'
+      # if there is no slave_assignment, create a new one
+      # if there is existing slave assignment, reset it for rerun
+
+      if asr.automation_script.status =='completed'
+        if (branch_name != 'master') and existing_branch_scripts.index(asr.automation_script.name).nil?
+          asr.set_to_not_in_branch
+        else
+          asr.clear
+          AutomationScriptResultRunner.rerun(asr.id)
+        end
+      else
+        asr.set_to_not_ready
+      end
+    end
+  end
+
   def not_a_valid_email?(email)
     (email =~ /\A([\S].?)+@(activenetwork|active)\.com\z/i).nil?
   end
