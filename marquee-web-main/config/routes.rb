@@ -38,6 +38,7 @@ MarqueeWebMain::Application.routes.draw do
   post 'test_rounds/execute_multiple_site'
   post 'status/update'
   post 'status/new_build'
+  post 'import_data/import_test_suite'
   post 'import_data/import_automation_script'
   post 'import_data/import_script_without_test_plan'
   post 'import_data/import_test_plan_from_xml'

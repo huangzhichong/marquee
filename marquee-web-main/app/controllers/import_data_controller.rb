@@ -1,4 +1,25 @@
 class ImportDataController < ApplicationController
+
+  def import_test_suite
+    project = Project.find_by_name(params[:project_name])
+    creator_id = User.find_by_email(params[:creator_email]).id
+    test_type_id = TestType.find_by_name(params[:test_type]).id
+    as_names = params[:automation_scripts]
+    if project and creator_id and test_type_id
+      @ts = project.test_suites.find_or_create_by_name(params[:name])
+      as_ids = project.automation_scripts.find_all_by_name(as_names).map(&:id)
+      @ts.automation_script_ids = as_ids
+      @ts.test_type_id = test_type_id
+      @ts.creator_id = creator_id
+      @ts.save
+      render json: {"test suite name"=>@ts.name ,"automation_scripts" => @ts.automation_scripts.map(&:name)}
+    else
+      render json: {"Error" => "project name, creator email and test type are not correct"}
+    end
+
+  end
+
+
   def import_automation_script
     script = params[:data]["automation_script"]
     cases = params[:data]["automation_cases"]
