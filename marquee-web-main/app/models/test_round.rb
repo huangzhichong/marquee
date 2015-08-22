@@ -97,91 +97,91 @@ class TestRound < ActiveRecord::Base
   end
 
   def end?
-    ["not implemented","service error","completed"].include? self.state
-  end
+  ["not implemented","service error","completed"].include? self.state
+end
 
-  def fail?
-    result == 'failed'
-  end
+def fail?
+  result == 'failed'
+end
 
-  def all_automation_script_results_finished?
-    automation_script_results.all?{|asr| asr.end?}
-  end
+def all_automation_script_results_finished?
+  automation_script_results.all?{|asr| asr.end?}
+end
 
-  def update_start_time
-    self.start_time = self.automation_script_results.collect{|asr| asr.start_time.nil? ? Time.now : asr.start_time}.min
-  end
+def update_start_time
+  self.start_time = self.automation_script_results.collect{|asr| asr.start_time.nil? ? Time.now : asr.start_time}.min
+end
 
-  def exported_to_testlink?
-    self.exported_status == 'Y'
+def exported_to_testlink?
+  self.exported_status == 'Y'
+end
+def start_running!
+  unless running?
+    self.state = 'running'
+    # update_start_time
   end
-  def start_running!
-    unless running?
-      self.state = 'running'
-      # update_start_time
-    end
-  end
+end
 
-  def end_running!
-    if running?
-      calculate_result!
-      self.end_time = Time.now
-      calculate_duration!
-      calculate_pass_rate!
-      calculate_result!
-      self.exported_status ='N'
-    end
+def end_running!
+  if running?
+    calculate_result!
+    self.end_time = Time.now
+    calculate_duration!
+    calculate_pass_rate!
+    calculate_result!
+    self.exported_status ='N'
   end
+end
 
-  def scheduling?
-    self.state == "scheduling"
-  end
+def scheduling?
+  self.state == "scheduling"
+end
 
-  def running?
-    self.state == "running"
-  end
+def running?
+  self.state == "running"
+end
 
-  def calculate_result!
-    if automation_script_results.all?{|asr| asr.automation_script.not_implemented? }
-      self.state = 'not implemented'
-      self.result = 'N/A'
+def calculate_result!
+  if automation_script_results.all?{|asr| asr.automation_script.not_implemented? }
+    self.state = 'not implemented'
+    self.result = 'N/A'
     # elsif automation_script_results.all?{|asr| asr.service_error?}
-      # self.state = 'service error'
-      # self.result = 'N/A'
-    elsif automation_script_results.all?{|asr| asr.passed?}
-      self.state = 'completed'
-      self.result = 'pass'
-    else
-      self.state = 'completed'
-      self.result = 'failed'
-    end
+    # self.state = 'service error'
+    # self.result = 'N/A'
+  elsif automation_script_results.all?{|asr| asr.passed?}
+    self.state = 'completed'
+    self.result = 'pass'
+  else
+    self.state = 'completed'
+    self.result = 'failed'
   end
+end
 
-  def calculate_duration!
-    self.duration = end_time - start_time
-  end
+def calculate_duration!
+  self.duration = end_time - start_time
+end
 
-  def pass_count
-    self.automation_script_results.sum(:pass)
-  end
+def pass_count
+  self.automation_script_results.sum(:pass)
+end
 
-  def failed_count
-    self.automation_script_results.sum(:failed)
-  end
+def failed_count
+  self.automation_script_results.sum(:failed)
+end
 
-  def warning_count
-    self.automation_script_results.sum(:warning)
-  end
+def warning_count
+  self.automation_script_results.sum(:warning)
+end
 
-  def not_run_count
-    self.automation_script_results.sum(:not_run)
-  end
+def not_run_count
+  self.automation_script_results.sum(:not_run)
+end
 
-  def calculate_pass_rate!
-    if automation_case_count == 0
-      0.0
-    else
-      self.pass_rate = (pass_count.to_f * 100)/ automation_case_count
+def calculate_pass_rate!
+  if automation_case_count == 0
+    0.0
+  else
+    self.pass_rate = (pass_count.to_f * 100)/ automation_case_count
       self.pass_rate.round(2)
     end
   end
@@ -247,8 +247,8 @@ class TestRound < ActiveRecord::Base
   def owner_emails
     emails = []
     query_string = "select DISTINCT a.owner_id from automation_scripts a
-           join automation_script_results asr on asr.automation_script_id = a.id
-           where asr.test_round_id = '#{self.id}'"
+    join automation_script_results asr on asr.automation_script_id = a.id
+    where asr.test_round_id = '#{self.id}'"
     AutomationScript.find_by_sql(query_string).each {|as| emails << as.owner.email}
     return emails
   end
@@ -256,5 +256,10 @@ class TestRound < ActiveRecord::Base
   def notification_emails
     self.project.mail_notify_settings.map(&:mail)
   end
+
+  def auto_rerunable_scripts
+    self.automation_script_results.select{|asr| (asr.counter < self.counter) and (asr.result != 'pass') and (asr.error_type_id ==nil)}
+  end
+
 
 end

@@ -15,6 +15,7 @@ class ActivenetMultipleSiteDistributor
       test_round.test_object = "#{site.upcase} - #{params['test_object']}"
       test_round.parameter = site
       test_round.branch_name = params['branch_name']
+      test_round.counter = params['counter']
       test_round.save!
       distribute_test_round(test_round.id)
     end

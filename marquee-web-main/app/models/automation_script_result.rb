@@ -105,10 +105,12 @@ class AutomationScriptResult < ActiveRecord::Base
       else
         self.result = self.failed > 0 ? 'failed' : 'pass'
       end
+      self.counter +=1
     else
       count_automation_script_and_test_round_result
       self.end_time = Time.now
       self.result = 'failed'
+      self.counter +=1
     end
     save
   end

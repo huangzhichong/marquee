@@ -50,6 +50,7 @@ class StatusController < ApplicationController
       #if automation_script_result and not automation_script_result.end?
       if automation_script_result
         case what
+
         when 'Script'
           if automation_script_result.state == "running" or automation_script_result.state == "scheduling" or (automation_script_result.state == "stopping" and protocol[:data]['state'] and protocol[:data]['state'].downcase == "killed")
             update_automation_script(test_round, protocol[:data])
@@ -74,9 +75,21 @@ class StatusController < ApplicationController
     automation_script_result.update_state!(state)
     test_round.update_state!
     if test_round.end?
-      TestRoundMailer.finish_mail(test_round.id).deliver
+      # check if any counter of automation script result is lower than test round's
+      # rerun failed scripts if any, otherwise send finish email
+      rerunnable_scripts = test_round.auto_rerunable_scripts
+      if rerunnable_scripts.size > 0
+        rerunnable_scripts.each do |asr|
+          asr.clear
+          sa = asr.slave_assignments.first
+          sa.reset!
+          sa.save
+          SlaveAssignmentsHelper.send_slave_assignment_to_list sa, :pending
+        end
+      else
+        TestRoundMailer.finish_mail(test_round.id).deliver
+      end
     end
-    #    end
   end
 
   def update_automation_case(test_round, data)
