@@ -45,6 +45,7 @@ class TestRoundsController < InheritedResources::Base
 
   def create
     create! do
+      @test_round.counter = 3 if params[:enable_auto_rerun] == "on"
       @test_round.set_default_value
       @test_round.save
       # AutomationScriptResultsInitializer.createAutomationScriptResults(@test_round.id)

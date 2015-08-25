@@ -42,10 +42,11 @@
                 =select_tag :assigned_slave_id, options_for_select(get_eligible_slaves(project.name))
             .clearfix
               = label_tag "Auto-Rerun"
-              .input
-                =select_tag :counter, options_for_select([[1,1],[3,3]])
-                %span.help-block
-                  = "How many times does it allow to rerun failed script"
+              .input.onoffswitch
+                %input#auto_rerun_switch.onoffswitch-checkbox{:checked => false, :name => "enable_auto_rerun", :type => "checkbox"}
+                  %label.onoffswitch-label{:for => "auto_rerun_switch"}
+                    %span.onoffswitch-inner
+                    %span.onoffswitch-switch
 
         = hidden_field_tag :creator_id, current_user.id
         .row

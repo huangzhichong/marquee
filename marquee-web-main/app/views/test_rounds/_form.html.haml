@@ -44,21 +44,22 @@
         = f.text_field :parameter
     .clearfix
       = f.label "Auto-Rerun"
-      .input
-        = f.select :counter, options_for_select([[1,1],[3,3]]),{}, {:class => "chzn-select"}
-        %span.help-block
-          = "How many times does it allow to rerun failed script"
-
+      .input.onoffswitch
+        %input#auto_rerun_switch.onoffswitch-checkbox{:checked => false, :name => "enable_auto_rerun", :type => "checkbox"}
+          %label.onoffswitch-label{:for => "auto_rerun_switch"}
+            %span.onoffswitch-inner
+            %span.onoffswitch-switch
 
     = f.hidden_field :creator_id, :value => current_user.id
     .actions
       = f.submit 'Schedule!', :class => 'btn primary', :id => 'schedule_commit_button'
       = link_to 'Back', project_test_rounds_path, :class => 'btn'
 
-:javascript
-  $(function(){
-    var submit = true;
 
+
+:javascript  
+  $(function(){    
+    var submit = true;
     $("#new_test_round").validationEngine({
       promptPosition: "bottomRight", 
       scroll: false,
