@@ -21,7 +21,7 @@
       %td= image_tag("#{offer_report.result.downcase}.png", class: "ui-icon")
       %td
         -if tr.size > 0
-          = link_to offer_report.test_round_id, project_test_round_path(tr.first.project, tr.first), :remote => true
+          = link_to offer_report.test_round_id, project_test_round_path(tr.first.project, tr.first)
         -else 
           = offer_report.test_round_id
       %td= offer_report.market
