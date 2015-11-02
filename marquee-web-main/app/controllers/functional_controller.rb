@@ -188,7 +188,7 @@ and j1.created <= '#{@to}'
     csv_string = CSV.generate do |csv|
       csv << ["Application","Total Test Cases","To Be Automated", "\# Automated","% Automated"]
       @projects.each do |project_name|
-        project = Project.find_by_name(project_name)      
+        project = Project.find_by_name(project_name)
         total_number = project.count_test_case_by_options().to_f
         automated_number = project.count_test_case_by_options(:automated_status => "Automated").to_f
         not_candidate_number = project.count_test_case_by_options(:automated_status => "Not a Candidate").to_f
@@ -238,13 +238,46 @@ and j1.created <= '#{@to}'
     csv_string = CSV.generate do |csv|
       if test_round
         csv << ['TestRound ID', params['test_round_id']]
-        csv << ['Environment', test_round.test_environment]
+        csv << ['Environment', test_round.test_environment.name]
         csv << ['OS',test_round.operation_system.name]
         csv << ['Browser Type',test_round.browser.name]
-        csv << ['Script Name','Test Plan Name','Case Name','Case ID','Testlink ID','Result']
-        test_round.get_result_details.each do |result|
-          csv << [result['script_name'],result['test_plan_name'],result['case_name'],result['case_id'],result['test_link_id'],result['result']]
+        csv << ['Test Plan Name','Script Name','Case Name','Case ID','Result','Automation Status','Error Type','Triage Message','Testlink ID']
+
+        test_round_result = test_round.get_test_result_hash
+        project_test_plans = test_round.project.get_test_plans_and_automation_scripts
+
+        project_test_plans.each do |plan_name,plan_info|
+          plan_info['test_cases'].each do |case_id,case_info|
+            if test_round_result.has_key? case_id
+              csv << [
+                plan_name,
+                test_round_result[case_id]['script_name'],
+                case_info['name'],
+                case_id,
+                test_round_result[case_id]['result'],
+                case_info['automated_status'],
+                test_round_result[case_id]['error_type'],
+                test_round_result[case_id]['triage_result'],
+                case_info['test_link_id'],
+                case_info['plan_type']
+              ]
+            else
+              csv << [
+                plan_name,
+                "",
+                case_info['name'],
+                case_id,
+                "",
+                case_info['automated_status'],
+                "",
+                "",
+                case_info['test_link_id'],
+                case_info['plan_type']
+              ]
+            end
+          end
         end
+
       end
     end
     respond_to do |format|

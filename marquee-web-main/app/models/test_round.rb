@@ -97,91 +97,98 @@ class TestRound < ActiveRecord::Base
   end
 
   def end?
-  ["not implemented","service error","completed"].include? self.state
-end
-
-def fail?
-  result == 'failed'
-end
-
-def all_automation_script_results_finished?
-  automation_script_results.all?{|asr| asr.end?}
-end
-
-def update_start_time
-  self.start_time = self.automation_script_results.collect{|asr| asr.start_time.nil? ? Time.now : asr.start_time}.min
-end
-
-def exported_to_testlink?
-  self.exported_status == 'Y'
-end
-def start_running!
-  unless running?
-    self.state = 'running'
-    # update_start_time
+    ["not implemented","service error","completed"].include? self.state
   end
-end
 
-def end_running!
-  if running?
-    calculate_result!
-    self.end_time = Time.now
-    calculate_duration!
-    calculate_pass_rate!
-    calculate_result!
-    self.exported_status ='N'
+  def fail?
+    result == 'failed'
   end
-end
 
-def scheduling?
-  self.state == "scheduling"
-end
-
-def running?
-  self.state == "running"
-end
-
-def calculate_result!
-  if automation_script_results.all?{|asr| asr.automation_script.not_implemented? }
-    self.state = 'not implemented'
-    self.result = 'N/A'
-    # elsif automation_script_results.all?{|asr| asr.service_error?}
-    # self.state = 'service error'
-    # self.result = 'N/A'
-  elsif automation_script_results.all?{|asr| asr.passed?}
-    self.state = 'completed'
-    self.result = 'pass'
-  else
-    self.state = 'completed'
-    self.result = 'failed'
+  def all_automation_script_results_finished?
+    automation_script_results.all?{|asr| asr.end?}
   end
-end
 
-def calculate_duration!
-  self.duration = end_time - start_time
-end
+  def update_start_time
+    self.start_time = self.automation_script_results.collect{|asr| asr.start_time.nil? ? Time.now : asr.start_time}.min
+  end
 
-def pass_count
-  self.automation_script_results.sum(:pass)
-end
+  def exported_to_testlink?
+    self.exported_status == 'Y'
+  end
+  def start_running!
+    unless running?
+      self.state = 'running'
+      # update_start_time
+    end
+  end
 
-def failed_count
-  self.automation_script_results.sum(:failed)
-end
+  def end_running!
+    if running?
+      calculate_result!
+      self.end_time = Time.now
+      calculate_duration!
+      calculate_pass_rate!
+      calculate_result!
+      self.exported_status ='N'
+    end
+  end
 
-def warning_count
-  self.automation_script_results.sum(:warning)
-end
+  def scheduling?
+    self.state == "scheduling"
+  end
 
-def not_run_count
-  self.automation_script_results.sum(:not_run)
-end
+  def running?
+    self.state == "running"
+  end
 
-def calculate_pass_rate!
-  if automation_case_count == 0
-    0.0
-  else
-    self.pass_rate = (pass_count.to_f * 100)/ automation_case_count
+  def calculate_result!
+    if automation_script_results.all?{|asr| asr.automation_script.not_implemented? }
+      self.state = 'not implemented'
+      self.result = 'N/A'
+      # elsif automation_script_results.all?{|asr| asr.service_error?}
+      # self.state = 'service error'
+      # self.result = 'N/A'
+    elsif automation_script_results.all?{|asr| asr.passed?}
+      self.state = 'completed'
+      self.result = 'pass'
+    else
+      self.state = 'completed'
+      self.result = 'failed'
+    end
+  end
+
+  def calculate_duration!
+    self.duration = end_time - start_time
+  end
+
+  def pass_count
+    self.automation_script_results.sum(:pass)
+  end
+
+  def failed_count
+    self.automation_script_results.sum(:failed)
+  end
+
+  def warning_count
+    self.automation_script_results.sum(:warning)
+  end
+
+  def not_run_count
+    self.automation_script_results.sum(:not_run)
+  end
+
+  def count_test_case_by_condition(conditions = {})
+    {"pass" => self.automation_script_results.where(conditions).sum(:pass),
+     "failed" => self.automation_script_results.where(conditions).sum(:failed),
+     "not_run" => self.automation_script_results.where(conditions).sum(:not_run)
+     }
+  end
+
+  def calculate_pass_rate!
+    if automation_case_count == 0
+      0.0
+    else
+      self.pass_rate = (pass_count.to_f * 100)/ automation_case_count
       self.pass_rate.round(2)
     end
   end
@@ -247,8 +254,8 @@ def calculate_pass_rate!
   def owner_emails
     emails = []
     query_string = "select DISTINCT a.owner_id from automation_scripts a
-    join automation_script_results asr on asr.automation_script_id = a.id
-    where asr.test_round_id = '#{self.id}'"
+      join automation_script_results asr on asr.automation_script_id = a.id
+      where asr.test_round_id = '#{self.id}'"
     AutomationScript.find_by_sql(query_string).each {|as| emails << as.owner.email}
     return emails
   end
@@ -261,5 +268,19 @@ def calculate_pass_rate!
     self.automation_script_results.select{|asr| (asr.counter < self.counter) and (asr.result != 'pass') and (asr.error_type_id ==nil)}
   end
 
+  def get_test_result_hash
+    result = {}
+    self.automation_script_results.each do |asr|
+      asr.automation_case_results.each do |acr|
+        result["#{acr.automation_case.case_id}"]={
+      "script_name" => asr.name,
+        "result" => acr.result,
+        "error_type" => asr.error_type.name,
+        "triage_result" => asr.triage_result
+      }
+    end
+  end
+  result
+end
 
 end

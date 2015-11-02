@@ -118,6 +118,19 @@ class Project < ActiveRecord::Base
     TestCase.includes("test_plan").where(options).where("test_cases.version > 0").count
   end
 
+  def get_test_plans_and_automation_scripts
+    result = {}
+    self.test_plans.each do |tp|
+      result["#{tp.name}"]= {}      
+      result["#{tp.name}"]["test_cases"] = {}
+      tp.test_cases.each do |tc|
+        result["#{tp.name}"]["test_cases"]["#{tc.case_id}"]= {"name" => tc.name, "automated_status" => tc.automated_status, "test_link_id" => tc.test_link_id,"plan_type" => tp.plan_type}
+      end
+    end
+    result
+  end
+
+
   def add_default_notify_email(email_address)
     mns = self.mail_notify_settings.build(:mail=>"#{email_address}")
     mns.set_default_settings
