@@ -72,7 +72,7 @@ class TestRound < ActiveRecord::Base
     self.save
   end
 
-  def self.create_for_new_build(test_suite, project, test_environment, user, test_object, browser, os, branch_name, parameter)
+  def self.create_for_new_build(test_suite, project, test_environment, user, test_object, browser, os, branch_name, parameter,enable_auto_rerun)
     test_round = TestRound.new
     test_round.set_default_value
     test_round.test_suite = test_suite
@@ -84,6 +84,9 @@ class TestRound < ActiveRecord::Base
     test_round.operation_system = os
     test_round.branch_name = branch_name
     test_round.parameter = parameter
+    if enable_auto_rerun == "on"
+      test_round.counter = 3
+    end
     test_round.save
     test_round
   end

@@ -5,6 +5,7 @@ class StatusController < ApplicationController
     env = params[:environment]
     branch_name = params.has_key?(:branch_name) ? params[:branch_name] : "master"
     parameter = params.has_key?(:parameter) ? params[:parameter] : ""
+    enable_auto_rerun = params.has_key?(:enable_auto_rerun) ? params[:enable_auto_rerun] : "off"
     test_environment = TestEnvironment.find_by_name(env)
     @test_round_ids= []
     unless env.empty?
@@ -20,7 +21,7 @@ class StatusController < ApplicationController
         end
         test_environment = ci_mapping.project.test_environments.find_by_name(env)
         if test_environment
-          test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object, ci_mapping.browser, ci_mapping.operation_system, branch_name, parameter)
+          test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object, ci_mapping.browser, ci_mapping.operation_system, branch_name, parameter, enable_auto_rerun)
           TestRoundDistributor.distribute(test_round.id)
           @test_round_ids << test_round.id
         else
