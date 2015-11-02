@@ -283,8 +283,7 @@ and j1.created <= '#{@to}'
 
       end
     end
-    respond_to do |format|
-      binding.pry
+    respond_to do |format|      
       format.csv {send_data csv_string, :filename => "test_round_#{params['test_round_id']}_result_#{Time.now.strftime("%Y%m%d_%H%M%S")}.csv"}
     end
   end
