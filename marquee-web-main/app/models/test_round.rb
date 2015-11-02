@@ -272,13 +272,14 @@ class TestRound < ActiveRecord::Base
   end
 
   def get_test_result_hash
-    result = {}
+    result={}
     self.automation_script_results.each do |asr|
+      error_type = asr.error_type_id.nil? ? nil : asr.error_type.name      
       asr.automation_case_results.each do |acr|
         result["#{acr.automation_case.case_id}"]={
       "script_name" => asr.name,
         "result" => acr.result,
-        "error_type" => asr.error_type.name,
+        "error_type" => error_type,
         "triage_result" => asr.triage_result
       }
     end

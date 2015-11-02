@@ -241,6 +241,9 @@ and j1.created <= '#{@to}'
         csv << ['Environment', test_round.test_environment.name]
         csv << ['OS',test_round.operation_system.name]
         csv << ['Browser Type',test_round.browser.name]
+        csv << ['Total Pass',test_round.pass_count]
+        csv << ['Total Failed',test_round.failed_count]
+        csv << ['Total Not-Run', test_round.not_run_count]
         csv << ['Test Plan Name','Script Name','Case Name','Case ID','Result','Automation Status','Error Type','Triage Message','Testlink ID']
 
         test_round_result = test_round.get_test_result_hash
@@ -281,6 +284,7 @@ and j1.created <= '#{@to}'
       end
     end
     respond_to do |format|
+      binding.pry
       format.csv {send_data csv_string, :filename => "test_round_#{params['test_round_id']}_result_#{Time.now.strftime("%Y%m%d_%H%M%S")}.csv"}
     end
   end
