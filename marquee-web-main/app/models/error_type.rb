@@ -6,7 +6,7 @@ class ErrorType < ActiveRecord::Base
   end
 
   def self.pass_options
-    ErrorType.where("result_type in ('pass')").order("name ASC")map{|e| ["#{e.result_type.upcase} - #{e.name}", e.id]}
+    ErrorType.where("result_type in ('pass')").order("name ASC").map{|e| ["#{e.result_type.upcase} - #{e.name}", e.id]}
   end
 
   def  self.all_options
