@@ -101,10 +101,10 @@ namespace :dash do
       project_role.save
       v.each do |user|
         u = User.new(
-                     :email => user["email"],
-                     :display_name => user["name"],
-                     :password => "111111"
-                     )
+          :email => user["email"],
+          :display_name => user["name"],
+          :password => "111111"
+        )
         u.projects_roles << project_role
         # u.roles << role
         u.save
@@ -143,46 +143,46 @@ namespace :dash do
     fiona = User.find_by_email("fiona.zhou@activenetwork.com")
 
     camps = Project.create(
-                           :name => 'Camps',
-                           :leader => smart,
-                           :project_category => aw,
-                           :state => 'ongoing',
-                           :source_control_path => 'http://fndsvn.dev.activenetwork.com/camps',
-                           :icon_image_file_name => 'camps.png',
-                           :icon_image_content_type => 'image/png',
-                           :icon_image_file_size => 7763,
-                           :browsers => [ie, firefox, chrome],
-                           :operation_systems => [win],
-                           :display_order => 0
-                           ).save
+      :name => 'Camps',
+      :leader => smart,
+      :project_category => aw,
+      :state => 'ongoing',
+      :source_control_path => 'http://fndsvn.dev.activenetwork.com/camps',
+      :icon_image_file_name => 'camps.png',
+      :icon_image_content_type => 'image/png',
+      :icon_image_file_size => 7763,
+      :browsers => [ie, firefox, chrome],
+      :operation_systems => [win],
+      :display_order => 0
+    ).save
 
     endurance = Project.create(
-                               :name => 'Endurance',
-                               :leader => jabco,
-                               :project_category => aw,
-                               :state => 'ongoing',
-                               :source_control_path => 'http://fndsvn.dev.activenetwork.com/endurance',
-                               :icon_image_file_name => 'endurance.png',
-                               :icon_image_content_type => 'image/png',
-                               :icon_image_file_size => 18857,
-                               :browsers => [ie, firefox, chrome],
-                               :operation_systems => [win],
-                               :display_order => 1
-                               ).save
+      :name => 'Endurance',
+      :leader => jabco,
+      :project_category => aw,
+      :state => 'ongoing',
+      :source_control_path => 'http://fndsvn.dev.activenetwork.com/endurance',
+      :icon_image_file_name => 'endurance.png',
+      :icon_image_content_type => 'image/png',
+      :icon_image_file_size => 18857,
+      :browsers => [ie, firefox, chrome],
+      :operation_systems => [win],
+      :display_order => 1
+    ).save
 
     sports = Project.create(
-                            :name => 'Sports',
-                            :leader => fiona,
-                            :project_category => aw,
-                            :state => 'ongoing',
-                            :source_control_path => 'http://fndsvn.dev.activenetwork.com/sports',
-                            :icon_image_file_name => 'sports.png',
-                            :icon_image_content_type => 'image/png',
-                            :icon_image_file_size => 16291,
-                            :browsers => [ie, firefox, chrome],
-                            :operation_systems => [win],
-                            :display_order => 2
-                            ).save
+      :name => 'Sports',
+      :leader => fiona,
+      :project_category => aw,
+      :state => 'ongoing',
+      :source_control_path => 'http://fndsvn.dev.activenetwork.com/sports',
+      :icon_image_file_name => 'sports.png',
+      :icon_image_content_type => 'image/png',
+      :icon_image_file_size => 16291,
+      :browsers => [ie, firefox, chrome],
+      :operation_systems => [win],
+      :display_order => 2
+    ).save
   end
 
   desc "Delete duplicated data from dre report."
@@ -323,15 +323,49 @@ namespace :dash do
         name = user["email"].split("@").first
         display_name = "#{name.split(".").first.capitalize} #{name.split(".").last.capitalize}"
         u = User.new(
-                     :email => user["email"],
-                     :display_name => display_name,
-                     :password => "111111"
-                     )
+          :email => user["email"],
+          :display_name => display_name,
+          :password => "111111"
+        )
         u.projects_roles << project_role
         # u.roles << role
         u.save
       end
     end
+  end
+
+
+  # Matrix of automation script results
+  # *Test Result *Script Status    *State Result   *Triage  *Error Type
+  # PASS         Completed         done            Pass    N/A
+  # PASS         Completed         done            Pass    Framework Issue
+  # PASS         Completed         done            Pass    Dynamic Issue
+  # PASS         Completed         done            Pass    Environment Issue
+  # PASS         Completed         done            Pass    Product Change
+  # PASS         Completed         done            Pass    Data Issue
+  # PASS         Completed         done            Pass    Script Issue
+  # FAILED       Completed         done            Failed  Product Error
+  # FAILED       Completed         done            Failed  N/A
+  # N/A          Known Bug         not implemented Failed  Not Ready
+  # N/A          Test Data Issue   not implemented Failed  Not Ready
+  # N/A          Work In Progress  not implemented Failed  Not Ready
+  # N/A          Disabled          not implemented Failed  Not Ready
+  # N/A          Completed         not implemented Failed  Not in Branch
+  desc "initial error_type of triage result"
+  task :init_error_type=> :environment do
+    ErrorType.delete_all
+
+    ErrorType.create(:name=> "Framework Issue", :result_type => "pass").save
+    ErrorType.create(:name=> "Dynamic Issue", :result_type => "pass").save
+    ErrorType.create(:name=> "Environment Error", :result_type => "pass").save
+    ErrorType.create(:name=> "Product Change", :result_type => "pass").save
+    ErrorType.create(:name=> "Data Issue", :result_type => "pass").save
+    ErrorType.create(:name=> "Script Issue", :result_type => "pass").save
+
+    ErrorType.create(:name=> "Product Error", :result_type => "failed").save
+
+    ErrorType.create(:name=> "Not in Branch", :result_type => 'N/A').save
+    ErrorType.create(:name=> "Not Ready", :result_type => 'N/A').save
   end
 
 

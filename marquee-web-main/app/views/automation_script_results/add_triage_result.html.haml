@@ -11,10 +11,14 @@
           = label_tag 'Error Type'
           .required *
           .input
-            - if @automation_script_result.error_type_id
-              = select_tag "error_type_id", options_from_collection_for_select(ErrorType.all, :id, :name, @automation_script_result.error_type_id), prompt: "Select error type", :class => "validate[required]"
-            - else
-              = select_tag "error_type_id", options_from_collection_for_select(ErrorType.all, :id, :name), prompt: "Select error type", :class => "validate[required]"
+            - if @automation_script_result.error_type_id                          
+              - if @automation_script_result.error_type.result_type == "pass"
+                - error_type_options = ErrorType.pass_options
+              - else
+                - error_type_options = ErrorType.pass_and_failed_options
+              = select_tag "error_type_id", options_for_select(error_type_options, @automation_script_result.error_type_id), prompt: "Select error type", :class => "validate[required]"
+            - else              
+              = select_tag "error_type_id", options_for_select( ErrorType.all_options), prompt: "Select error type", :class => "validate[required]"
         .clearfix
           = label_tag 'Script Note'
           .input

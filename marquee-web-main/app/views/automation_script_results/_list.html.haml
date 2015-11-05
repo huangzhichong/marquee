@@ -52,8 +52,12 @@
             - if asr.triage_result == "N/A"
               - unless asr.result == 'pass'
                 %input{:type => "button", :value => "Triage", "remote-data" => "/automation_script_results/#{asr.id}/add_triage_result", :class => "btn primary add-triage-result"}
-            - else  
-              %input{:type => "button", :value => "#{asr.error_type.name}", "remote-data" => "/automation_script_results/#{asr.id}/view_triage_result", :class => "btn view-triage-result"}
+            - else
+              - if asr.error_type.result_type == "failed"
+                - triage_result_class = "btn danger view-triage-result"
+              - else  
+                - triage_result_class = "btn view-triage-result"
+              %input{:type => "button", :value => "#{asr.error_type.name}", "remote-data" => "/automation_script_results/#{asr.id}/view_triage_result", :class => triage_result_class}
         %td
           -sa = asr.slave_assignments.last
           -if sa && sa.slave && asr.end_time

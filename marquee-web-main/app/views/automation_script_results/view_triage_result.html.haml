@@ -11,7 +11,7 @@
           = label_tag 'Error Type'
           .required *
           .input
-            = select_tag "error_type_id", options_from_collection_for_select(ErrorType.all, :id, :name, @automation_script_result.error_type_id), :disabled => true
+            = select_tag "error_type_id", options_for_select(ErrorType.all_options, @automation_script_result.error_type_id), :disabled => true
         .clearfix
           = label_tag 'Comment'
           .required *          

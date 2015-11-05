@@ -15,7 +15,25 @@
 #  automation_script_id :integer
 #  created_at           :datetime
 #  updated_at           :datetime
-#
+
+
+
+# Matrix of automation script results
+# *Test Result *Script Status    *State Result   *Triage  *Error Type
+# PASS         Completed         done            Pass    N/A
+# PASS         Completed         done            Pass    Framework Issue
+# PASS         Completed         done            Pass    Dynamic Issue
+# PASS         Completed         done            Pass    Environment Issue
+# PASS         Completed         done            Pass    Product Change
+# PASS         Completed         done            Pass    Data Issue
+# PASS         Completed         done            Pass    Script Issue
+# FAILED       Completed         done            Failed  Product Error
+# FAILED       Completed         done            Failed  N/A
+# N/A          Known Bug         not implemented Failed  Not Ready
+# N/A          Test Data Issue   not implemented Failed  Not Ready
+# N/A          Work In Progress  not implemented Failed  Not Ready
+# N/A          Disabled          not implemented Failed  Not Ready
+# N/A          Completed         not implemented Failed  Not in Branch
 
 class AutomationScriptResult < ActiveRecord::Base
   include CounterUpdatable
@@ -186,12 +204,11 @@ class AutomationScriptResult < ActiveRecord::Base
   end
 
   def is_triage_result_editable?
-    self.error_type_id.nil? or ErrorType.non_editable_ids.index(self.error_type_id).nil?
+    self.error_type.result_type != "N/A"    
   end
 
   def is_rerunnable?
-    not ['pass','pending'].include?(self.result)
-    # not (['pass','pending'].include?(self.result) or (self.error_type && self.error_type.name == 'Not in Branch'))
+    (not ['pass','pending'].include?(self.result)) or (self.error_type_id != nil)
   end
 
 
@@ -210,7 +227,7 @@ class AutomationScriptResult < ActiveRecord::Base
 
   def set_to_not_ready
     self.error_type_id = ErrorType.find_by_name("Not Ready").id
-    self.triage_result = self.automation_script.note
+    self.triage_result = "#{self.automation_script.status.upcase} - #{self.automation_script.note}"
     self.result = "failed"
     self.state = "not implemented"
     self.save

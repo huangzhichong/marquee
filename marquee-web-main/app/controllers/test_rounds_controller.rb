@@ -34,7 +34,7 @@ class TestRoundsController < InheritedResources::Base
   def rerun_failed
     test_round = TestRound.find(params[:test_round_id])
     # rerun_automation_script_results(test_round, test_round.automation_script_results.where("result != 'pass' and triage_result ='N/A'"))
-    rerun_automation_script_results(test_round, test_round.automation_script_results.where("result != 'pass' and (error_type_id is null or error_type_id in (4,5))"))
+    rerun_automation_script_results(test_round, test_round.automation_script_results.where("result != 'pass' and error_type_id is null"))
     render :nothing => true
   end
   def rerun
@@ -48,7 +48,6 @@ class TestRoundsController < InheritedResources::Base
       @test_round.counter = 3 if params[:enable_auto_rerun] == "on"
       @test_round.set_default_value
       @test_round.save
-      # AutomationScriptResultsInitializer.createAutomationScriptResults(@test_round.id)
       TestRoundDistributor.distribute(@test_round.id)
       project_test_rounds_path(@project)
     end
@@ -62,6 +61,12 @@ class TestRoundsController < InheritedResources::Base
   def execute_multiple_site
     ActivenetMultipleSiteDistributor.distribute(params)
     redirect_to project_test_rounds_path(Project.find_by_name('ActiveNet'))
+  end
+
+  def show_report
+    @project ||= Project.find(params[:project_id])
+    @test_round ||= TestRound.find(params[:test_round_id])
+    
   end
 
   protected
