@@ -26,7 +26,7 @@ class ImportDataController < ApplicationController
     p = Project.find_by_name(script["project"])
     owner_id = User.find_or_create_default_by_email(script["owner"].downcase).id
     tp = p.test_plans.find_by_name(script["plan_name"])
-    if tp !=nil
+    if (tp !=nil) and is_script_status_valid?(script["status"])
       as = p.automation_scripts.find_or_create_by_name(script["script_name"])
       as.automation_cases.delete_all
       as.test_plan_id = tp.id
@@ -62,7 +62,7 @@ class ImportDataController < ApplicationController
     p = Project.find_by_name(script["project"])
     owner_id = User.find_or_create_default_by_email(script["owner"].downcase).id
     tp = p.test_plans.find_by_name(script["plan_name"])
-    if tp !=nil
+    if (tp !=nil) and is_script_status_valid?(script["status"])
       as = p.automation_scripts.find_or_create_by_name(script["script_name"])
       as.automation_cases.delete_all
       as.test_plan_id = tp.id
@@ -95,7 +95,7 @@ class ImportDataController < ApplicationController
     script = params[:data]["automation_script"]
     cases = params[:data]["automation_cases"]
     p = Project.find_by_name(script["project"])
-    if p != nil
+    if (p != nil) and is_script_status_valid?(script["status"])
       tp = p.test_plans.find_or_create_by_name(script["name"])
       tp.status = script["status"]
       tp.version = "1.0"
@@ -234,4 +234,10 @@ class ImportDataController < ApplicationController
       end
     end
   end
+
+  private
+  def is_script_status_valid?(status)
+    ['Completed', 'Work In Progress', 'Disabled', 'Known Bug', 'Test Data Issue'].include? status
+  end
+
 end
