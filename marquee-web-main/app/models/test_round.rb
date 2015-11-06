@@ -145,13 +145,7 @@ class TestRound < ActiveRecord::Base
   end
 
   def calculate_result!
-    if automation_script_results.all?{|asr| asr.automation_script.not_implemented? }
-      self.state = 'not implemented'
-      self.result = 'N/A'
-      # elsif automation_script_results.all?{|asr| asr.service_error?}
-      # self.state = 'service error'
-      # self.result = 'N/A'
-    elsif automation_script_results.all?{|asr| asr.passed?}
+    if automation_script_results.all?{|asr| asr.passed?}
       self.state = 'completed'
       self.result = 'pass'
     else
@@ -282,9 +276,9 @@ class TestRound < ActiveRecord::Base
         "error_type" => error_type,
         "triage_result" => asr.triage_result
       }
+      end
     end
+    result
   end
-  result
-end
 
 end

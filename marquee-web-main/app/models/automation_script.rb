@@ -28,8 +28,4 @@ class AutomationScript < ActiveRecord::Base
   def find_case_by_case_id(case_id)
     self.automation_cases.find_by_case_id(case_id)
   end
-
-  def not_implemented?
-    self.status == "not implemented"
-  end
 end
