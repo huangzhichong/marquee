@@ -95,7 +95,7 @@ class TestRoundsController < InheritedResources::Base
       # if there is no slave_assignment, create a new one
       # if there is existing slave assignment, reset it for rerun
 
-      if asr.automation_script.status =='completed'
+      if asr.automation_script.status =='Completed'
         if (branch_name != 'master') and existing_branch_scripts.index(asr.automation_script.name).nil?
           asr.set_to_not_in_branch
         else

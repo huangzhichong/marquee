@@ -67,7 +67,7 @@ class AutomationScriptResultsController < InheritedResources::Base
     automation_script_result.clear
 
     if automation_script_result.is_in_current_branch?
-      if automation_script_result.automation_script.status == 'completed'
+      if automation_script_result.automation_script.status == 'Completed'
         AutomationScriptResultRunner.rerun(automation_script_result_id)
       else
         automation_script_result.set_to_not_ready
