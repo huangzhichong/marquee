@@ -4,12 +4,13 @@
     %meta{:content => 'text/html; charset=UTF-8', :'http-equiv' => 'Content-Type' }
   %body
     :css
-      body{
-        font-family: "Lucida Grande", Sans-serif;
+      body {
+        font-family:"Lucida Grande", Sans-serif;
         font-size: 100%;
         line-height: 1;
       }
       table {
+        margin-top: 2em!important;
         margin-bottom: 2em!important;
         width: 100%;
         border-collapse: collapse;
@@ -26,49 +27,202 @@
         text-align: center;
         line-height: 150%;
       }
-      table tr,th,td {
+      table tbody td:first-child  {
+        padding: 5px;
+        vertical-align: middle;
+        text-align: left;
+        line-height: 150%;
+      }
+      table tr, th, td {
         border: 1px solid #666;
       }
-      li{
+      tr.pass {
+        background-color: #dff0d8;
+      }
+      tr.warning {
+        background-color: #fcf8e3;
+      }
+      tr.failed  {
+        background-color: #f2dede;
+      }
+      li {
         list-style: none;
       }
-      span.pass{
+      li span {
+        vertical-align: middle;
+        text-align: center;
+        margin-bottom: 22.1776px;
+        margin-top: 22.1776px;
+      }
+      span.pass {
         font-weight: bold;
         color: green;
       }
-      span.failed{
+      span.failed {
         font-weight: bold;
         color: red;
       }
-      span.warning{
+      span.warning {
         font-weight: bold;
         color: orange;
       }
-    %h3
-      = "Test Round: #{@test_round} is just finished! Result is "
-      %span{:class => @test_round.result}= "#{@test_round.result}."
+      h5.pass {
+        font-weight: bold;
+        color: green;
+      }
+      h5.failed {
+        font-weight: bold;
+        color: red;
+      }
+      h5.warning {
+        font-weight: bold;
+        color: orange;
+      }
+      .section {
+        border-bottom-color: rgb(204, 204, 204);
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+      }
+      .brief-left {
+        display: block;
+        float: left;
+        line-height: 18px;
+        margin-left: 0px;
+        width: 460px;
+        zoom: 1;
+      }
+      .brief-right {
+        border-left-color: rgb(204, 204, 204);
+        border-left-style: solid;
+        border-left-width: 1px;
+        display: block;
+        float: left;
+        line-height: 18px;
+        margin-left: 20px;
+        width: 460px;
+        zoom: 1;
+      }
+      .row {
+        zoom:1;
+      }
+      .row:before, .row:after {
+        display:table;
+        content:"";
+      }
+      .row:after {
+        clear:both;
+      }
+      .row .span3 {
+        float:left;
+        width:160px;
+        margin-left:20px;
+      }
+      .row .span3:first-child {
+        margin-left:0;
+      }
+      .row .span5 {
+        float:left;
+        width:280px;
+        margin-left:20px;
+      }
+      .row .span5:first-child {
+        margin-left:0;
+      }
+      .row .span8 {
+        float:left;
+        width:460px;
+        margin-left:20px;
+      }
+      .row .span8:first-child {
+        margin-left:0;
+      }
+    
+    .section
+      %h3
+        = "Test Round: #{@test_round} is just finished! Result is "
+        %span{:class => @test_round.result}= "#{@test_round.result}."
+    .row.brief-info
+      .brief-left
+        .span5
+          %ul.title
+            %li
+              %h5 Test Suite:
+            %li
+              %h5 Test Environment:
+            %li
+              %h5 Duration:
+            %li
+              %h5 Browser :
+            %li
+              %h5 Operation System:
+            %li
+              %h5 Branch:
+        .span3
+          %ul.value
+            %li
+              %h5= @test_round.test_suite.name
+            %li
+              %h5= @test_round.test_environment.name
+            %li
+              %h5= ChronicDuration.output(@test_round.duration)
+            %li
+              %h5= @test_round.browser.name_with_version
+            %li
+              %h5= @test_round.operation_system.name_with_version
+            %li
+              %h5= @test_round.branch_name.nil? ? "master" : @test_round.branch_name
+      .brief-right
+        .span5
+          %ul.title
+            %li
+              %h5 Started By:
+            %li
+              %h5 Pass Count:
+            %li
+              %h5 Failed Count:
+            %li
+              %h5 Warning Count:
+            %li
+              %h5 Not Run Count:
+            %li
+              %h5 Passrate:
+        .span3
+          %ul.value
+            %li
+              %h5= @test_round.creator.display_name
+            %li
+              %h5.pass= @test_round.pass
+            %li
+              %h5.failed= @test_round.failed
+            %li
+              %h5.warning= @test_round.warning
+            %li
+              %h5= @test_round.not_run
+            %li
+              %h5.pass= @test_round.pass_rate.nil? ? 'N/A' : number_to_percentage(@test_round.pass_rate, :precision => 2)
 
     %table
       %tr.border
         %th Automation Script Name
-        %th Result
+        %th Owner
         %th Service Info
-        %th Environment
-        
+        %th Triage Result
       - if @test_round.automation_script_results.nil? or @test_round.automation_script_results.count == 0
         %tr.border
           %td{:colspan => "4"}
             %h4 No data
       - else
         - @test_round.automation_script_results.each do |asr|
-          %tr.border
+          %tr{:class => "#{asr.result.downcase} border"}
             %td= link_to asr.name, "http://marquee.dev.activenetwork.com/test_rounds/#{@test_round.id}/automation_script_results/#{asr.id}"
             %td
-              %span{:class => "#{asr.result.downcase}"}= asr.result.upcase
+              %span{:class => "#{asr.result.downcase}"}= asr.automation_script.owner.display_name
             %td
               - asr.target_services.each do |ts|
                 %li= ts
-            %td= asr.test_round.test_environment.name
+            %td
+              - unless asr.error_type.nil?
+                %span= "#{asr.error_type.name.upcase} - #{asr.triage_result}"
     %p
       = "Click "
       = link_to "#{@test_round.project} #{@test_round}", "http://marquee.dev.activenetwork.com/projects/#{@test_round.project.id}/test_rounds/#{@test_round.id}"
@@ -84,8 +238,6 @@
           %th Automation Script
           %th Case Id
           %th Case Name
-          %th Version
-          %th Priority
         - @test_round.automation_script_results.each do |asr|
           - if asr.failed_cases.count > 0
             - rowspan = asr.failed_cases.count
@@ -97,5 +249,3 @@
                   %td{:rowspan => rowspan}= link_to asr.name, "http://marquee.dev.activenetwork.com/test_rounds/#{@test_round.id}/automation_script_results/#{asr.id}"
                 %td= link_to acr.case_id, "http://marquee.dev.activenetwork.com/automation_script_results/#{asr.id}/automation_case_results/#{acr.id}"
                 %td= acr.name
-                %td= acr.version
-                %td= acr.priority

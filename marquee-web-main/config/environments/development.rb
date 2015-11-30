@@ -28,12 +28,16 @@ MarqueeWebMain::Application.configure do
   config.sass.preferred_syntax = :sass
   Paperclip.options[:command_path] = "/opt/local/bin/"
 
+
+
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address:'smtp.dev.activenetwork.com',
-    port:25,
-    enable_starttls_auto:true
-  }
+  # use mailcatcher for testing
+  config.action_mailer.smtp_settings = { :address => "127.0.0.1", :port => 1025 }
+  # config.action_mailer.smtp_settings = {
+  #   address:'smtp.dev.activenetwork.com',
+  #   port:25,
+  #   enable_starttls_auto:true
+  # }
 
   silence_warnings do
     begin
