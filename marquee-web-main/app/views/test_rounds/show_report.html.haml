@@ -1,0 +1,133 @@
+.row.sub-header
+  .span12.columns
+    %img.big-icon{:src => asset_path("#{@test_round.result}.png")}
+    %h2
+      =link_to "Test Rounds", project_test_rounds_path(@project), :remote => true
+      %span= " / #{@test_round.test_type.name}##{@test_round.id} / Test Report"    
+  .span3#right
+    -if can? :create, TestRound and @test_round.state == 'completed'            
+      #dropdown-1.dropdown.dropdown-tip
+        %ul.dropdown-menu
+          %li
+            %a.export_to_csv_btn{:href => "#","url" => "/functional/generate_automation_results_report.csv", "test_round_id" => "#{@test_round.id}", :remote => true} Export to CSV
+            =link_to "Show Test Report", project_test_round_show_report_path(@project,@test_round)
+          -unless @test_round.exported_to_testlink?
+            %li
+              %a.save_to_testlink{:href => "#"} Save to Testlink
+          %li
+            %a.config_notify_email{:href => "#", "remote-data" => "/test_rounds/#{@test_round.id}/config_notify_email", :remote => true}Send Notify Email
+      %a.btn.primary{"data-dropdown" => "#dropdown-1"} Custom Actions
+
+
+= render 'brief_info'
+.list-content-box
+
+  .row
+    .span8.columns
+      #result_chart{:style=>"min-height: 400px;"}
+    .span8.columns
+      #failed_analysis_chart{:style=>"min-height: 400px;"}
+
+:javascript
+
+$(function() {
+
+  $(document).ready(function() {    
+    $('#result_chart').highcharts({
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'column'
+      },
+      title: {
+        text: 'Triage Result'
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.y}</b>'
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true
+          },
+          showInLegend: true
+        }
+      },
+      series: [{
+        name: '',
+        colorByPoint: true,
+        data: [
+        {
+          name: 'Failed Cases',
+          y: 34,
+          sliced: true,
+          selected: true,
+          color: 'red'
+        }, {
+          name: 'Pass Cases',
+          y: 308
+
+        }, {
+          name: 'Not-Run Cases',
+          y: 7
+        }]
+      }]
+    });
+
+    $('#failed_analysis_chart').highcharts({
+      chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'column'
+      },
+      title: {
+        text: 'Failed Reason Analysis'
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      plotOptions: {
+        pie: {
+          allowPointSelect: true,
+          cursor: 'pointer',
+          dataLabels: {
+            enabled: true
+          },
+          showInLegend: true
+        }
+      },
+      series: [{
+        name: 'Failed Cases',
+        colorByPoint: true,
+        data: [{
+          name: 'Framework Issue',
+          y: 56.33
+        }, {
+          name: 'Dynamic Issue',
+          y: 24.03,
+          sliced: true,
+          selected: true
+        }, {
+          name: 'Environment Issue',
+          y: 10.38
+        }, {
+          name: 'Product Error',
+          y: 4.77
+        }, {
+          name: 'Data Issue',
+          y: 0.91
+        }, {
+          name: 'Product Change',
+          y: 0.2
+        }, {
+          name: 'Others',
+          y: 0.2
+        }]
+      }]
+    });
+  });
+});     

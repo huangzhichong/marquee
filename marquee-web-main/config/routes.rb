@@ -3,7 +3,7 @@ MarqueeWebMain::Application.routes.draw do
   post "project_branch_scripts/import"
 
   post 'automation_progresses',:controller => "automation_progresses", :action => "create"
-  post 'automation_progresses/dump', :controller => "automation_progresses", :action => "dump_all_monitor_projects" 
+  post 'automation_progresses/dump', :controller => "automation_progresses", :action => "dump_all_monitor_projects"
   get 'automation_progresses/:project_id', :controller => "automation_progresses", :action => "project_progress"
   get 'automation_progresses', :controller => "automation_progresses", :action => "index"
 
@@ -65,6 +65,7 @@ MarqueeWebMain::Application.routes.draw do
     resources :base_script_results
     resources :issues
     resources :test_rounds do
+      get "show_report", :controller => 'test_rounds', :action => 'show_report'
       get "rerun", :controller => 'test_rounds', :action => 'rerun'
       get "rerun_failed", :controller => 'test_rounds', :action => 'rerun_failed'
       post "save_to_testlink"

@@ -199,7 +199,10 @@ and j1.created <= '#{@to}'
       end
     end
     respond_to do |format|
-      format.csv {send_data csv_string, :filename => "automation_status_#{Time.now.strftime("%Y%m%d_%H%M%S")}.csv"}
+
+      format.csv {
+        send_data csv_string, :filename => "automation_status_#{Time.now.strftime("%Y%m%d_%H%M%S")}.csv"
+      }
     end
   end
 
@@ -237,15 +240,21 @@ and j1.created <= '#{@to}'
     test_round = TestRound.find(params['test_round_id'])
     csv_string = CSV.generate do |csv|
       if test_round
+        # Test Round General Info
         csv << ['TestRound ID', params['test_round_id']]
         csv << ['Environment', test_round.test_environment.name]
         csv << ['OS',test_round.operation_system.name]
         csv << ['Browser Type',test_round.browser.name]
+        csv << ['Test Result Count ']
         csv << ['Total Pass',test_round.pass_count]
         csv << ['Total Failed',test_round.failed_count]
         csv << ['Total Not-Run', test_round.not_run_count]
+        csv << ['Triage Result']
+        triage_result_analysis = test_round.triage_result_analysis
+        triage_result_analysis.each do |k,v|
+          csv <<[k,v]
+        end
         csv << ['Test Plan Name','Script Name','Case Name','Case ID','Result','Automation Status','Error Type','Triage Message','Testlink ID']
-
         test_round_result = test_round.get_test_result_hash
         project_test_plans = test_round.project.get_test_plans_and_automation_scripts
 
@@ -283,8 +292,9 @@ and j1.created <= '#{@to}'
 
       end
     end
-    respond_to do |format|      
-      format.csv {send_data csv_string, :filename => "test_round_#{params['test_round_id']}_result_#{Time.now.strftime("%Y%m%d_%H%M%S")}.csv"}
+    respond_to do |format|
+      file_name =  "test_round_#{params['test_round_id']}_result_#{Time.now.strftime("%Y%m%d_%H%M%S")}.csv"
+      format.csv {send_data(csv_string, :filename => file_name)}
     end
   end
 

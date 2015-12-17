@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 # source 'http://ruby.taobao.org'
 
-gem 'rails', '3.1.0'
+gem 'rails', '3.2.6'
 
 # Bundle edge Rails instead:
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
@@ -18,7 +18,7 @@ gem 'inherited_resources', '1.2.2'
 gem 'hpricot', '0.8.4'
 gem 'ruby_parser', '2.0.6'
 gem 'wicked_pdf', '0.7.2'
-gem 'mysql2', '~> 0.3'
+gem 'mysql2', '~> 0.3.10'
 gem 'kaminari'
 
 gem 'hirb', '0.4.5'
@@ -29,7 +29,7 @@ gem 'memcache-client', '1.8.5'
 # gem 'eventmachine', '0.12.10'
 
 gem 'bullet', '2.0.1', :group => "development"
-gem 'therubyracer'
+gem 'therubyracer', '~> 0.12.2'
 gem "meta_search", :git => "git://github.com/ernie/meta_search.git"
 gem "acts_as_audited", :git => "git://github.com/tyraeltong/acts_as_audited.git"
 
@@ -55,18 +55,17 @@ group :test, :development do
   gem 'capybara'
   gem 'launchy'
   gem 'mailcatcher', '~> 0.5.12'
-
 end
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', "  ~> 3.1.0"
-  gem 'coffee-rails', "~> 3.1.0"
-  gem 'uglifier'
+  gem 'sass-rails', "~> 3.2.0"
+  gem 'coffee-rails', "~> 3.2.0"
+  gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails', "~> 1.0.16"
+gem 'jquery-rails'
 gem 'rmagick','2.15.4'
 gem 'lazy_high_charts'
 # Use unicorn as the web server

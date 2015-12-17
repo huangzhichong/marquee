@@ -281,4 +281,12 @@ class TestRound < ActiveRecord::Base
     result
   end
 
+  def triage_result_analysis
+    result = Hash.new
+    ErrorType.where(:result_type=>"pass").each do |error_type|
+      result[error_type.name]=self.automation_script_results.where(:error_type_id=>error_type.id).count
+    end
+    result
+  end
+
 end

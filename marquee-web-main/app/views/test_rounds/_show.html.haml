@@ -10,6 +10,7 @@
         %ul.dropdown-menu
           %li
             %a.export_to_csv_btn{:href => "#","url" => "/functional/generate_automation_results_report.csv", "test_round_id" => "#{@test_round.id}", :remote => true} Export to CSV
+            =link_to "Show Test Report", project_test_round_show_report_path(@project,@test_round)
           -unless @test_round.exported_to_testlink?
             %li
               %a.save_to_testlink{:href => "#"} Save to Testlink
