@@ -157,6 +157,10 @@ class AutomationScriptResult < ActiveRecord::Base
     self.automation_case_results.where("result='not-run'").count
   end
 
+  def all_count
+    self.automation_case_results.count
+  end
+
   def count_automation_script_result!
     self.pass = pass_count
     self.failed = failed_count
