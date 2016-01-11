@@ -64,6 +64,7 @@ task :import_test_cases , [:mp_name, :p_name] => :environment  do |t, args|
       mtc.priority = "P#{4-tc.priority}"
       mtc.automated_status = tc.automated_status
       mtc.test_link_id = tc.test_link_id
+      mtc.keywords = tc.keywords
       mtc.save
       TestLinkCaseStep.find_all_by_test_case_id(tc.id).each do |tcp|
         step = mtc.tc_steps.build(:test_link_id =>tcp.test_link_id,:step_number=>tcp.step_number,:step_action => tcp.action,:expected_result =>tcp.expected_result)
@@ -136,6 +137,7 @@ task :import_all_cases => :environment  do
           mtc.priority = "P#{4-tc.priority}"
           mtc.automated_status = tc.automated_status
           mtc.test_link_id = tc.test_link_id
+          mtc.keywords = tc.keywords
           mtc.save
           TestLinkCaseStep.find_all_by_test_case_id(tc.id).each do |tcp|
             step = mtc.tc_steps.build(:test_link_id =>tcp.test_link_id,:step_number=>tcp.step_number,:step_action => tcp.action,:expected_result =>tcp.expected_result)

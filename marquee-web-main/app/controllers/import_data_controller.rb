@@ -191,6 +191,7 @@ class ImportDataController < ApplicationController
               mtc.priority = "P#{4-tc[5]}"
               mtc.automated_status = tc[6]
               mtc.test_link_id = tc[7]
+              mtc.keywords = tc[8]
               mtc.save
             end
           end
