@@ -23,111 +23,172 @@
 .list-content-box
 
   .row
-    .span8.columns
-      #result_chart{:style=>"min-height: 400px;"}
-    .span8.columns
-      #failed_analysis_chart{:style=>"min-height: 400px;"}
+    .span6.columns
+      #result_chart
+
+    .span10.columns
+      #failed_analysis_chart
 
 :javascript
 
 $(function() {
 
-  $(document).ready(function() {    
+  $(document).ready(function() {
     $('#result_chart').highcharts({
       chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
         type: 'column'
       },
       title: {
-        text: 'Triage Result'
+        text: 'Test Result'
       },
       tooltip: {
-        pointFormat: '{series.name}: <b>{point.y}</b>'
+        enabled: false
       },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-            enabled: true
-          },
-          showInLegend: true
+      legend: {
+        enabled: false
+      },
+      xAxis: {
+        type: 'category',
+        labels: {
+          rotation: -45,
+          style: {
+            fontSize: '11px',
+            fontFamily: 'Verdana, sans-serif'
+          }
         }
       },
+      yAxis: {
+        min: 0,
+        minTickInterval: 1,
+        title: {
+          text: 'Number of Test Cases'
+        }
+      },
+
       series: [{
         name: '',
         colorByPoint: true,
-        data: [
-        {
-          name: 'Failed Cases',
-          y: 34,
-          sliced: true,
-          selected: true,
-          color: 'red'
+        data: [{
+          name: 'Pass',
+          y: #{
+            @test_round.pass_count
+          },
+          color: '#06b355'          
         }, {
-          name: 'Pass Cases',
-          y: 308
-
+          name: 'Failed',
+          y: #{
+            @test_round.failed_count
+          },
+          color: '#b3060e'
         }, {
-          name: 'Not-Run Cases',
-          y: 7
-        }]
+          name: 'Not-Run',
+          y: #{
+            @test_round.not_run_count
+          },
+          color: '#ac06b3'
+        }],
+        dataLabels: {
+          enabled: true,          
+          color: '#4d759e',        
+          formatter: function() {
+            if (this.y != 0) {
+              return this.y;
+            }
+          },
+          style: {
+            fontSize: '13px',
+            fontFamily: 'Verdana, sans-serif'
+          }
+        }        
       }]
     });
 
     $('#failed_analysis_chart').highcharts({
       chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
         type: 'column'
       },
       title: {
         text: 'Failed Reason Analysis'
       },
-      tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: 'pointer',
-          dataLabels: {
-            enabled: true
-          },
-          showInLegend: true
+      xAxis: {
+        type: 'category',
+        labels: {
+          rotation: -45,
+          style: {
+            fontSize: '11px',
+            fontFamily: 'Verdana, sans-serif'
+          }
         }
       },
+      yAxis: {
+        min: 0,
+        minTickInterval: 1,
+        title: {
+          text: 'Number of Test Cases'
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      tooltip: {
+        enabled: false
+      },
+
       series: [{
         name: 'Failed Cases',
         colorByPoint: true,
         data: [{
+          name: 'Product Error',
+          y: #{
+            @test_round.failed_count
+          },
+          color: '#b3060e'
+        }, {
           name: 'Framework Issue',
-          y: 56.33
+          y: #{
+            @triage_result_analysis['Framework Issue']
+          }
         }, {
           name: 'Dynamic Issue',
-          y: 24.03,
-          sliced: true,
-          selected: true
+          y: #{
+            @triage_result_analysis['Dynamic Issue']
+          },
         }, {
-          name: 'Environment Issue',
-          y: 10.38
-        }, {
-          name: 'Product Error',
-          y: 4.77
+          name: 'Environment Error',
+          y: #{
+            @triage_result_analysis['Environment Error']
+          }
         }, {
           name: 'Data Issue',
-          y: 0.91
+          y: #{
+            @triage_result_analysis['Data Issue']
+          }
         }, {
           name: 'Product Change',
-          y: 0.2
+          y: #{
+            @triage_result_analysis['Product Change']
+          }
         }, {
           name: 'Others',
-          y: 0.2
-        }]
+          y: #{
+            @triage_result_analysis['Other']
+          }
+        }],
+
+        dataLabels: {
+          enabled: true,
+          color: '#4d759e',
+          formatter: function() {
+            if (this.y != 0) {
+              return this.y;
+            }
+          },
+          style: {
+            fontSize: '13px',
+            fontFamily: 'Verdana, sans-serif'
+          }
+        }
       }]
     });
   });
-});     
+});

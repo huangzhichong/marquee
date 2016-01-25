@@ -66,7 +66,7 @@ class TestRoundsController < InheritedResources::Base
   def show_report
     @project ||= Project.find(params[:project_id])
     @test_round ||= TestRound.find(params[:test_round_id])
-    
+    @triage_result_analysis = @test_round.triage_result_analysis    
   end
 
   protected
