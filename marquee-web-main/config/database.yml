@@ -39,7 +39,7 @@ production:
 
 local_testlink:
   adapter: mysql2
-  host: 10.109.0.164
-  username: smart
-  password: start123
+  host: 10.119.11.198
+  username: active
+  password: "@ctive123"
   database: testlink

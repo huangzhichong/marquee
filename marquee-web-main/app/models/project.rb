@@ -70,14 +70,20 @@ class Project < ActiveRecord::Base
       when "Overall"
         automated_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Automated"})
         update_needed_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Update Needed"})
+        update_manual_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Update Manual"})
         cannot_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Not a Candidate"})
         manual = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Manual"})
+        automatable = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Automatable"})
+        not_ready = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Not Ready for Automation"})
         all_count = project.count_test_case_by_plan_type_and_options(plan_type)
       else
         automated_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Automated",:priority => priority})
         update_needed_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Update Needed",:priority => priority})
+        update_manual_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Update Manual",:priority => priority})
         cannot_count = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Not a Candidate",:priority => priority})
         manual = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Manual",:priority => priority})
+        automatable = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Automatable",:priority => priority})
+        not_ready = project.count_test_case_by_plan_type_and_options(plan_type, {:automated_status => "Not Ready for Automation",:priority => priority})
         all_count = project.count_test_case_by_plan_type_and_options(plan_type, {:priority => priority})
       end
       coverage_value = ((all_count - manual) <= 0 ? 0.0 : (automated_count+update_needed_count).to_f/(all_count - manual).to_f)
@@ -93,14 +99,21 @@ class Project < ActiveRecord::Base
       when "Overall"
         automated_count = project.count_test_case_by_options(:automated_status => "Automated")
         update_needed_count = project.count_test_case_by_options(:automated_status => "Update Needed")
+        update_manual_count = project.count_test_case_by_options(:automated_status => "Update Manual")
         cannot_count = project.count_test_case_by_options(:automated_status => "Not a Candidate")
         manual = project.count_test_case_by_options(:automated_status => "Manual")
+        automatable = project.count_test_case_by_options(:automated_status => "Automatable")
+        not_ready = project.count_test_case_by_options(:automated_status => "Not Ready for Automation")
         all_count = project.count_test_case_by_options
       else
         automated_count = project.count_test_case_by_options({:automated_status => "Automated",:priority => priority})
         update_needed_count = project.count_test_case_by_options({:automated_status => "Update Needed",:priority => priority})
+        update_manual_count = project.count_test_case_by_options({:automated_status => "Update Manual",:priority => priority})
         cannot_count = project.count_test_case_by_options({:automated_status => "Not a Candidate",:priority => priority})
         manual = project.count_test_case_by_options({:automated_status => "Manual",:priority => priority})
+        automatable = project.count_test_case_by_options({:automated_status => "Automatable",:priority => priority})
+        not_ready = project.count_test_case_by_options({:automated_status => "Not Ready for Automation",:priority => priority})
+
         all_count = project.count_test_case_by_options(:priority => priority)
       end
       coverage_value = ((all_count - manual) <= 0 ? 0.0 : (automated_count+update_needed_count).to_f/(all_count - manual).to_f)
@@ -121,7 +134,7 @@ class Project < ActiveRecord::Base
   def get_test_plans_and_automation_scripts
     result = {}
     self.test_plans.each do |tp|
-      result["#{tp.name}"]= {}      
+      result["#{tp.name}"]= {}
       result["#{tp.name}"]["test_cases"] = {}
       tp.test_cases.each do |tc|
         result["#{tp.name}"]["test_cases"]["#{tc.case_id}"]= {"name" => tc.name, "automated_status" => tc.automated_status, "test_link_id" => tc.test_link_id,"plan_type" => tp.plan_type}
@@ -143,16 +156,30 @@ class Project < ActiveRecord::Base
     progress = Hash.new
     progress["total"]=[]
     progress["automated"]=[]
+    progress["automatable"]=[]    
+    progress["not_ready"]=[]
+    progress["not_candidate"]=[]
+    progress["update_needed"]=[]
+    progress["update_manual"]=[]
+    progress["unknown"]=[]
     progress["coverage"]=[]
     progress["record_date"]=[]
 
-    self.automation_progresses.order('record_date ASC').each do |t|
+    self.automation_progresses.order('record_date ASC').last(10).each do |t|
       progress["total"] << t.total_case
       progress["automated"] << t.total_automated
+      progress["automatable"] << t.automatable
+      progress["not_ready"] << t.not_ready
+      progress["not_candidate"] << t.not_candidate
+      progress["update_manual"] << t.update_manual
+      progress["update_needed"] << t.update_needed
+      progress["unknown"] << t.unkonwn_cases
       progress["coverage"] << ((t.total_automated.to_f/t.total_case.to_f)*100).round(1)
       progress["record_date"] << t.record_date.to_s
     end
     progress["new_auto"] = progress["automated"].map.with_index{|x,i|  (i>0) ? x-progress["automated"][i-1] : 0}
+
+    puts progress
     return progress
   end
   private

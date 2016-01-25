@@ -38,7 +38,7 @@
           tooltip: {
               useHTML: true,
               formatter: function () {
-                  return '<table><tr><td>Automated</td><td>' + this.point.automated + '</td></tr><tr><td>Update Neede</td><td>' + this.point.update_needed + '</td></tr><tr><td>Not Candidate</td><td>' + this.point.not_candidate + '</td></tr><tr><td>Total Cases</td><td>' + this.point.total + '</td></tr>';
+                  return '<table><tr><td>Automated</td><td>' + this.point.automated + '</td></tr><tr><td>Automatable</td><td>' + this.point.automatable + '</td></tr><tr><td>Update Needed</td><td>' + this.point.update_needed + '</td></tr><tr><td>Not Ready</td><td>' + this.point.not_ready + '</td></tr><tr><td>Not Candidate</td><td>' + this.point.not_candidate + '</td></tr><tr><td>Update Manual</td><td>' + this.point.update_manual + '</td></tr><tr><td>Total Cases</td><td>' + this.point.total + '</td></tr>';
               }
           },
 
@@ -50,6 +50,9 @@
                       automated: #{@total_automated},
                       update_needed: #{@total_update_needed},
                       not_candidate: #{@total_not_candidate},
+                      automatable: #{@total_automatable},
+                      not_ready: #{@total_not_ready},
+                      update_manual: #{@total_update_manual},
                       total: #{@total},
                      }, {
                       color: '#7BA13B',
@@ -57,6 +60,9 @@
                       automated: #{@P1_automated},
                       update_needed: #{@P1_update_needed},
                       not_candidate: #{@P1_not_candidate},
+                      automatable: #{@P1_automatable},
+                      not_ready: #{@P1_not_ready},
+                      update_manual: #{@P1_update_manual},
                       total: #{@P1_total},                   
                   }, {
                       color: '#CBA744',
@@ -64,6 +70,9 @@
                       automated: #{@P2_automated},
                       update_needed: #{@P2_update_needed},
                       not_candidate: #{@P2_not_candidate},
+                      automatable: #{@P2_automatable},
+                      not_ready: #{@P2_not_ready},
+                      update_manual: #{@P2_update_manual},
                       total: #{@P2_total},                      
                   }, {
                       color: '#B7592B',
@@ -71,6 +80,9 @@
                       automated: #{@P3_automated},
                       update_needed: #{@P3_update_needed},
                       not_candidate: #{@P3_not_candidate},
+                      automatable: #{@P3_automatable},
+                      not_ready: #{@P3_not_ready},
+                      update_manual: #{@P3_update_manual},
                       total: #{@P3_total},                      
                   },
 

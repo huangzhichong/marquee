@@ -1,5 +1,33 @@
 .automation-progress-box
   #automation-progress-chart
+
+%table.zebra-striped{:style => "width:960px; margin-top: 18px;margin-bottom: 120px;"}
+  %tr
+    %th Record Date
+    %th Total
+    %th Automated
+    %th Automatable
+    %th Not Ready for Automation
+    %th Update Needed
+    %th Update Manual
+    %th Not a Candidate
+    %th Unknown
+  -record_size = @progress['record_date'].size
+  -@progress['record_date'].each_with_index do |date, index|
+    %tr
+
+      %td= @progress["record_date"][record_size-index-1]
+      %td= @progress["total"][record_size-index-1]
+      %td= @progress["automated"][record_size-index-1]
+      %td= @progress["automatable"][record_size-index-1]
+      %td= @progress["not_ready"][record_size-index-1]
+      %td= @progress["update_needed"][record_size-index-1]
+      %td= @progress["update_manual"][record_size-index-1]
+      %td= @progress["not_candidate"][record_size-index-1]
+      %td= @progress["unknown"][record_size-index-1]
+
+
+
 :javascript
 
   $(function() {
