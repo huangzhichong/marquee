@@ -3,7 +3,9 @@
     %img.big-icon{:src => asset_path("#{@test_round.result}.png")}
     %h2
       =link_to "Test Rounds", project_test_rounds_path(@project), :remote => true
-      %span= " / #{@test_round.test_type.name}##{@test_round.id} / Test Report"    
+      %span= " / "    
+      =link_to "#{@test_round.test_type.name}##{@test_round.id}", project_test_round_path(@project, @test_round), :remote => true
+      %span= " / Test Report"    
   .span3#right
     -if can? :create, TestRound and @test_round.state == 'completed'            
       #dropdown-1.dropdown.dropdown-tip
