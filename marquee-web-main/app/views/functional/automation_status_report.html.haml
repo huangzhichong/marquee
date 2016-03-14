@@ -5,6 +5,6 @@
       - Project.where(:monitor_flag => true).all.each do |project|
         .slave_project
           = check_box_tag 'projects[]', project.name, true, {:id => "projects_#{project.name}"}
-          = label_tag "slave_projects_#{project.name}", project.name
+          = label_tag "slave_projects_#{project.name}", project.dashboard_name
     .actions
       = submit_tag 'Generate', :class => 'btn primary'
