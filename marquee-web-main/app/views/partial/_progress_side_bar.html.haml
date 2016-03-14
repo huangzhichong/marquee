@@ -2,10 +2,10 @@
   %input#hidden-item{:type => "hidden"}
   %ul.menu
     - even = true
-    - Project.where(:monitor_flag => true).each do |project|
+    - Project.where(:monitor_flag => true).order("name ASC").each do |project|
       - if even
         - even = false
-        %li{:name => project.name}        
+        %li{:name => project.name}
           = link_to project.name, "/automation_progresses/#{project.id}", :remote => true
       - else
         - even = true
