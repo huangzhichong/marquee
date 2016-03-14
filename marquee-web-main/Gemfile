@@ -43,8 +43,8 @@ gem 'resque_mailer'
 gem 'rabl'
 
 group :test, :development do
-  gem 'pry', '0.9.12.1'
-  gem 'pry-debugger'
+  # gem 'pry', '0.9.12.1'
+  # gem 'pry-debugger'
   gem 'test-unit', '2.3.0'
   gem 'rspec-rails', '2.6.1'
   gem 'factory_girl', '2.0.1'

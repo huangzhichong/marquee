@@ -5,8 +5,7 @@ class StatusController < ApplicationController
     env = params[:environment]
     branch_name = params.has_key?(:branch_name) ? params[:branch_name] : "master"
     parameter = params.has_key?(:parameter) ? params[:parameter] : ""
-    enable_auto_rerun = params.has_key?(:enable_auto_rerun) ? params[:enable_auto_rerun] : "off"
-    test_environment = TestEnvironment.find_by_name(env)
+    enable_auto_rerun = params.has_key?(:enable_auto_rerun) ? params[:enable_auto_rerun] : "off"    
     @test_round_ids= []
     unless env.empty?
       test_object = "#{ci_value} #{params[:version]}"

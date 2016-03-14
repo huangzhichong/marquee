@@ -156,7 +156,7 @@ class Project < ActiveRecord::Base
     progress = Hash.new
     progress["total"]=[]
     progress["automated"]=[]
-    progress["automatable"]=[]    
+    progress["automatable"]=[]
     progress["not_ready"]=[]
     progress["not_candidate"]=[]
     progress["update_needed"]=[]
@@ -182,8 +182,25 @@ class Project < ActiveRecord::Base
     puts progress
     return progress
   end
-  private
 
+  def current_automation_status
+    temp = Hash.new
+    temp['total_case'] = self.count_test_case_by_plan_type_and_options('regression',{})
+    temp['automated'] = self.count_test_case_by_plan_type_and_options('regression',:automated_status => "Automated")
+    temp['not_candidate'] = self.count_test_case_by_plan_type_and_options('regression',:automated_status => "Not a Candidate")
+    temp['automatable'] = self.count_test_case_by_plan_type_and_options('regression',:automated_status => "Automatable")
+    temp['not_ready'] = self.count_test_case_by_plan_type_and_options('regression',:automated_status => "Not Ready for Automation")
+    temp['update_manual'] = self.count_test_case_by_plan_type_and_options('regression',:automated_status => "Update Needed")
+    temp['update_needed'] = self.count_test_case_by_plan_type_and_options('regression',:automated_status => "Update Manual")
+    temp['unknown']= temp['total_case']-temp['automated']-temp['not_candidate']-temp['automatable']-temp['not_ready']-temp['update_manual']-temp['update_needed']
+    temp['qa_backlog'] = (temp['not_ready']+temp['unknown']) > 0 ? (temp['not_ready']+temp['unknown']).to_f/temp['total_case'] : 0.0
+    temp['automated_rate'] = temp['automated'] > 0 ? temp['automated'].to_f/temp['total_case'].to_f : 0.0
+    temp['automatable_rate'] = (temp['automated']+temp['automatable']) > 0 ? (temp['automated']+temp['automatable']).to_f/temp['total_case'].to_f : 0.0
+    temp['automation_progress'] = temp['automated'] > 0 ? temp['automated'].to_f/(temp['automated']+temp['automatable']).to_f : 0.0
+    temp
+  end
+
+  private
   def reprocess_icon_image
     icon_image.reprocess!
   end
