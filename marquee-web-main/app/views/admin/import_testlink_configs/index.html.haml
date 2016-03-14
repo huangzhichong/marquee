@@ -5,6 +5,7 @@
     %tr
       %th Marquee Project Name
       %th Testlink Project Name
+      %th Status
       %th
     - if @import_testlink_configs.blank?
       %tr
@@ -15,6 +16,13 @@
         %tr
           %td= config.marquee_project
           %td= config.testlink_project
+          %td
+            - if config.active
+              %span{:style => "color: #0000FF"}
+                =  "Active"
+            - else
+              %span{:style => "color: #EE3B3B"}
+                = "Inactive"
           - edit_url, delete_url = nil
           - if can? :delete, ImportTestlinkConfig
             - delete_url = admin_import_testlink_config_path(config)

@@ -163,7 +163,7 @@ class ImportDataController < ApplicationController
 
   def refresh_testlink_data
 
-    ImportTestlinkConfig.all.each do |mapping|
+    ImportTestlinkConfig.where(:active => true).each do |mapping|
       marquee_project_name = mapping.marquee_project
       project_name = mapping.testlink_project
       mp = Project.find_by_name(marquee_project_name)
