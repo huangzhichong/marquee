@@ -88,7 +88,7 @@
         float: left;
         line-height: 18px;
         margin-left: 0px;
-        width: 460px;
+        width: 45%;
         zoom: 1;
       }
       .brief-right {
@@ -98,8 +98,9 @@
         display: block;
         float: left;
         line-height: 18px;
-        margin-left: 20px;
-        width: 460px;
+        margin-left: 5px;
+        padding-left: 10px
+        width: 45%;
         zoom: 1;
       }
       .row {
@@ -114,29 +115,24 @@
       }
       .row .span3 {
         float:left;
-        width:160px;
-        margin-left:20px;
+        width:55%;
+        margin-left:5px;
       }
       .row .span3:first-child {
         margin-left:0;
       }
       .row .span5 {
         float:left;
-        width:280px;
-        margin-left:20px;
+        width:35%;
+        margin-left:5px;
       }
       .row .span5:first-child {
         margin-left:0;
       }
-      .row .span8 {
-        float:left;
-        width:460px;
-        margin-left:20px;
+      ul {
+        padding-left: 5px;
       }
-      .row .span8:first-child {
-        margin-left:0;
-      }
-    
+
     .section
       %h3= "The Test Round:#{@test_round} has been triaged."
     .row.brief-info
@@ -146,13 +142,13 @@
             %li
               %h5 Test Suite:
             %li
-              %h5 Test Environment:
+              %h5 Environment:
             %li
               %h5 Duration:
             %li
               %h5 Browser :
             %li
-              %h5 Operation System:
+              %h5 OS:
             %li
               %h5 Branch:
         .span3
@@ -175,13 +171,13 @@
             %li
               %h5 Started By:
             %li
-              %h5 Pass Count:
+              %h5 Pass:
             %li
-              %h5 Failed Count:
+              %h5 Failed:
             %li
-              %h5 Warning Count:
+              %h5 Warning:
             %li
-              %h5 Not Run Count:
+              %h5 Not Run:
             %li
               %h5 Passrate:
         .span3
