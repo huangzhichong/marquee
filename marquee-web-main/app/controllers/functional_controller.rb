@@ -198,7 +198,7 @@ class FunctionalController < ApplicationController
           date_today,
           application,
           automation_status['automated'],
-          automation_status['update_needed'],
+          automation_status['update_needed']+automation_status['update_manual'],
           automation_status['automatable'],
           automation_status['not_candidate'],
           automation_status['not_ready'],
