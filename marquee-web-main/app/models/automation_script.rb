@@ -24,7 +24,7 @@ class AutomationScript < ActiveRecord::Base
   has_many :suite_selections
   has_many :test_suites, :through => :suite_selections
   belongs_to :automation_driver_config
-
+  acts_as_ordered_taggable
   def find_case_by_case_id(case_id)
     self.automation_cases.find_by_case_id(case_id)
   end

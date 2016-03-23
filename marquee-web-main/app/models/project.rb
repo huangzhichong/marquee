@@ -200,6 +200,14 @@ class Project < ActiveRecord::Base
     temp
   end
 
+  def automation_script_tags
+    self.automation_scripts.tag_counts.map(&:name)
+  end
+
+  def automation_script_owner_ids
+    self.automation_scripts.select(:owner_id).uniq.map{|i| i['owner_id']}
+  end
+
   private
   def reprocess_icon_image
     icon_image.reprocess!

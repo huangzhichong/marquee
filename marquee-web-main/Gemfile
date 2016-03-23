@@ -68,6 +68,8 @@ end
 gem 'jquery-rails'
 gem 'rmagick','2.15.4'
 gem 'lazy_high_charts'
+
+gem 'acts-as-taggable-on', '~> 3.4'
 # Use unicorn as the web server
 # gem 'unicorn'
 

@@ -9,11 +9,6 @@
     %th
   %tr
     %td
-      =link_to "Test Suites", admin_project_test_suites_path(@project)
-    %td= @project.test_suites.count
-    %td
-  %tr
-    %td
       =link_to "CI Mappings", admin_project_ci_mappings_path(@project)
     %td= @project.ci_mappings.count
     %td

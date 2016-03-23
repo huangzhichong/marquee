@@ -28,8 +28,7 @@ MarqueeWebMain::Application.routes.draw do
     resources :roles
     resources :team_members
     resources :projects do
-      resources :test_suites, :ci_mappings, :mail_notify_settings, :test_rounds, :automation_driver_configs
-      get "search_automation_script", :controller => 'test_suites', :action => 'search_automation_script'
+      resources :ci_mappings, :mail_notify_settings, :test_rounds, :automation_driver_configs
     end
     get "activate_user/:id", :controller => "users", :action => "activate"
   end
@@ -71,6 +70,7 @@ MarqueeWebMain::Application.routes.draw do
       post "save_to_testlink"
     end
     resources :test_suites
+    get "search_automation_script", :controller => 'test_suites', :action => 'search_automation_script'
     resources :ci_mappings
     resources :mail_notify_settings
   end

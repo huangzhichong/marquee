@@ -21,6 +21,24 @@ class TestSuitesController < InheritedResources::Base
     destroy!{collection_url}
   end
 
+  def search_automation_script
+    project = Project.find(params[:project_id])
+    @automation_scripts = project.automation_scripts.order('name asc')
+    if params[:search_by_name]
+      @automation_scripts = @automation_scripts.where("name LIKE '%#{params[:search_by_name]}%'")
+    end
+    if params[:search_by_owner] and not params[:search_by_owner].empty?
+      @automation_scripts = @automation_scripts.where(:owner_id => params[:search_by_owner])
+    end
+    if params[:search_by_tag] and not params[:search_by_tag].empty?
+      @automation_scripts = @automation_scripts.tagged_with(params[:search_by_tag])
+    end
+
+    respond_to do |format|
+      format.js { render :json => {:automation_scripts => @automation_scripts} }
+    end
+  end
+
   protected
 
   def resource
