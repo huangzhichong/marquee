@@ -35,6 +35,7 @@ class ImportDataController < ApplicationController
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = owner_id
+      as.tag_list = script["tags"] if script.has_key? 'tags'
       adc =  AutomationDriverConfig.find_by_name(script["auto_driver"])
       as.automation_driver_config_id = adc.id if adc
       as.time_out_limit = script["timeout"]
@@ -71,6 +72,7 @@ class ImportDataController < ApplicationController
       as.version = "1.0"
       as.project_id = p.id
       as.owner_id = owner_id
+      as.tag_list = script["tags"] if script.has_key? 'tags'
       adc =  AutomationDriverConfig.find_by_name(script["auto_driver"])
       as.automation_driver_config_id = adc.id if adc
       as.time_out_limit = script["timeout"]
@@ -106,6 +108,7 @@ class ImportDataController < ApplicationController
       as.note = script['comment']
       as.version = "1.0"
       as.project_id = p.id
+      as.tag_list = script["tags"] if script.has_key? 'tags'
       as.owner_id = User.find_or_create_default_by_email(script["owner"]).id
       adc =  AutomationDriverConfig.find_by_name(script["auto_driver"])
       as.automation_driver_config_id = adc.id if adc
