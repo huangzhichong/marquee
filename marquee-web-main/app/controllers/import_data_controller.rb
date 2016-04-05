@@ -175,11 +175,14 @@ class ImportDataController < ApplicationController
         local_projects = LocalTestlink.connection.execute(get_project_by_name)
         local_projects.each do |p|
           mp.test_plans.update_all(:status => "expired")
+          mp.test_plans.all.each do |mtp|
+            mtp.test_cases.update_all(:version => "expired")
+            mtp.save
+          end
           get_tp_query = "select * from old_test_plans where project_id = '#{p[0]}' limit 9999999"
           local_test_plans = LocalTestlink.connection.execute(get_tp_query)
           local_test_plans.each do |tp|
             mtp = mp.test_plans.find_or_create_by_name(tp[2].strip.gsub(/\s+/,' '))
-            mtp.test_cases.update_all(:version => "expired")
             mtp.status = "completed"
             mtp.version = tp[3]
             mtp.plan_type = tp[5]
