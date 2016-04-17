@@ -1,12 +1,12 @@
-namespace :test_round do
+class TestRoundKiller
+  @queue = :marquee_farm
 
-  desc "Init some user and project data"
-  task :stop , [:test_round_id] => :environment  do |t, args|
-
-    tr = TestRound.find(args[:test_round_id])
+  def self.perform(test_round_id)
+    tr = TestRound.find(test_round_id)
     if tr
-      tr.automation_script_results.where(:state => 'scheduling').all.each do |asr|        
+      tr.automation_script_results.where(:state => 'scheduling').all.each do |asr|
         sa = asr.slave_assignments.last
+        # remove SlaveAssignment from redis
         SlaveAssignmentsHelper.send_slave_assignment_to_list sa, "stop" if sa
         sa.status = 'complete'
         sa.save
@@ -25,6 +25,11 @@ namespace :test_round do
     tr.state = 'completed'
     tr.result = 'failed'
     tr.save
-
+    ServiceTriggerRecord.find_by_test_round_id(tr.id).update_attributes(status: 'done')
   end
+
+  def self.kill(test_round_id)
+    Resque.enqueue(TestRoundKiller, test_round_id)
+  end
+
 end

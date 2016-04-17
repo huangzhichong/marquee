@@ -193,8 +193,10 @@ class TestRound < ActiveRecord::Base
   def update_state!
     if all_automation_script_results_finished?
       end_running!
+      ServiceTriggerRecord.find_by_test_round_id(self.id).update_attributes(status: 'done')
     else
       start_running!
+      ServiceTriggerRecord.find_by_test_round_id(self.id).update_attributes(status: 'running')
     end
     save
   end
@@ -219,7 +221,7 @@ class TestRound < ActiveRecord::Base
 
   def get_result_details
     result_array =[]
-    self.automation_script_results.each do |asr|            
+    self.automation_script_results.each do |asr|
       script_name = asr.name
       test_plan = asr.automation_script.test_plan
       test_plan_name = test_plan.name
@@ -236,10 +238,10 @@ class TestRound < ActiveRecord::Base
         temp['service_info'] = service_info
         result_array << temp
       end
-    end    
+    end
     result_array
   end
-  
+
   def count_test_round_result!
     self.pass = pass_count
     self.failed = failed_count
@@ -268,7 +270,7 @@ class TestRound < ActiveRecord::Base
   def get_test_result_hash
     result={}
     self.automation_script_results.each do |asr|
-      error_type = asr.error_type_id.nil? ? nil : asr.error_type.name      
+      error_type = asr.error_type_id.nil? ? nil : asr.error_type.name
       asr.automation_case_results.each do |acr|
         result["#{acr.automation_case.case_id}"]={
       "script_name" => asr.name,

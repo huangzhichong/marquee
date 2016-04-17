@@ -18,6 +18,7 @@ MarqueeWebMain::Application.routes.draw do
 
     get '/', :controller => 'projects', :action => 'index'
     resources :import_testlink_configs
+    resources :service_project_mappings
     resources :browsers
     resources :test_environments
     resources :operation_systems
@@ -103,6 +104,9 @@ MarqueeWebMain::Application.routes.draw do
     post "save_note"
     resources :automation_cases
   end
+
+
+  post "service_trigger/start", :controller => 'service_trigger', :action => 'start'
 
   get "automation_script_results/:id/rerun", :controller => 'automation_script_results', :action => 'rerun'
   get "automation_script_results/:id/stop", :controller => 'automation_script_results', :action => 'stop'

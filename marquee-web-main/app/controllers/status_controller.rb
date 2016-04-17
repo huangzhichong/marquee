@@ -5,24 +5,23 @@ class StatusController < ApplicationController
     env = params[:environment]
     branch_name = params.has_key?(:branch_name) ? params[:branch_name] : "master"
     parameter = params.has_key?(:parameter) ? params[:parameter] : ""
-    enable_auto_rerun = params.has_key?(:enable_auto_rerun) ? params[:enable_auto_rerun] : "off"    
+    enable_auto_rerun = params.has_key?(:enable_auto_rerun) ? params[:enable_auto_rerun] : "off"
     @test_round_ids= []
     unless env.empty?
       test_object = "#{ci_value} #{params[:version]}"
       CiMapping.find_all_by_ci_value(ci_value).each do |ci_mapping|
-        if ci_mapping.browser.nil? or ci_mapping.operation_system.nil?
-          logger.error "A CI Mapping without Browser and Operation System found: #{ci_mapping.inspect}"
-          return
-        end
         unless ci_mapping.project.branches.index branch_name
           logger.error "Branch #{parameter} could not be found: #{ci_mapping.inspect}"
           return
         end
         test_environment = ci_mapping.project.test_environments.find_by_name(env)
         if test_environment
+          #kill running test rounds
+          ServiceTriggerRecord.where(:test_environment =>test_environment.name,:test_suite_id => ci_mapping.test_suite_id, :status => "running").select{|t| TestRoundKiller.kill(t.test_round_id)}
           test_round = TestRound.create_for_new_build(ci_mapping.test_suite, ci_mapping.project, test_environment, User.automator, test_object, ci_mapping.browser, ci_mapping.operation_system, branch_name, parameter, enable_auto_rerun)
           TestRoundDistributor.distribute(test_round.id)
           @test_round_ids << test_round.id
+          ServiceTriggerRecord.create(:project_mapping_name => ci_value, :test_round_id => test_round.id, :project_id => test_round.project.id, :status => "running", :test_environment => test_environment.name, :test_suite_id => ci_mapping.test_suite_id ).save
         else
           logger.error "Test Environment #{env} is not assigned to project #{ci_mapping.project.name}"
         end
